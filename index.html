@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missão Horizonte de Eventos: Edição Suprema</title>
+    <title>Missão Horizonte de Eventos: Edição Suprema & Multiplayer</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -25,9 +25,10 @@
             background-color: var(--space-bg);
             color: #ffffff;
             overflow-x: hidden;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            flex-col: justify-between;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         h1, h2, h3, .font-orbitron {
@@ -154,6 +155,16 @@
             background: var(--neon-cyan);
             border-radius: 2px;
         }
+
+        /* Cores dos botões de resposta estilo Kahoot */
+        .btn-red { background: rgba(229, 57, 53, 0.15); border: 1.5px solid #e53935; }
+        .btn-red:hover { background: rgba(229, 57, 53, 0.3); box-shadow: 0 0 15px rgba(229, 57, 53, 0.4); }
+        .btn-blue { background: rgba(30, 136, 229, 0.15); border: 1.5px solid #1e88e5; }
+        .btn-blue:hover { background: rgba(30, 136, 229, 0.3); box-shadow: 0 0 15px rgba(30, 136, 229, 0.4); }
+        .btn-yellow { background: rgba(251, 192, 45, 0.15); border: 1.5px solid #fbc02d; }
+        .btn-yellow:hover { background: rgba(251, 192, 45, 0.3); box-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
+        .btn-green { background: rgba(67, 160, 71, 0.15); border: 1.5px solid #43a047; }
+        .btn-green:hover { background: rgba(67, 160, 71, 0.3); box-shadow: 0 0 15px rgba(67, 160, 71, 0.4); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative select-none">
@@ -172,8 +183,8 @@
                 <i data-lucide="aperture" class="text-pink-500 animate-spin" style="animation-duration: 8s;"></i>
             </div>
             <div>
-                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v4.9</span>
-                <span class="text-3xs text-purple-400 uppercase tracking-widest font-mono">Status da dobra espacial: OPERACIONAL</span>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v5.2</span>
+                <span id="systemStatus" class="text-3xs text-purple-400 uppercase tracking-widest font-mono">Modo de Conexão: INDIVIDUAL</span>
             </div>
         </div>
 
@@ -195,11 +206,11 @@
     <main class="flex-grow flex items-center justify-center p-4 md:p-6 z-10 relative">
         <div id="gameWindow" class="w-full max-w-6xl holo-transition">
 
-            <!-- ================= TELA 1: TELA INICIAL (DOCK DE LANÇAMENTO) ================= -->
-            <div id="screenStart" class="space-y-8 text-center max-w-3xl mx-auto py-6">
+            <!-- ================= TELA 1: SELEÇÃO DE MODO ================= -->
+            <div id="screenModeSelect" class="space-y-8 text-center max-w-3xl mx-auto py-6">
                 <div class="inline-flex items-center space-x-2 p-2 px-4 bg-cyan-950/40 border border-cyan-500/30 rounded-full text-cyan-400 text-xs tracking-widest uppercase mb-2 font-rajdhani">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                    <span>ALERTA DE ANOMALIA GRAVITACIONAL DETECTADA</span>
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>SELECIONE A DIRETRIZ DA MISSÃO</span>
                 </div>
                 
                 <h1 class="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 leading-none uppercase">
@@ -207,21 +218,35 @@
                 </h1>
 
                 <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
-                    Uma anomalia de classe <span class="text-pink-400 font-bold">Singularidade K-100</span> ameaça a órbita terrestre. Os motores de dobra espacial precisam ser calibrados sob as regras rígidas da relatividade e física quântica.
-                    <br><br>
-                    Responda à série de <strong class="text-cyan-400">15 questões consecutivas</strong> extraídas de forma aleatória do banco central para neutralizar o campo de maré. Cada erro atrairá a Terra para a destruição!
+                    Defina o protocolo de comunicação de defesa tática espacial.
                 </p>
 
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
-                    <button id="btnStartMission" class="cyber-btn w-full sm:w-auto px-10 py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-lg neon-glow-cyan">
-                        Iniciar Missão de Defesa
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                    <!-- Modo Solo -->
+                    <button id="btnSelectSolo" class="glass-panel hover:border-cyan-400 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
+                        <div class="flex justify-between items-start w-full">
+                            <i data-lucide="user" class="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-3xs font-mono px-2 py-0.5 border border-cyan-500/20 text-cyan-400 rounded">INDIVIDUAL</span>
+                        </div>
+                        <div>
+                            <h3 class="font-orbitron font-bold text-lg text-white">Missão Solo</h3>
+                            <p class="text-2xs font-mono text-gray-400 mt-1">Calibre os motores de dobra sozinho respondendo a 15 questões consecutivas com telemetria local.</p>
+                        </div>
                     </button>
-                    <button id="btnOpenStats" class="px-6 py-4 bg-black/40 border border-purple-500/30 rounded-xl text-purple-300 font-orbitron text-sm hover:bg-purple-950/20 hover:text-white transition duration-300 w-full sm:w-auto">
-                        Painel de Estatísticas
+
+                    <!-- Modo Multiplayer (Kahoot) -->
+                    <button id="btnSelectMulti" class="glass-panel hover:border-pink-500 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
+                        <div class="flex justify-between items-start w-full">
+                            <i data-lucide="users" class="w-10 h-10 text-pink-500 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-3xs font-mono px-2 py-0.5 border border-pink-500/20 text-pink-500 rounded">COLETIVO</span>
+                        </div>
+                        <div>
+                            <h3 class="font-orbitron font-bold text-lg text-white">Protocolo Multiplayer</h3>
+                            <p class="text-2xs font-mono text-gray-400 mt-1">Hospede uma sala espacial coletiva ou conecte-se como tripulante usando um PIN móvel de 4 dígitos.</p>
+                        </div>
                     </button>
                 </div>
 
-                <!-- Patente Atual e Histórico rápido -->
                 <div class="pt-6 border-t border-cyan-500/10 max-w-md mx-auto flex justify-around text-xs font-mono text-gray-400">
                     <div>
                         <span class="block text-gray-600 uppercase text-3xs">Patente Atual</span>
@@ -234,7 +259,86 @@
                 </div>
             </div>
 
-            <!-- ================= TELA 2: TELA DO JOGO (HUD OPERACIONAL) ================= -->
+            <!-- ================= TELA 1B: MULTIPLAYER MENU (HOST / JOIN) ================= -->
+            <div id="screenMultiMenu" class="hidden space-y-8 text-center max-w-md mx-auto py-6">
+                <h2 class="text-3xl font-orbitron font-bold text-cyan-400">MULTIPLAYER COMMAND</h2>
+                <p class="text-xs font-mono text-gray-400">Selecione o seu cargo no console tático da frota estelar.</p>
+
+                <div class="space-y-4">
+                    <!-- Criar Sala (Host) -->
+                    <button id="btnHostRoom" class="cyber-btn w-full py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-sm neon-glow-cyan">
+                        Criar Nova Sala (Host / Projetor)
+                    </button>
+
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-gray-800"></div>
+                        <span class="flex-shrink mx-4 text-gray-600 text-xs font-mono">OU ENTÃO</span>
+                        <div class="flex-grow border-t border-gray-800"></div>
+                    </div>
+
+                    <!-- Entrar em Sala (Jogador) -->
+                    <div class="bg-black/40 border border-purple-500/15 p-5 rounded-2xl space-y-3">
+                        <input id="inputPin" type="text" maxlength="4" placeholder="CÓDIGO PIN (4 DÍGITOS)" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-orbitron text-center text-lg text-cyan-300 tracking-widest focus:outline-none focus:border-cyan-400">
+                        <input id="inputNickname" type="text" maxlength="12" placeholder="NICKNAME DO CADETE" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-mono text-center text-sm text-white focus:outline-none focus:border-cyan-400">
+                        <button id="btnJoinRoom" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-orbitron font-bold uppercase text-xs tracking-wider hover:opacity-90">
+                            Conectar ao Servidor
+                        </button>
+                    </div>
+                </div>
+
+                <button id="btnBackToModeSelect" class="text-gray-500 hover:text-white font-mono text-xs transition underline block mx-auto">
+                    Voltar para Seleção de Diretriz
+                </button>
+            </div>
+
+            <!-- ================= TELA 1C: MULTIPLAYER LOBBY (HOST / PROJETOR) ================= -->
+            <div id="screenLobby" class="hidden space-y-6 text-center max-w-3xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-4">
+                    <div class="text-left font-mono">
+                        <span class="text-3xs text-purple-400 uppercase tracking-widest block">SISTEMA ATIVO</span>
+                        <h3 class="text-xl font-bold font-orbitron text-cyan-400">Sala de Simulação</h3>
+                    </div>
+                    <div class="bg-cyan-950/50 p-2 px-6 rounded-2xl border border-cyan-500/30 font-orbitron text-center">
+                        <span class="text-3xs text-cyan-300 block uppercase">Código PIN</span>
+                        <span id="lobbyPin" class="text-3xl font-black text-white tracking-widest">----</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between text-xs font-mono text-gray-400 px-2">
+                        <span>CADETES CONECTADOS: <strong id="lobbyCount" class="text-pink-500">0</strong></span>
+                        <span class="animate-pulse text-yellow-500">Aguardando lançamento...</span>
+                    </div>
+                    <!-- Lista de Jogadores Cadastrados no Lobby -->
+                    <div id="lobbyPlayers" class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-950/80 p-6 rounded-2xl min-h-[150px] max-h-[250px] overflow-y-auto font-mono text-sm">
+                        <div class="col-span-4 text-gray-600 text-xs italic py-8">Nenhum cadete se conectou ainda...</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+                    <button id="btnLaunchLobby" class="cyber-btn px-8 py-3.5 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-xs neon-glow-cyan w-full sm:w-auto">
+                        Lançar Missão (Iniciar)
+                    </button>
+                    <button id="btnCancelLobby" class="px-6 py-3.5 bg-red-950/20 text-red-400 border border-red-500/25 rounded-xl text-xs font-orbitron hover:bg-red-900/30 transition w-full sm:w-auto">
+                        Abortar Conexão
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= TELA 1D: MULTIPLAYER ESPERA (JOGADOR) ================= -->
+            <div id="screenWait" class="hidden text-center max-w-md mx-auto py-12 glass-panel p-8 rounded-3xl neon-glow-cyan space-y-6">
+                <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-cyan-950/30 border border-cyan-500/20 rounded-full">
+                    <i data-lucide="satellite-dish" class="w-10 h-10 text-cyan-400 animate-pulse"></i>
+                </div>
+                <h3 class="text-xl font-bold font-orbitron text-white">SINAL DE REDE SINCRONIZADO</h3>
+                <p id="waitMsg" class="text-xs font-mono text-gray-300 leading-relaxed">
+                    Cadete <strong id="waitNickname" class="text-pink-400">---</strong>, você está na sala <strong id="waitPin" class="text-cyan-400">---</strong>.<br><br>
+                    Aguardando o comandante iniciar a propulsão para os motores de dobra. Olhe para a tela principal!
+                </p>
+                <div class="text-3xs font-mono text-gray-600 uppercase tracking-widest">Sincronização de órbita ativa...</div>
+            </div>
+
+            <!-- ================= TELA 2: TELA DO JOGO (INDIVIDUAL & HOST) ================= -->
             <div id="screenGame" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
                 
                 <!-- Radar Espacial Esquerdo (Painel Dinâmico de Telemetria Gravitacional) -->
@@ -247,7 +351,7 @@
                     <div class="w-full flex justify-between items-center my-auto relative px-6" id="simArena">
                         <!-- Terra -->
                         <div id="gameEarth" class="relative z-10 transition-all duration-1000 flex flex-col items-center">
-                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-tr from-blue-600 via-teal-400 to-indigo-900 border border-blue-400/40 flex items-center justify-center text-3xl shadow-2xl relative overflow-hidden animate-bounce" style="animation-duration: 6s;">
+                            <div class="w-16 h-16 md:w-18 md:h-18 rounded-full bg-gradient-to-tr from-blue-600 via-teal-400 to-indigo-900 border border-blue-400/40 flex items-center justify-center text-3xl shadow-2xl relative overflow-hidden animate-bounce" style="animation-duration: 6s;">
                                 🌎
                                 <div class="absolute inset-0 bg-cyan-400/10 animate-pulse"></div>
                             </div>
@@ -259,13 +363,9 @@
                             <div class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 w-1/2 animate-ping" style="animation-duration: 2s;"></div>
                         </div>
 
-                        <!-- Buraco Negro Interativo (Renderizado Localmente por Canvas, aqui mantendo uma âncora visual) -->
+                        <!-- Buraco Negro Renderizado Localmente no canvas ou visualização dedicada de radar -->
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="blackhole-container scale-90">
-                                <div class="gravitational-lens"></div>
-                                <div class="accretion-disk"></div>
-                                <div class="singularity"></div>
-                            </div>
+                            <canvas id="blackholeCanvas" width="130" height="130" class="z-10"></canvas>
                             <span class="text-3xs font-mono text-pink-500 mt-2 font-bold tracking-widest uppercase bg-black/80 px-2 py-0.5 rounded border border-pink-500/20">Singularidade</span>
                         </div>
                     </div>
@@ -352,6 +452,73 @@
                     </div>
 
                 </div>
+            </div>
+
+            <!-- ================= TELA 2B: INTERFACE DE RESPOSTA DO JOGADOR (CLIENTE KAHOOT) ================= -->
+            <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4">
+                <div class="flex justify-between items-center font-mono text-2xs text-gray-400 px-2 bg-black/40 p-3 rounded-xl border border-gray-800">
+                    <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong></div>
+                    <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
+                </div>
+
+                <!-- Estado da Resposta -->
+                <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
+                    <i data-lucide="info" class="w-8 h-8 text-yellow-500 animate-pulse"></i>
+                    <p class="font-orbitron font-bold text-lg text-white">OLHE PARA O MONITOR DO HOST</p>
+                    <p class="text-xs font-mono text-gray-400">Escolha a resposta correspondente à cor ou símbolo abaixo quando a pergunta for liberada!</p>
+                </div>
+
+                <!-- Botões de Resposta Tipo Kahoot (Exibidos apenas quando a questão está aberta) -->
+                <div id="cliActionState" class="hidden grid grid-cols-2 gap-4">
+                    <button class="cli-ans-btn btn-red py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="0">
+                        <span class="text-5xl">▲</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">A</span>
+                    </button>
+                    <button class="cli-ans-btn btn-blue py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="1">
+                        <span class="text-5xl">⬢</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">B</span>
+                    </button>
+                    <button class="cli-ans-btn btn-yellow py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="2">
+                        <span class="text-5xl">■</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">C</span>
+                    </button>
+                    <button class="cli-ans-btn btn-green py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="3">
+                        <span class="text-5xl">●</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">D</span>
+                    </button>
+                </div>
+
+                <div id="cliFeedbackState" class="hidden glass-panel p-10 rounded-2xl text-center space-y-4">
+                    <div id="cliFeedbackIcon" class="mx-auto flex justify-center items-center w-16 h-16 rounded-full"></div>
+                    <h3 id="cliFeedbackTitle" class="text-2xl font-orbitron font-bold"></h3>
+                    <p id="cliFeedbackPoints" class="text-sm font-mono text-gray-400"></p>
+                </div>
+            </div>
+
+            <!-- ================= TELA 2C: PLACAR DE MULTIPLAYER APÓS CADA QUESTÃO (HOST / PROJETOR) ================= -->
+            <div id="screenLeaderboard" class="hidden text-center max-w-2xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple space-y-6">
+                <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">PONTUAÇÃO DE DEFEZA ATUAL</h2>
+                <p class="text-xs font-mono text-gray-400">Resultados parciais computados em tempo real de satélite.</p>
+
+                <!-- Tabela de Jogadores Ordenada -->
+                <div class="bg-zinc-950/80 p-5 rounded-2xl border border-purple-500/10 max-h-[300px] overflow-y-auto">
+                    <table class="w-full font-mono text-sm text-left">
+                        <thead>
+                            <tr class="border-b border-gray-900 text-purple-400 text-xs">
+                                <th class="py-2">POSIÇÃO</th>
+                                <th class="py-2">CADETE ESPACIAL</th>
+                                <th class="py-2 text-right">MARCADOR DO SCORE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardRows">
+                            <!-- Inserido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button id="btnNextQuestion" class="cyber-btn px-8 py-3.5 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-xs neon-glow-cyan">
+                    Avançar Próxima Pergunta
+                </button>
             </div>
 
             <!-- ================= TELA 3: TELA DE VITÓRIA CINEMÁTICA ================= -->
@@ -478,10 +645,38 @@
         <span>AGÊNCIA CÓSMICA DE ASTROFÍSICA</span>
     </footer>
 
-    <!-- LOGICA DO JOGO (JAVASCRIPT UNIFICADO) -->
-    <script>
-        // Inicialização de ícones Lucide
-        lucide.createIcons();
+    <!-- Firebase Imports e lógica modular (Regra Importante: CDN de Firebase estável) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configurações do Firebase dinâmicas ou fallback público mockado seguro para GitHub Pages local
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "",
+            authDomain: "event-horizon-mock.firebaseapp.com",
+            projectId: "event-horizon-mock",
+            storageBucket: "event-horizon-mock.appspot.com",
+            messagingSenderId: "12345678",
+            appId: "1:12345678:web:abcdef"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'event-horizon-supreme';
+
+        let app, auth, db;
+        let isFirebaseConnected = false;
+
+        // Tentar inicializar Firebase com tratamento robusto para não quebrar a simulação offline
+        try {
+            if (firebaseConfig.apiKey) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                isFirebaseConnected = true;
+            }
+        } catch(e) {
+            console.warn("Firebase não inicializado. Rodando em modo local resiliente.", e);
+        }
 
         // 1. O BANCO COMPLETO DE 100 PERGUNTAS SOBRE BURACOS NEGROS E ESPAÇO
         const BASE_QUESTIONS = [
@@ -491,7 +686,7 @@
             { q: "O que é o fenômeno da espaguetificação?", o: ["O cozimento de moléculas estelares", "O estiramento extremo de corpos devido às forças de maré gravitacionais", "A fusão de galáxias espirais vizinhas", "A evaporação térmica súbita de uma nebulosa gasosa"], a: 1, c: "As forças de maré perto da singularidade puxam as partes mais próximas com uma força infinitamente maior do que as partes mais distantes." },
             { q: "Qual o nome do buraco negro massivo que reside no coração da nossa Via Láctea?", o: ["Gargantua", "M87*", "Sagitário A*", "Cygnus X-1"], a: 2, c: "Designado Sagitário A* (ou Sgr A*), ele tem mais de 4 milhões de massas solares e foi fotografado em 2022." },
             { q: "Qual é a estrutura geométrica final no ponto central de um buraco negro de acordo com a física clássica?", o: ["Um disco plano de silício", "A Singularidade", "Uma esfera oca de neutrões", "Uma anã branca superaquecida"], a: 1, c: "Na singularidade, as equações matemáticas normais quebram, pois o espaço-tempo atinge densidade e curvatura infinitas." },
-            { q: "Que radiação teórica causaria a lenta evaporação dos buracos negros ao longo do tempo?", o: ["Radiação Cósmica de Fundo", "Radiação Hawking", "Raios Gama Relativísticos", "Luz Térmica Solar"], a: 1, c: "Proposed por Stephen Hawking em 1974, sugere que flutuações quânticas de vácuo perto do horizonte emitem partículas térmicas." },
+            { q: "Que radiação teórica causaria a lenta evaporação dos buracos negros ao longo do tempo?", o: ["Radiação Cósmica de Fundo", "Radiação Hawking", "Raios Gama Relativísticos", "Luz Térmica Solar"], a: 1, c: "Proposta por Stephen Hawking em 1974, sugere que flutuações quânticas de vácuo perto do horizonte emitem partículas térmicas." },
             { q: "Como foi tirada a primeira foto real da sombra de um buraco negro (M87*) em 2019?", o: ["Com o telescópio espacial Hubble", "Utilizando o Event Horizon Telescope (EHT)", "Com uma sonda interplanetária enviada pela NASA", "Com telescópios terrestres amadores normais"], a: 1, c: "O EHT utilizou uma técnica chamada interferometria para conectar antenas em todo o planeta, simulando um telescópio do tamanho da Terra." },
             { q: "Como nascem os buracos negros estelares?", o: ["Do choque violento entre planetas gigantes de gás", "Do colapso implacável de estrelas de alta massa no fim de suas vidas", "Pelo resfriamento natural de estrelas anãs vermelhas", "Através da colisão entre cometas congelados"], a: 1, c: "Estrelas supermassivas implodem sob a própria gravidade quando o combustível nuclear acaba, gerando supernovas." },
             { q: "O que é o disco de acreção que circunda muitos buracos negros?", o: ["Uma concha congelada de matéria escura", "Um anel rotativo superquente de gás, plasma e destroços", "O campo magnético gerado por estrelas distantes", "Uma nuvem de poeira de hélio inativo"], a: 1, c: "A matéria atinge frações da velocidade da luz devido à atração gravitacional, brilhando intensamente devido ao atrito extremo." },
@@ -507,8 +702,8 @@
             { q: "Qual o nome das distorções do tecido do espaço-tempo que se propagam em decorrência de fusões de buracos negros?", o: ["Ondas Gravitacionais", "Tempestades Magnéticas do Vácuo", "Ventos Relativísticos Solares", "Frentes de Choque Quânticas"], a: 0, c: "Confirmadas na prática em 2015 pelo observatório LIGO, viajam exatamente à velocidade da luz." }
         ];
 
-        // GERAÇÃO AUTOMÁTICA DAS RESTANTES DE 21 A 100 PARA GARANTIR RIGOROSAMENTE A META DE 100 PERGUNTAS DO TIPO QUIZ CIENTÍFICO
-        const TópicosEspaciais = [
+        // Autogerador para completar rigorosamente as 100 perguntas
+        const TopicosEspaciais = [
             "Mecânica Quântica", "Entropia Estelar", "Espaço-Tempo", "Supernovas do Tipo Ia", "Estrelas de Nêutrons", 
             "Mapeamento do Vácuo", "Métrica de Schwarzschild", "Teoria das Cordas", "Gravidade Quântica", "Precessão Relativística",
             "Métrica de Kerr", "Radiação de Hawking", "Horizonte de Eventos", "Singularidade de Vácuo", "Lente Gravitacional",
@@ -521,7 +716,7 @@
 
         while (BASE_QUESTIONS.length < 100) {
             const index = BASE_QUESTIONS.length;
-            const topico = TópicosEspaciais[index % TópicosEspaciais.length];
+            const topico = TopicosEspaciais[index % TopicosEspaciais.length];
             BASE_QUESTIONS.push({
                 q: `Como a teoria moderna interpreta o comportamento do conceito de "${topico}" em proximidade extrema a um buraco negro?`,
                 o: [
@@ -535,17 +730,14 @@
             });
         }
 
-        // 2. SISTEMA DE AUDIO SINTETIZADO AVANÇADO (WEB AUDIO API - CINEMÁTICO)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // 2. SISTEMA DE AUDIO SINTETIZADO AVANÇADO (WEB AUDIO API)
         let soundEnabled = true;
         let spaceDrone = null;
 
-        // Trilha sonora contínua (Ambient Space Drone)
         function startSpaceDrone() {
+            if (!soundEnabled || !isFirebaseConnected) return;
             try {
                 if (spaceDrone) return;
-                
-                // Synth profundo de baixa frequência
                 const osc1 = audioCtx.createOscillator();
                 const osc2 = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -553,13 +745,12 @@
                 const lfoGain = audioCtx.createGain();
 
                 osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(55, audioCtx.currentTime); // Nota La super grave (A1)
-                
+                osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
                 osc2.type = 'triangle';
-                osc2.frequency.setValueAtTime(55.5, audioCtx.currentTime); // Desafinado sutil para efeito chorus
+                osc2.frequency.setValueAtTime(55.5, audioCtx.currentTime);
 
                 lfo.type = 'sine';
-                lfo.frequency.setValueAtTime(0.08, audioCtx.currentTime); // Modulação muito lenta (0.08Hz)
+                lfo.frequency.setValueAtTime(0.08, audioCtx.currentTime);
                 lfoGain.gain.setValueAtTime(15, audioCtx.currentTime);
 
                 lfo.connect(lfoGain);
@@ -567,7 +758,6 @@
                 lfoGain.connect(osc2.frequency);
 
                 gain.gain.setValueAtTime(0.0, audioCtx.currentTime);
-                // Subida suave de volume
                 gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 3);
 
                 osc1.connect(gain);
@@ -579,9 +769,7 @@
                 lfo.start();
 
                 spaceDrone = { osc1, osc2, gain, lfo };
-            } catch (e) {
-                console.log("Erro ao iniciar áudio de fundo: ", e);
-            }
+            } catch(e) {}
         }
 
         function stopSpaceDrone() {
@@ -600,237 +788,223 @@
 
         function playSynthEffect(type) {
             if (!soundEnabled) return;
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
 
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            const filter = audioCtx.createBiquadFilter();
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
 
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'start') {
-                // Bipe ascendente espacial de inicialização
-                osc.type = 'sine';
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(100, audioCtx.currentTime);
-                filter.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
-                
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.5);
-                
-                gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.5);
-            } else if (type === 'correct') {
-                // Bipe estelar triplo ascendente rápido
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
-                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // G5
-                osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.24); // C6
-                
-                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.45);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.45);
-            } else if (type === 'incorrect') {
-                // Sirene grave de alarme descendente
-                osc.type = 'sawtooth';
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(800, audioCtx.currentTime);
-                filter.frequency.linearRampToValueAtTime(150, audioCtx.currentTime + 0.7);
-
-                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.7);
-
-                gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.7);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.7);
-            } else if (type === 'click') {
-                // Pequeno clique estático de relé futurista
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } else if (type === 'win') {
-                // Fanfarra orquestral futurista
-                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, i) => {
-                    const o = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    o.connect(g); g.connect(audioCtx.destination);
-                    o.type = 'triangle';
-                    o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
-                    g.gain.setValueAtTime(0.15, audioCtx.currentTime + i * 0.1);
-                    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.4);
-                    o.start(audioCtx.currentTime + i * 0.1);
-                    o.stop(audioCtx.currentTime + i * 0.1 + 0.4);
-                });
-            } else if (type === 'lose') {
-                // Som de implosão quântica descendente ultra-grave
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(15, audioCtx.currentTime + 1.8);
-                gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.8);
-            }
+                if (type === 'start') {
+                    osc.type = 'sine';
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(100, audioCtx.currentTime);
+                    filter.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.5);
+                    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+                } else if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08);
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.45);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.45);
+                } else if (type === 'incorrect') {
+                    osc.type = 'sawtooth';
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.7);
+                    gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.7);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.7);
+                } else if (type === 'click') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'win') {
+                    playSynthEffect('correct');
+                } else if (type === 'lose') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 1.5);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+                    osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+                }
+            } catch(e) {}
         }
 
-        // 3. RENDERIZADOR AVANÇADO DE ESPAÇO CINEMÁTICO (CANVAS)
-        const canvas = document.getElementById('spaceCanvas');
-        const ctx = canvas.getContext('2d');
-        let spaceElements = {
-            starsFar: [],
-            starsMid: [],
-            starsClose: [],
-            shootingStars: [],
-            nebulae: [],
-            debris: []
-        };
+        // 3. RENDERIZADOR AVANÇADO DE ESPAÇO E ESTRELAS (CANVAS PRINCIPAL)
+        const spaceCanvas = document.getElementById('spaceCanvas');
+        const sCtx = spaceCanvas.getContext('2d');
+        let spaceElements = { starsFar: [], starsMid: [], starsClose: [], shootingStars: [], nebulae: [] };
 
         function resizeSpaceCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initializeSpace();
-        }
-
-        function initializeSpace() {
+            spaceCanvas.width = window.innerWidth;
+            spaceCanvas.height = window.innerHeight;
             spaceElements.starsFar = [];
             spaceElements.starsMid = [];
             spaceElements.starsClose = [];
-            spaceElements.shootingStars = [];
+            const w = spaceCanvas.width, h = spaceCanvas.height;
+            for (let i = 0; i < 150; i++) spaceElements.starsFar.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 0.8 + 0.2, op: Math.random() });
+            for (let i = 0; i < 80; i++) spaceElements.starsMid.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 1.3 + 0.6, op: Math.random(), speed: Math.random() * 0.1 + 0.04 });
+            for (let i = 0; i < 30; i++) spaceElements.starsClose.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 2.0 + 1.0, op: Math.random(), speed: Math.random() * 0.25 + 0.1 });
             spaceElements.nebulae = [];
-            spaceElements.debris = [];
-
-            // Gerar estrelas com sistema de Parallax em 3 profundidades
-            const w = canvas.width, h = canvas.height;
-            const sizeMultiplier = Math.min(w, h) / 1000;
-
-            for (let i = 0; i < 180; i++) {
-                spaceElements.starsFar.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 0.9 + 0.2, op: Math.random() });
-            }
-            for (let i = 0; i < 100; i++) {
-                spaceElements.starsMid.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 1.5 + 0.8, op: Math.random(), speed: Math.random() * 0.1 + 0.05 });
-            }
-            for (let i = 0; i < 40; i++) {
-                spaceElements.starsClose.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 2.2 + 1.2, op: Math.random(), speed: Math.random() * 0.3 + 0.15 });
-            }
-
-            // Nebulosas simuladas por anéis de gradientes suaves
             for (let i = 0; i < 3; i++) {
                 spaceElements.nebulae.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    r: Math.random() * 250 + 200,
+                    x: Math.random() * w, y: Math.random() * h, r: Math.random() * 200 + 150,
                     color: i === 0 ? 'rgba(157, 0, 255, 0.04)' : i === 1 ? 'rgba(0, 240, 255, 0.03)' : 'rgba(255, 0, 119, 0.03)'
                 });
             }
         }
 
-        function triggerShootingStar() {
-            if (spaceElements.shootingStars.length < 2 && Math.random() < 0.006) {
-                spaceElements.shootingStars.push({
-                    x: Math.random() * canvas.width * 0.7,
-                    y: 0,
-                    length: Math.random() * 80 + 40,
-                    speed: Math.random() * 6 + 4,
-                    angle: Math.PI / 4 + (Math.random() * 0.2 - 0.1),
-                    opacity: 1.0
-                });
-            }
-        }
+        function animateSpace() {
+            sCtx.fillStyle = '#03010b';
+            sCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
 
-        function drawSpace() {
-            ctx.fillStyle = '#03010b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // 1. Desenhar Nebulosas de Fundo
+            // Nebulosas
             spaceElements.nebulae.forEach(neb => {
-                const grad = ctx.createRadialGradient(neb.x, neb.y, 0, neb.x, neb.y, neb.r);
+                const grad = sCtx.createRadialGradient(neb.x, neb.y, 0, neb.x, neb.y, neb.r);
                 grad.addColorStop(0, neb.color);
                 grad.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(neb.x, neb.y, neb.r, 0, Math.PI * 2);
-                ctx.fill();
+                sCtx.fillStyle = grad; sCtx.beginPath(); sCtx.arc(neb.x, neb.y, neb.r, 0, Math.PI * 2); sCtx.fill();
             });
 
-            // 2. Estrelas de Fundo (Far - Estáticas / Cintilantes)
-            ctx.fillStyle = '#ffffff';
-            spaceElements.starsFar.forEach(star => {
-                star.op += (Math.random() - 0.5) * 0.04;
-                if (star.op > 1) star.op = 1;
-                if (star.op < 0.1) star.op = 0.1;
-                ctx.globalAlpha = star.op;
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
+            // Estrelas distantes
+            sCtx.fillStyle = '#ffffff';
+            spaceElements.starsFar.forEach(s => {
+                s.op += (Math.random() - 0.5) * 0.03;
+                if (s.op > 1) s.op = 1; if (s.op < 0.1) s.op = 0.1;
+                sCtx.globalAlpha = s.op; sCtx.beginPath(); sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2); sCtx.fill();
             });
 
-            // 3. Estrelas Médias com Movimento Lento de Parallax Lateral
-            spaceElements.starsMid.forEach(star => {
-                star.x -= star.speed;
-                if (star.x < 0) star.x = canvas.width;
-                ctx.globalAlpha = star.op;
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
+            // Estrelas médias
+            spaceElements.starsMid.forEach(s => {
+                s.x -= s.speed; if (s.x < 0) s.x = spaceCanvas.width;
+                sCtx.globalAlpha = s.op; sCtx.beginPath(); sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2); sCtx.fill();
             });
 
-            // 4. Estrelas Próximas com Movimento Rápido
-            spaceElements.starsClose.forEach(star => {
-                star.x -= star.speed;
-                if (star.x < 0) star.x = canvas.width;
-                ctx.globalAlpha = star.op;
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
+            // Estrelas próximas
+            spaceElements.starsClose.forEach(s => {
+                s.x -= s.speed; if (s.x < 0) s.x = spaceCanvas.width;
+                sCtx.globalAlpha = s.op; sCtx.beginPath(); sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2); sCtx.fill();
             });
 
-            ctx.globalAlpha = 1.0;
-
-            // 5. Estrelas Cadentes
-            triggerShootingStar();
-            spaceElements.shootingStars.forEach((star, index) => {
+            // Estrelas Cadentes
+            if (spaceElements.shootingStars.length < 2 && Math.random() < 0.004) {
+                spaceElements.shootingStars.push({
+                    x: Math.random() * spaceCanvas.width * 0.8, y: 0,
+                    length: Math.random() * 60 + 30, speed: Math.random() * 5 + 3,
+                    angle: Math.PI / 4 + (Math.random() * 0.2 - 0.1), op: 1.0
+                });
+            }
+            spaceElements.shootingStars.forEach((star, idx) => {
                 star.x += star.speed * Math.cos(star.angle);
                 star.y += star.speed * Math.sin(star.angle);
-                star.opacity -= 0.015;
-
-                if (star.opacity <= 0 || star.x > canvas.width || star.y > canvas.height) {
-                    spaceElements.shootingStars.splice(index, 1);
+                star.op -= 0.015;
+                if (star.op <= 0 || star.x > spaceCanvas.width || star.y > spaceCanvas.height) {
+                    spaceElements.shootingStars.splice(idx, 1);
                 } else {
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(star.x, star.y);
-                    ctx.lineTo(
-                        star.x - star.length * Math.cos(star.angle),
-                        star.y - star.length * Math.sin(star.angle)
-                    );
-                    ctx.stroke();
+                    sCtx.strokeStyle = `rgba(255, 255, 255, ${star.op})`;
+                    sCtx.lineWidth = 1.2; sCtx.beginPath(); sCtx.moveTo(star.x, star.y);
+                    sCtx.lineTo(star.x - star.length * Math.cos(star.angle), star.y - star.length * Math.sin(star.angle));
+                    sCtx.stroke();
                 }
             });
 
-            requestAnimationFrame(drawSpace);
+            sCtx.globalAlpha = 1.0;
+            requestAnimationFrame(animateSpace);
         }
 
         window.addEventListener('resize', resizeSpaceCanvas);
         resizeSpaceCanvas();
-        requestAnimationFrame(drawSpace);
+        animateSpace();
 
-        // 4. VARIÁVEIS DE JOGO E CONTROLES DE SISTEMA
-        let shuffledPool = [];
-        let activeQuestions = [];
+        // 4. BURACO NEGRO CINEMÁTICO REALISTA (CANVAS DEDICADO)
+        const bhCanvas = document.getElementById('blackholeCanvas');
+        const bCtx = bhCanvas.getContext('2d');
+        let bhParticles = [];
+
+        function initBlackHoleParticles() {
+            bhParticles = [];
+            for (let i = 0; i < 70; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 35 + 25;
+                bhParticles.push({
+                    angle: angle,
+                    distance: distance,
+                    speed: (0.02 + Math.random() * 0.03) * (35 / distance),
+                    size: Math.random() * 1.5 + 0.5,
+                    color: Math.random() > 0.4 ? 'rgba(255, 90, 0, 0.8)' : 'rgba(255, 0, 120, 0.8)'
+                });
+            }
+        }
+
+        function drawBlackHole() {
+            const cx = bhCanvas.width / 2;
+            const cy = bhCanvas.height / 2;
+
+            bCtx.clearRect(0, 0, bhCanvas.width, bhCanvas.height);
+
+            // Lente Gravitacional (Einstein Ring) - Anel externo distorcido
+            const ringGrad = bCtx.createRadialGradient(cx, cy, 18, cx, cy, 45);
+            ringGrad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+            ringGrad.addColorStop(0.3, 'rgba(255, 115, 0, 0.35)');
+            ringGrad.addColorStop(0.6, 'rgba(157, 0, 255, 0.15)');
+            ringGrad.addColorStop(1, 'rgba(0, 240, 255, 0)');
+            bCtx.fillStyle = ringGrad; bCtx.beginPath(); bCtx.arc(cx, cy, 45, 0, Math.PI * 2); bCtx.fill();
+
+            // Partículas do Disco de Acreção
+            bhParticles.forEach(p => {
+                p.angle += p.speed;
+                // Efeito gravitacional: espirala para dentro se aproximando
+                p.distance -= 0.02;
+                if (p.distance < 15) {
+                    p.distance = Math.random() * 15 + 35;
+                }
+
+                // Efeito Interestelar de Brilho Relativístico (lado esquerdo mais brilhante)
+                const x = cx + Math.cos(p.angle) * p.distance * 1.3; // Eixo x alongado
+                const y = cy + Math.sin(p.angle) * p.distance * 0.4; // Eixo y achatado
+                
+                const factorLeft = (Math.cos(p.angle) < 0) ? 1.8 : 0.4; // Brilho maior ao se mover na esquerda
+                bCtx.fillStyle = p.color;
+                bCtx.globalAlpha = factorLeft * 0.5;
+                bCtx.beginPath(); bCtx.arc(x, y, p.size * factorLeft, 0, Math.PI * 2); bCtx.fill();
+            });
+
+            // Horizonte de Eventos Central (Sombra Absoluta)
+            bCtx.globalAlpha = 1.0;
+            bCtx.fillStyle = '#000000';
+            bCtx.beginPath(); bCtx.arc(cx, cy, 15, 0, Math.PI * 2); bCtx.fill();
+
+            // Glow central
+            const centralGlow = bCtx.createRadialGradient(cx, cy, 13, cx, cy, 16);
+            centralGlow.addColorStop(0, 'rgba(0,0,0,1)');
+            centralGlow.addColorStop(0.5, 'rgba(255,255,255,0.7)');
+            centralGlow.addColorStop(1, 'rgba(255,100,0,0)');
+            bCtx.strokeStyle = centralGlow;
+            bCtx.lineWidth = 2;
+            bCtx.beginPath(); bCtx.arc(cx, cy, 15, 0, Math.PI * 2); bCtx.stroke();
+
+            requestAnimationFrame(drawBlackHole);
+        }
+
+        initBlackHoleParticles();
+        drawBlackHole();
+
+        // 5. ENGENHARIA DE ESTADOS E MODO MULTIPLAYER (ESTILO KAHOOT)
+        let gameMode = 'solo'; // 'solo' | 'host' | 'client'
         let currentQuestionIndex = 0;
         let score = 0;
         let errors = 0;
@@ -841,40 +1015,58 @@
         let timerInterval;
         let timeLeft = 25;
         let selectedQuestionsCount = 15;
+        let activeQuestions = [];
+        let roomCode = null;
+        let roomUnsubscribe = null;
+        let playersUnsubscribe = null;
+        let myPlayerId = null;
+        let isHost = false;
 
-        // ELEMENTOS DA TELA
-        const screenStart = document.getElementById('screenStart');
-        const screenGame = document.getElementById('screenGame');
-        const screenVictory = document.getElementById('screenVictory');
-        const screenDefeat = document.getElementById('screenDefeat');
-        const screenStats = document.getElementById('screenStats');
+        // Elementos DOM Adicionais
+        const screenModeSelect = document.getElementById('screenModeSelect');
+        const screenMultiMenu = document.getElementById('screenMultiMenu');
+        const screenLobby = document.getElementById('screenLobby');
+        const screenWait = document.getElementById('screenWait');
+        const screenPlayerClient = document.getElementById('screenPlayerClient');
+        const screenLeaderboard = document.getElementById('screenLeaderboard');
 
-        const answersContainer = document.getElementById('answersContainer');
-        const lblQuestion = document.getElementById('lblQuestion');
-        const lblCuriosity = document.getElementById('lblCuriosity');
-        const curiosityBox = document.getElementById('curiosityBox');
+        const btnSelectSolo = document.getElementById('btnSelectSolo');
+        const btnSelectMulti = document.getElementById('btnSelectMulti');
+        const btnHostRoom = document.getElementById('btnHostRoom');
+        const btnJoinRoom = document.getElementById('btnJoinRoom');
+        const btnLaunchLobby = document.getElementById('btnLaunchLobby');
+        const btnCancelLobby = document.getElementById('btnCancelLobby');
+        const btnBackToModeSelect = document.getElementById('btnBackToModeSelect');
+        const inputPin = document.getElementById('inputPin');
+        const inputNickname = document.getElementById('inputNickname');
+        const lobbyPin = document.getElementById('lobbyPin');
+        const lobbyCount = document.getElementById('lobbyCount');
+        const lobbyPlayers = document.getElementById('lobbyPlayers');
+        const waitNickname = document.getElementById('waitNickname');
+        const waitPin = document.getElementById('waitPin');
+        const waitMsg = document.getElementById('waitMsg');
+        const cliName = document.getElementById('cliName');
+        const cliScore = document.getElementById('cliScore');
+        const cliWaitState = document.getElementById('cliWaitState');
+        const cliActionState = document.getElementById('cliActionState');
+        const cliFeedbackState = document.getElementById('cliFeedbackState');
+        const cliFeedbackIcon = document.getElementById('cliFeedbackIcon');
+        const cliFeedbackTitle = document.getElementById('cliFeedbackTitle');
+        const cliFeedbackPoints = document.getElementById('cliFeedbackPoints');
+        const leaderboardRows = document.getElementById('leaderboardRows');
+        const btnNextQuestion = document.getElementById('btnNextQuestion');
+        const systemStatus = document.getElementById('systemStatus');
 
-        const txtQuestionCounter = document.getElementById('txtQuestionCounter');
-        const txtScore = document.getElementById('txtScore');
-        const txtShield = document.getElementById('txtShield');
-        const barShield = document.getElementById('barShield');
-        const txtTimer = document.getElementById('txtTimer');
-        const txtCombo = document.getElementById('txtCombo');
-        const lblComboCrit = document.getElementById('lblComboCrit');
-        const txtDistance = document.getElementById('txtDistance');
-        const barDistance = document.getElementById('barDistance');
-        const gameEarth = document.getElementById('gameEarth');
+        // Inicialização de áudio e estatísticas
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        initRankingAndStats();
 
-        // Registro de Highscore e estatísticas via LocalStorage
         function initRankingAndStats() {
-            const storedHighscore = localStorage.getItem('spacewar_highscore') || 0;
-            const storedMaxCombo = localStorage.getItem('spacewar_maxcombo') || 0;
+            const high = localStorage.getItem('spacewar_highscore') || 0;
             const storedWins = localStorage.getItem('spacewar_wins') || 0;
-            wins = parseInt(storedWins);
-
-            document.getElementById('lblHighscore').textContent = storedHighscore;
-            document.getElementById('startWins').textContent = wins;
-            document.getElementById('startRank').textContent = calculateRank(parseInt(storedHighscore));
+            document.getElementById('lblHighscore').textContent = high;
+            document.getElementById('startWins').textContent = storedWins;
+            document.getElementById('startRank').textContent = calculateRank(parseInt(high));
         }
 
         function calculateRank(points) {
@@ -884,77 +1076,299 @@
             return "Cadete Espacial";
         }
 
-        function saveGameResults(finalScore, finalCombo) {
-            const currentHigh = parseInt(localStorage.getItem('spacewar_highscore') || 0);
-            const currentCombo = parseInt(localStorage.getItem('spacewar_maxcombo') || 0);
+        // --- SISTEMA DE SELEÇÃO DE MODOS ---
+        btnSelectSolo.addEventListener('click', () => {
+            playSynthEffect('click');
+            gameMode = 'solo';
+            isHost = false;
+            systemStatus.textContent = "MODO DE CONEXÃO: INDIVIDUAL";
+            startSoloMission();
+        });
 
-            if (finalScore > currentHigh) {
-                localStorage.setItem('spacewar_highscore', finalScore);
+        btnSelectMulti.addEventListener('click', () => {
+            playSynthEffect('click');
+            if (!isFirebaseConnected) {
+                alert("O Firebase não foi configurado ou inicializado. Para usar o modo Multiplayer, configure as variáveis de ambiente corretas ou o seu arquivo de credenciais do Firebase.");
+                return;
             }
-            if (finalCombo > currentCombo) {
-                localStorage.setItem('spacewar_maxcombo', finalCombo);
+            screenModeSelect.classList.add('hidden');
+            screenMultiMenu.classList.remove('hidden');
+        });
+
+        btnBackToModeSelect.addEventListener('click', () => {
+            playSynthEffect('click');
+            screenMultiMenu.classList.add('hidden');
+            screenModeSelect.classList.remove('hidden');
+        });
+
+        // --- AUTENTICAÇÃO ANÔNIMA PARA FIRESTORE (REGRA 3) ---
+        async function authenticateUser() {
+            if (!isFirebaseConnected) return null;
+            if (auth.currentUser) return auth.currentUser;
+            try {
+                // Tentar usar custom token se houver, senão anônimo
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                return auth.currentUser;
+            } catch(e) {
+                console.error("Erro na autenticação Firebase:", e);
+                return null;
             }
-            initRankingAndStats();
         }
 
-        // CONTROLADORES DE EVENTO DE CLIQUES NOS BOTÕES PRINCIPAIS
-        document.getElementById('btnStartMission').addEventListener('click', () => {
+        // --- HOST: CRIAR NOVA SALA KAHOOT ---
+        btnHostRoom.addEventListener('click', async () => {
             playSynthEffect('click');
-            startSpaceDrone(); // Inicializar Trilha Sonora Espacial Ativa
-            startMission();
+            const user = await authenticateUser();
+            if (!user) {
+                alert("Falha na autenticação estelar. Verifique sua conexão de rede.");
+                return;
+            }
+
+            // Gerar PIN de 4 dígitos aleatório
+            roomCode = Math.floor(1000 + Math.random() * 9000).toString();
+            isHost = true;
+            gameMode = 'host';
+            systemStatus.textContent = `MODO: HOST (PIN: ${roomCode})`;
+
+            // Criar documento da Sala no Firestore (Regra 1 - Caminho Estrito)
+            const roomDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
+            await setDoc(roomDocRef, {
+                hostId: user.uid,
+                status: 'lobby',
+                currentQuestionIndex: 0,
+                questionActive: false,
+                timer: 25,
+                timestamp: Date.now()
+            });
+
+            // Mudar tela
+            screenMultiMenu.classList.add('hidden');
+            screenLobby.classList.remove('hidden');
+            lobbyPin.textContent = roomCode;
+
+            // Escutar Jogadores Conectados à sala (Regra 2 - Sem Queries Complexas)
+            const playersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'room_players');
+            playersUnsubscribe = onSnapshot(playersColRef, (snapshot) => {
+                const list = [];
+                snapshot.forEach(d => {
+                    const data = d.data();
+                    if (data.roomId === roomCode) {
+                        list.push(data);
+                    }
+                });
+
+                // Atualizar UI do Lobby
+                lobbyCount.textContent = list.length;
+                if (list.length === 0) {
+                    lobbyPlayers.innerHTML = `<div class="col-span-4 text-gray-600 text-xs italic py-8">Aguardando sinal de tripulantes...</div>`;
+                } else {
+                    lobbyPlayers.innerHTML = list.map(p => `
+                        <div class="p-3 bg-zinc-900 border border-cyan-500/20 rounded-xl text-center neon-glow-cyan text-white font-bold animate-pulse">
+                            👨‍🚀 ${p.name}
+                        </div>
+                    `).join('');
+                }
+            }, (err) => console.error("Erro ao ler jogadores:", err));
         });
 
-        document.getElementById('btnOpenStats').addEventListener('click', () => {
+        // Abortar Lobby
+        btnCancelLobby.addEventListener('click', async () => {
             playSynthEffect('click');
-            showStatsScreen();
+            if (playersUnsubscribe) playersUnsubscribe();
+            if (roomCode) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode));
+            }
+            screenLobby.classList.add('hidden');
+            screenModeSelect.classList.remove('hidden');
         });
 
-        document.getElementById('btnBackToStart').addEventListener('click', () => {
+        // Launch Lobby - Iniciar Partida de Grupo
+        btnLaunchLobby.addEventListener('click', async () => {
             playSynthEffect('click');
-            showStartScreen();
-        });
+            if (parseInt(lobbyCount.textContent) === 0) {
+                alert("Você precisa de pelo menos 1 cadete conectado para lançar a missão!");
+                return;
+            }
 
-        document.getElementById('btnClearStats').addEventListener('click', () => {
-            playSynthEffect('click');
-            localStorage.clear();
-            initRankingAndStats();
-            showStartScreen();
-        });
+            // Mudar status da sala no Firestore para disparar nos clientes
+            const roomDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
+            await updateDoc(roomDocRef, {
+                status: 'playing',
+                currentQuestionIndex: 0,
+                questionActive: true
+            });
 
-        document.getElementById('btnRestartVictory').addEventListener('click', () => {
-            playSynthEffect('click');
-            showStartScreen();
-        });
+            if (playersUnsubscribe) playersUnsubscribe();
 
-        document.getElementById('btnRestartDefeat').addEventListener('click', () => {
-            playSynthEffect('click');
-            showStartScreen();
-        });
-
-        // 5. FLUXO PRINCIPAL DO QUIZ
-        function showStartScreen() {
-            screenVictory.classList.add('hidden');
-            screenDefeat.classList.add('hidden');
-            screenGame.classList.add('hidden');
-            screenStats.classList.add('hidden');
-            screenStart.classList.remove('hidden');
-            initRankingAndStats();
-        }
-
-        function showStatsScreen() {
-            screenStart.classList.add('hidden');
-            screenStats.classList.remove('hidden');
-
-            document.getElementById('statHighscore').textContent = localStorage.getItem('spacewar_highscore') || 0;
-            document.getElementById('statMaxCombo').textContent = `x${localStorage.getItem('spacewar_maxcombo') || 0}`;
-            document.getElementById('statWins').textContent = localStorage.getItem('spacewar_wins') || 0;
-            document.getElementById('statRank').textContent = calculateRank(parseInt(localStorage.getItem('spacewar_highscore') || 0));
-        }
-
-        function startMission() {
-            playSynthEffect('start');
+            // Sorteia questões e inicia fluxo de exibição (Host controla as telas)
             shuffledPool = shuffle([...BASE_QUESTIONS]);
-            activeQuestions = shuffledPool.slice(0, selectedQuestionsCount); // 15 selecionadas
+            activeQuestions = shuffledPool.slice(0, selectedQuestionsCount);
+
+            screenLobby.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            startSpaceDrone();
+
+            loadMultiplayerQuestion();
+        });
+
+        // --- JOGADOR: CONECTAR-SE A UMA SALA ---
+        btnJoinRoom.addEventListener('click', async () => {
+            playSynthEffect('click');
+            const pin = inputPin.value.trim();
+            const nick = inputNickname.value.trim();
+
+            if (pin.length !== 4 || isNaN(pin)) {
+                alert("O PIN de acesso deve conter exatamente 4 números.");
+                return;
+            }
+            if (nick.length < 2) {
+                alert("Nickname muito curto.");
+                return;
+            }
+
+            const user = await authenticateUser();
+            if (!user) {
+                alert("Falha de autenticação estelar.");
+                return;
+            }
+
+            myPlayerId = user.uid;
+
+            // Verificar se sala existe
+            const roomDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', pin);
+            const roomSnap = await getDoc(roomDocRef);
+
+            if (!roomSnap.exists()) {
+                alert("Simulação/Sala não encontrada. Verifique o PIN digitados.");
+                return;
+            }
+
+            const rData = roomSnap.data();
+            if (rData.status !== 'lobby') {
+                alert("Esta missão já decolou e não aceita mais novos tripulantes.");
+                return;
+            }
+
+            // Criar cadastro do jogador na lista global (Regra 1 - Caminho Estrito)
+            const playerDocId = `${pin}_${myPlayerId}`;
+            const playerDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'room_players', playerDocId);
+            await setDoc(playerDocRef, {
+                roomId: pin,
+                userId: myPlayerId,
+                name: nick,
+                score: 0,
+                streak: 0,
+                currentAnswer: -1,
+                lastAnswerCorrect: false,
+                timestamp: Date.now()
+            });
+
+            roomCode = pin;
+            gameMode = 'client';
+            systemStatus.textContent = `MODO: TRIPULANTE (SALA: ${pin})`;
+
+            waitNickname.textContent = nick;
+            waitPin.textContent = pin;
+
+            screenMultiMenu.classList.add('hidden');
+            screenWait.classList.remove('hidden');
+
+            // Escutar atualizações da sala para mudar de tela dinamicamente (Modo Kahoot Real)
+            roomUnsubscribe = onSnapshot(roomDocRef, (snap) => {
+                if (!snap.exists()) {
+                    alert("A sala foi fechada pelo comandante.");
+                    location.reload();
+                    return;
+                }
+                const data = snap.data();
+
+                if (data.status === 'playing') {
+                    screenWait.classList.add('hidden');
+                    screenPlayerClient.classList.remove('hidden');
+                    cliName.textContent = nick;
+
+                    if (data.questionActive) {
+                        // Pergunta aberta! Mostrar os 4 botões coloridos para responder
+                        cliWaitState.classList.add('hidden');
+                        cliFeedbackState.classList.add('hidden');
+                        cliActionState.classList.remove('hidden');
+                    } else {
+                        // Pergunta fechada! Aguardar o Host revelar a resposta
+                        cliActionState.classList.add('hidden');
+                        cliWaitState.classList.remove('hidden');
+                    }
+                } else if (data.status === 'leaderboard') {
+                    // Mostrar feedback individual da rodada anterior
+                    screenPlayerClient.classList.remove('hidden');
+                    cliActionState.classList.add('hidden');
+                    cliWaitState.classList.add('hidden');
+                    showClientFeedback(pin, myPlayerId);
+                } else if (data.status === 'podium') {
+                    // Fim de jogo, redirecionar para vitória ou derrota conforme classificação
+                    alert("Missão concluída! Verifique o painel do Host para ver os vencedores.");
+                    location.reload();
+                }
+            }, (err) => console.error("Erro ao escutar sala:", err));
+        });
+
+        // Enviar Resposta do Cliente
+        const cliButtons = document.querySelectorAll('.cli-ans-btn');
+        cliButtons.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const ansIdx = parseInt(btn.getAttribute('data-ans'));
+                playSynthEffect('click');
+
+                // Esconder botões imediatamente para evitar cliques duplos
+                cliActionState.classList.add('hidden');
+                cliWaitState.classList.remove('hidden');
+
+                const playerDocId = `${roomCode}_${myPlayerId}`;
+                const playerDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'room_players', playerDocId);
+                await updateDoc(playerDocRef, {
+                    currentAnswer: ansIdx,
+                    answerTime: timeLeft
+                });
+            });
+        });
+
+        async function showClientFeedback(pin, playerId) {
+            const playerDocId = `${pin}_${playerId}`;
+            const playerDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'room_players', playerDocId);
+            const pSnap = await getDoc(playerDocRef);
+
+            if (pSnap.exists()) {
+                const pData = pSnap.data();
+                cliScore.textContent = pData.score;
+
+                cliWaitState.classList.add('hidden');
+                cliActionState.classList.add('hidden');
+                cliFeedbackState.classList.remove('hidden');
+
+                if (pData.lastAnswerCorrect) {
+                    cliFeedbackIcon.className = "mx-auto flex justify-center items-center w-16 h-16 rounded-full bg-green-500/20 border border-green-500 text-green-400 text-3xl";
+                    cliFeedbackIcon.innerHTML = "✓";
+                    cliFeedbackTitle.className = "text-2xl font-orbitron font-bold text-green-400";
+                    cliFeedbackTitle.textContent = "RESPOSTA CORRETA!";
+                    cliFeedbackPoints.innerHTML = `Ganhou pontos extras pela velocidade!<br>Score Atual: <strong class="text-white">${pData.score}</strong>`;
+                } else {
+                    cliFeedbackIcon.className = "mx-auto flex justify-center items-center w-16 h-16 rounded-full bg-red-500/20 border border-red-500 text-red-500 text-3xl";
+                    cliFeedbackIcon.innerHTML = "✗";
+                    cliFeedbackTitle.className = "text-2xl font-orbitron font-bold text-red-500";
+                    cliFeedbackTitle.textContent = "INCORRETO";
+                    cliFeedbackPoints.innerHTML = `Sincronia perdida.<br>Score Atual: <strong class="text-white">${pData.score}</strong>`;
+                }
+            }
+        }
+
+
+        // --- FLUXO DE QUESTÕES INDIVIDUAL (SOLO) ---
+        function startSoloMission() {
+            shuffledPool = shuffle([...BASE_QUESTIONS]);
+            activeQuestions = shuffledPool.slice(0, selectedQuestionsCount);
 
             currentQuestionIndex = 0;
             score = 0;
@@ -963,16 +1377,14 @@
             maxComboReached = 0;
             timeLeft = 25;
 
-            // Resetar elemento da Terra
             gameEarth.className = "relative z-10 flex flex-col items-center transition-all duration-1000";
             gameEarth.style.transform = "translateX(0px)";
 
             updateHUD();
 
-            screenStart.classList.add('hidden');
-            screenVictory.classList.add('hidden');
-            screenDefeat.classList.add('hidden');
+            screenModeSelect.classList.add('hidden');
             screenGame.classList.remove('hidden');
+            startSpaceDrone();
 
             loadQuestion();
         }
@@ -980,15 +1392,10 @@
         function loadQuestion() {
             clearInterval(timerInterval);
             
-            // Dificuldade Progressiva: O tempo diminui conforme o jogador avança no quiz!
-            // Questões 1-5: 25s, Questões 6-10: 20s, Questões 11-15: 15s
-            if (currentQuestionIndex < 5) {
-                timeLeft = 25;
-            } else if (currentQuestionIndex < 10) {
-                timeLeft = 20;
-            } else {
-                timeLeft = 15;
-            }
+            // Dificuldade progressiva temporal
+            if (currentQuestionIndex < 5) timeLeft = 25;
+            else if (currentQuestionIndex < 10) timeLeft = 20;
+            else timeLeft = 15;
 
             txtTimer.textContent = `${timeLeft}s`;
             txtTimer.className = "text-lg font-bold text-yellow-500 font-orbitron";
@@ -996,11 +1403,7 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 txtTimer.textContent = `${timeLeft}s`;
-
-                if (timeLeft <= 5) {
-                    txtTimer.className = "text-lg font-bold text-red-500 font-orbitron animate-pulse";
-                }
-
+                if (timeLeft <= 5) txtTimer.className = "text-lg font-bold text-red-500 font-orbitron animate-pulse";
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     handleTimeout();
@@ -1011,24 +1414,19 @@
             lblQuestion.textContent = activeQ.q;
             lblCuriosity.textContent = activeQ.c;
 
-            // Transição visual com Fade In na caixa de curiosidade
             curiosityBox.classList.add('opacity-0');
-            setTimeout(() => {
-                curiosityBox.classList.remove('opacity-0');
-            }, 100);
+            setTimeout(() => curiosityBox.classList.remove('opacity-0'), 100);
 
-            // Gerar as 4 alternativas de Respostas Estilizadas
+            // Gerar botões
             answersContainer.innerHTML = '';
             activeQ.o.forEach((option, index) => {
                 const btn = document.createElement('button');
                 btn.className = "w-full text-left p-4 rounded-2xl bg-slate-950/70 hover:bg-slate-900 border border-cyan-950 hover:border-cyan-400 font-mono text-xs md:text-sm transition-all duration-300 flex items-start space-x-3 transform hover:-translate-y-0.5";
-                
-                const letter = String.fromCharCode(65 + index); // A, B, C, D
+                const letter = String.fromCharCode(65 + index);
                 btn.innerHTML = `
                     <span class="inline-flex items-center justify-center w-5.5 h-5.5 rounded-lg bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-bold text-xs shrink-0">${letter}</span>
                     <span class="text-gray-200 mt-0.5">${option}</span>
                 `;
-
                 btn.addEventListener('click', () => {
                     playSynthEffect('click');
                     selectAnswer(index, btn);
@@ -1043,63 +1441,39 @@
             clearInterval(timerInterval);
             const activeQ = activeQuestions[currentQuestionIndex];
             const buttons = answersContainer.querySelectorAll('button');
-
             buttons.forEach(b => b.disabled = true);
 
             if (selectedIndex === activeQ.a) {
-                // ACERTOU
                 playSynthEffect('correct');
                 combo++;
-                if (combo > maxComboReached) {
-                    maxComboReached = combo;
-                }
-
-                // Sistema de Multiplicador Dinâmico de Pontos
+                if (combo > maxComboReached) maxComboReached = combo;
                 const multiplier = 1 + (combo * 0.2);
-                const questionPoints = Math.round((100 + timeLeft * 3) * multiplier);
-                score += questionPoints;
-                
+                score += Math.round((100 + timeLeft * 3) * multiplier);
                 txtScore.textContent = padZero(score);
 
-                // Feedback visual do botão
                 buttonElement.className = "w-full text-left p-4 rounded-2xl bg-green-950/40 border border-green-400 font-mono text-xs md:text-sm flex items-start space-x-3 neon-glow-cyan";
                 buttonElement.querySelector('span').className = "inline-flex items-center justify-center w-5.5 h-5.5 rounded-lg bg-green-500 text-black font-bold text-xs shrink-0";
-
-                // Se houver um combo alto, mostra o "ACERTO CRÍTICO" na tela
-                if (combo >= 3) {
-                    showComboCrit();
-                }
-
+                if (combo >= 3) showComboCrit();
                 animateEarthBounceBack();
             } else {
-                // ERROU
                 playSynthEffect('incorrect');
                 errors++;
-                combo = 0; // Perde o Combo acumulado
+                combo = 0;
                 triggerScreenShake();
-
                 buttonElement.className = "w-full text-left p-4 rounded-2xl bg-red-950/40 border border-red-500 font-mono text-xs md:text-sm flex items-start space-x-3 neon-glow-magenta";
                 buttonElement.querySelector('span').className = "inline-flex items-center justify-center w-5.5 h-5.5 rounded-lg bg-red-600 text-white font-bold text-xs shrink-0";
-
-                // Destacar a alternativa correta
                 buttons[activeQ.a].classList.add('border-green-500', 'bg-green-950/20');
-
                 animateEarthFallForward();
             }
 
             updateHUD();
 
-            // Esperar 4 segundos (Tempo ideal para ler a explicação/curiosidade fascinante da caixa inferior)
             setTimeout(() => {
-                if (errors >= maxErrors) {
-                    endGame(false);
-                } else {
+                if (errors >= maxErrors) endGame(false);
+                else {
                     currentQuestionIndex++;
-                    if (currentQuestionIndex < selectedQuestionsCount) {
-                        loadQuestion();
-                    } else {
-                        endGame(true);
-                    }
+                    if (currentQuestionIndex < selectedQuestionsCount) loadQuestion();
+                    else endGame(true);
                 }
             }, 4000);
         }
@@ -1121,20 +1495,175 @@
             lblQuestion.innerHTML = `<span class="text-red-500 font-bold font-orbitron">EFEITO SENSOR DE INSTABILIDADE!</span> O tempo de resposta expirou. Escudos sofreram danos!`;
 
             setTimeout(() => {
-                if (errors >= maxErrors) {
-                    endGame(false);
-                } else {
+                if (errors >= maxErrors) endGame(false);
+                else {
                     currentQuestionIndex++;
-                    if (currentQuestionIndex < selectedQuestionsCount) {
-                        loadQuestion();
-                    } else {
-                        endGame(true);
-                    }
+                    if (currentQuestionIndex < selectedQuestionsCount) loadQuestion();
+                    else endGame(true);
                 }
             }, 4000);
         }
 
-        // Animação de Combo Crítico
+
+        // --- FLUXO DE QUESTÕES COLETIVAS (HOST) ---
+        function loadMultiplayerQuestion() {
+            clearInterval(timerInterval);
+            
+            // Ativar recebimento de respostas nos clientes
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), {
+                questionActive: true,
+                currentQuestionIndex: currentQuestionIndex
+            });
+
+            timeLeft = 25;
+            txtTimer.textContent = `${timeLeft}s`;
+
+            timerInterval = setInterval(async () => {
+                timeLeft--;
+                txtTimer.textContent = `${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    await evaluateMultiplayerAnswers();
+                }
+            }, 1000);
+
+            const activeQ = activeQuestions[currentQuestionIndex];
+            lblQuestion.textContent = activeQ.q;
+            lblCuriosity.textContent = activeQ.c;
+
+            // Mostrar as alternativas para a projeção do Host
+            answersContainer.innerHTML = '';
+            activeQ.o.forEach((option, index) => {
+                const colors = ["btn-red", "btn-blue", "btn-yellow", "btn-green"];
+                const icons = ["▲", "⬢", "■", "●"];
+                const div = document.createElement('div');
+                div.className = `w-full text-left p-4 rounded-2xl ${colors[index]} font-mono text-xs md:text-sm flex items-start space-x-3`;
+                div.innerHTML = `
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-white font-bold text-sm shrink-0">${icons[index]}</span>
+                    <span class="text-white mt-0.5">${option}</span>
+                `;
+                answersContainer.appendChild(div);
+            });
+
+            txtQuestionCounter.textContent = `${padZero(currentQuestionIndex + 1)} / ${padZero(selectedQuestionsCount)}`;
+        }
+
+        // Processamento das respostas enviadas por todos os jogadores conectados
+        async function evaluateMultiplayerAnswers() {
+            // Fechar recebimento de respostas
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), {
+                questionActive: false
+            });
+
+            const activeQ = activeQuestions[currentQuestionIndex];
+
+            // Ler todos os jogadores para calcular suas notas parciais (Regra 2 - Sem Queries Complexas)
+            const playersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'room_players');
+            const snap = await getDocs(playersColRef);
+
+            let anyError = false;
+
+            for (const d of snap.docs) {
+                const pData = d.data();
+                if (pData.roomId === roomCode) {
+                    let earned = 0;
+                    let isCorrect = pData.currentAnswer === activeQ.a;
+
+                    if (isCorrect) {
+                        const baseScore = 100;
+                        const speedBonus = pData.answerTime ? pData.answerTime * 4 : 0;
+                        earned = Math.round(baseScore + speedBonus);
+                    } else {
+                        anyError = true;
+                    }
+
+                    // Atualizar placar de cada jogador
+                    const playerDocId = `${roomCode}_${pData.userId}`;
+                    const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'room_players', playerDocId);
+                    await updateDoc(pRef, {
+                        score: pData.score + earned,
+                        lastAnswerCorrect: isCorrect,
+                        currentAnswer: -1 // Resetar resposta
+                    });
+                }
+            }
+
+            // Aplicar dano visual ao planeta do Host se houver erros na equipe
+            if (anyError) {
+                errors++;
+                triggerScreenShake();
+                animateEarthFallForward();
+            } else {
+                animateEarthBounceBack();
+            }
+
+            updateHUD();
+
+            // Mudar status para placar parcial
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), {
+                status: 'leaderboard'
+            });
+
+            showLeaderboardScreen();
+        }
+
+        // Exibir tela de classificação
+        async function showLeaderboardScreen() {
+            screenGame.classList.add('hidden');
+            screenLeaderboard.classList.remove('hidden');
+
+            // Ler pontuação final dos jogadores ordenados localmente (Regra 2)
+            const playersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'room_players');
+            const snap = await getDocs(playersColRef);
+            const list = [];
+            snap.forEach(d => {
+                const data = d.data();
+                if (data.roomId === roomCode) {
+                    list.push(data);
+                }
+            });
+
+            // Ordenar em JS
+            list.sort((a, b) => b.score - a.score);
+
+            leaderboardRows.innerHTML = list.map((p, idx) => `
+                <tr class="border-b border-gray-900 text-white">
+                    <td class="py-3 font-bold text-cyan-400">#${idx + 1}</td>
+                    <td class="py-3">👨‍🚀 ${p.name}</td>
+                    <td class="py-3 text-right font-orbitron font-bold text-green-400">${p.score} pts</td>
+                </tr>
+            `).join('');
+
+            // Verificar fim do jogo
+            if (errors >= maxErrors || currentQuestionIndex >= selectedQuestionsCount - 1) {
+                btnNextQuestion.textContent = "Finalizar Missão (Pódio)";
+            } else {
+                btnNextQuestion.textContent = "Avançar Próxima Pergunta";
+            }
+        }
+
+        // Clique no botão Avançar do Placar do Host
+        btnNextQuestion.addEventListener('click', async () => {
+            playSynthEffect('click');
+            if (errors >= maxErrors) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), { status: 'podium' });
+                screenLeaderboard.classList.add('hidden');
+                endGame(false);
+            } else if (currentQuestionIndex >= selectedQuestionsCount - 1) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), { status: 'podium' });
+                screenLeaderboard.classList.add('hidden');
+                endGame(true);
+            } else {
+                currentQuestionIndex++;
+                screenLeaderboard.classList.add('hidden');
+                screenGame.classList.remove('hidden');
+                loadMultiplayerQuestion();
+            }
+        });
+
+
+        // --- ANIMAÇÕES E EXIBIÇÕES DO HUD ---
         function showComboCrit() {
             lblComboCrit.classList.remove('opacity-0');
             lblComboCrit.classList.add('opacity-100', 'scale-110');
@@ -1144,36 +1673,25 @@
             }, 1000);
         }
 
-        // Tremer a janela operacional
         function triggerScreenShake() {
             const win = document.getElementById('gameWindow');
             win.classList.add('shake-active');
-            setTimeout(() => {
-                win.classList.remove('shake-active');
-            }, 600);
+            setTimeout(() => win.classList.remove('shake-active'), 600);
         }
 
-        // Feedback da Terra empurrada ao acertar
         function animateEarthBounceBack() {
-            const currentX = errors * 48; // Posição atual baseada em erros
+            const currentX = errors * 48;
             gameEarth.style.transform = `translateX(${currentX - 15}px) scale(1.15)`;
-            setTimeout(() => {
-                gameEarth.style.transform = `translateX(${currentX}px) scale(1.0)`;
-            }, 300);
+            setTimeout(() => { gameEarth.style.transform = `translateX(${currentX}px) scale(1.0)`; }, 300);
         }
 
-        // Feedback da Terra puxada ao errar
         function animateEarthFallForward() {
             const nextX = errors * 48;
             gameEarth.style.transform = `translateX(${nextX + 20}px) scale(0.9)`;
-            setTimeout(() => {
-                gameEarth.style.transform = `translateX(${nextX}px) scale(1.0)`;
-            }, 300);
+            setTimeout(() => { gameEarth.style.transform = `translateX(${nextX}px) scale(1.0)`; }, 300);
         }
 
-        // Atualizar todas as barras, dados e estados do Cockpit
         function updateHUD() {
-            // Escudos da nave
             const shieldPct = Math.max(0, 100 - (errors * 33.34));
             txtShield.textContent = `${Math.ceil(shieldPct)}%`;
             barShield.style.width = `${shieldPct}%`;
@@ -1186,51 +1704,38 @@
                 barShield.className = "absolute bottom-0 left-0 h-1 bg-pink-500 transition-all duration-300";
             }
 
-            // Distância em KM
             const distance = Math.max(0, 120000 - (errors * 40000));
             txtDistance.textContent = `${distance.toLocaleString('pt-BR')} KM`;
-            
-            const distancePct = (distance / 120000) * 100;
-            barDistance.style.width = `${distancePct}%`;
+            barDistance.style.width = `${(distance / 120000) * 100}%`;
 
-            // Relação de combos na tela
             const multiplierValue = 1 + (combo * 0.2);
             txtCombo.textContent = `x${multiplierValue.toFixed(1)}`;
 
-            // Movimentação tática do planeta de acordo com o nível de erro
             const positionOffset = errors * 48;
             gameEarth.style.transform = `translateX(${positionOffset}px)`;
         }
 
-        // 6. ENCERRAMENTO DA SIMULAÇÃO (FIM DE JOGO)
         function endGame(isVictory) {
             clearInterval(timerInterval);
             screenGame.classList.add('hidden');
-            stopSpaceDrone(); // Encerrar drone sonoro
+            stopSpaceDrone();
 
             if (isVictory) {
                 playSynthEffect('win');
                 screenVictory.classList.remove('hidden');
 
-                // Atualizar dados de vitórias acumuladas
                 const newWins = parseInt(localStorage.getItem('spacewar_wins') || 0) + 1;
                 localStorage.setItem('spacewar_wins', newWins);
 
                 document.getElementById('vFinalScore').textContent = padZero(score);
                 document.getElementById('vMaxCombo').textContent = `x${(1 + (maxComboReached * 0.2)).toFixed(1)}`;
-                
-                const finalShieldPct = Math.max(0, 100 - (errors * 33.34));
-                document.getElementById('vShield').textContent = `${Math.ceil(finalShieldPct)}%`;
-                
-                const earnedRank = calculateRank(score);
-                document.getElementById('vRank').textContent = earnedRank;
+                document.getElementById('vShield').textContent = `${Math.ceil(Math.max(0, 100 - (errors * 33.34)))}%`;
+                document.getElementById('vRank').textContent = calculateRank(score);
 
                 saveGameResults(score, maxComboReached);
             } else {
-                // Animação dramática de desintegração gravitacional
                 screenGame.classList.remove('hidden');
                 gameEarth.className = "relative z-10 succumb-earth";
-
                 playSynthEffect('lose');
 
                 setTimeout(() => {
@@ -1242,21 +1747,48 @@
             }
         }
 
-        // Helper de formatação simples
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+        function saveGameResults(finalScore, finalCombo) {
+            const currentHigh = parseInt(localStorage.getItem('spacewar_highscore') || 0);
+            const currentCombo = parseInt(localStorage.getItem('spacewar_maxcombo') || 0);
+            if (finalScore > currentHigh) localStorage.setItem('spacewar_highscore', finalScore);
+            if (finalCombo > currentCombo) localStorage.setItem('spacewar_maxcombo', finalCombo);
+            initRankingAndStats();
         }
 
-        function padZero(num) {
-            return num < 10 ? `0${num}` : num;
+        // Outros botões de menu e reset
+        document.getElementById('btnRestartVictory').addEventListener('click', () => { playSynthEffect('click'); resetToMenu(); });
+        document.getElementById('btnRestartDefeat').addEventListener('click', () => { playSynthEffect('click'); resetToMenu(); });
+
+        function resetToMenu() {
+            // Cancelar subscriptions ativas
+            if (roomUnsubscribe) roomUnsubscribe();
+            if (playersUnsubscribe) playersUnsubscribe();
+            
+            screenVictory.classList.add('hidden');
+            screenDefeat.classList.add('hidden');
+            screenGame.classList.add('hidden');
+            screenWait.classList.add('hidden');
+            screenPlayerClient.classList.add('hidden');
+            screenLeaderboard.classList.add('hidden');
+            screenLobby.classList.add('hidden');
+            screenMultiMenu.classList.add('hidden');
+            screenModeSelect.classList.remove('hidden');
+
+            isHost = false;
+            roomCode = null;
+            systemStatus.textContent = "MODO DE CONEXÃO: INDIVIDUAL";
         }
 
-        // Inicializar configurações históricas no carregamento inicial da interface
-        initRankingAndStats();
+        // Controladores de interface de som
+        document.getElementById('soundToggle').addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').setAttribute('data-lucide', soundEnabled ? 'volume-2' : 'volume-x');
+            document.getElementById('soundText').textContent = soundEnabled ? 'SOM LIGADO' : 'SOM MUTADO';
+            if (!soundEnabled) stopSpaceDrone();
+            lucide.createIcons();
+        });
+
+        function padZero(num) { return num < 10 ? `0${num}` : num; }
     </script>
 </body>
 </html>
