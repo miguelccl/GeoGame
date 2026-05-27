@@ -1,2 +1,0 @@
-# GeoGame
-trbalho de Geografia
