@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missão Horizonte de Eventos: Edição Suprema</title>
-    
-    <!-- Bibliotecas Externas -->
+    <title>Missão Horizonte de Eventos: Edição Suprema & Multiplayer</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/umd/supabase.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
 
-        /* =========================================
-           SISTEMA DE DESIGN E VARIÁVEIS (TOKENS)
-           ========================================= */
         :root {
             --space-bg: #03010a;
             --neon-cyan: #00f0ff;
@@ -35,62 +30,53 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            user-select: none;
+            justify-content: space-between;
         }
 
-        /* Tipografia Personalizada */
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        h1, h2, h3, .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
 
-        /* =========================================
-           COMPONENTES VISUAIS (GLASS & NEON)
-           ========================================= */
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Efeito de Vidro Futurista (Glassmorphism) */
         .glass-panel {
             background: rgba(6, 4, 16, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
             border: 1px solid rgba(0, 240, 255, 0.15);
         }
 
-        .neon-glow-cyan { box-shadow: 0 0 25px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1); border-color: var(--neon-cyan); }
-        .neon-glow-purple { box-shadow: 0 0 25px rgba(157, 0, 255, 0.25), inset 0 0 15px rgba(157, 0, 255, 0.1); border-color: var(--neon-purple); }
-        .neon-glow-red { box-shadow: 0 0 25px rgba(255, 0, 0, 0.25), inset 0 0 15px rgba(255, 0, 0, 0.1); border-color: red; }
+        .glass-panel-heavy {
+            background: rgba(3, 2, 8, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 0, 119, 0.2);
+        }
 
+        /* Linhas Neon de Alta Fidelidade */
+        .neon-glow-cyan {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+        }
+
+        .neon-glow-magenta {
+            box-shadow: 0 0 25px rgba(255, 0, 119, 0.25), inset 0 0 15px rgba(255, 0, 119, 0.1);
+            border: 1px solid var(--neon-magenta);
+        }
+
+        .neon-glow-purple {
+            box-shadow: 0 0 25px rgba(157, 0, 255, 0.25), inset 0 0 15px rgba(157, 0, 255, 0.1);
+            border: 1px solid var(--neon-purple);
+        }
+
+        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 15px rgba(0, 240, 255, 0.3); }
         .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 119, 0.8), 0 0 15px rgba(255, 0, 119, 0.3); }
+        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.8); }
+        .neon-text-yellow { text-shadow: 0 0 8px rgba(255, 183, 0, 0.8); }
 
-        /* Componentes de Botão Otimizados */
-        .cyber-btn {
-            position: relative;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden;
-        }
-        .cyber-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-        .cyber-btn:hover {
-            background: rgba(0, 240, 255, 0.15); border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); transform: translateY(-2px);
-        }
-        .cyber-btn:hover::before { left: 100%; }
-        .cyber-btn:active { transform: translateY(1px); }
-
-        /* Cores Kahoot Refatoradas */
-        .ans-btn { transition: all 0.2s; border: 1.5px solid transparent; }
-        .btn-red { background: rgba(229, 57, 53, 0.15); border-color: #e53935; }
-        .btn-red:hover:not(:disabled) { background: rgba(229, 57, 53, 0.3); box-shadow: 0 0 15px rgba(229, 57, 53, 0.4); }
-        .btn-blue { background: rgba(30, 136, 229, 0.15); border-color: #1e88e5; }
-        .btn-blue:hover:not(:disabled) { background: rgba(30, 136, 229, 0.3); box-shadow: 0 0 15px rgba(30, 136, 229, 0.4); }
-        .btn-yellow { background: rgba(251, 192, 45, 0.15); border-color: #fbc02d; }
-        .btn-yellow:hover:not(:disabled) { background: rgba(251, 192, 45, 0.3); box-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
-        .btn-green { background: rgba(67, 160, 71, 0.15); border-color: #43a047; }
-        .btn-green:hover:not(:disabled) { background: rgba(67, 160, 71, 0.3); box-shadow: 0 0 15px rgba(67, 160, 71, 0.4); }
-
-        /* =========================================
-           EFEITOS E ANIMAÇÕES
-           ========================================= */
+        /* Animações e Distorções do Cockpit */
         @keyframes shake {
             0%, 100% { transform: translate(0, 0) scale(1); }
             10% { transform: translate(-8px, -4px) rotate(-1deg) scale(0.99); }
@@ -99,906 +85,1068 @@
             70% { transform: translate(8px, 3px) rotate(0.5deg); }
             90% { transform: translate(-4px, 1px) rotate(-0.3deg); }
         }
-        .shake-active { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 
+        .shake-active {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Efeito de Scanline Avançado */
         .crt-scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 25, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
-            background-size: 100% 5px; z-index: 9999; pointer-events: none; opacity: 0.15;
+            background-size: 100% 5px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.2;
         }
 
-        .screen-transition { transition: opacity 0.3s ease, transform 0.3s ease; }
-        .hidden-screen { opacity: 0; pointer-events: none; position: absolute; transform: scale(0.95); visibility: hidden; }
-        .active-screen { opacity: 1; pointer-events: auto; position: relative; transform: scale(1); visibility: visible; }
+        /* Efeitos de Transição Holográfica */
+        .holo-transition {
+            transition: opacity 0.4s ease-in-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
+        /* Botão Cibernético Ultra */
+        .cyber-btn {
+            position: relative;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+        }
+
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cyber-btn:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .cyber-btn:hover::before {
+            left: 100%;
+        }
+
+        .cyber-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Efeito de Sucção no Buraco Negro */
         .succumb-earth {
-            transition: all 2s ease-in;
-            transform: scale(0.01) translate(200px, 0px) rotate(720deg) !important;
-            opacity: 0; filter: blur(5px);
+            transition: all 2.5s cubic-bezier(0.7, -0.3, 0.9, 0.3);
+            transform: scale(0.01) translate(300px, 0px) rotate(1080deg) !important;
+            opacity: 0;
+            filter: blur(8px);
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
-        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 4px; }
+        /* Estilo para Scrollbars customizados */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(3, 1, 10, 0.95);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 2px;
+        }
+
+        /* Cores dos botões de resposta estilo Kahoot */
+        .btn-red { background: rgba(229, 57, 53, 0.15); border: 1.5px solid #e53935; }
+        .btn-red:hover { background: rgba(229, 57, 53, 0.3); box-shadow: 0 0 15px rgba(229, 57, 53, 0.4); }
+        .btn-blue { background: rgba(30, 136, 229, 0.15); border: 1.5px solid #1e88e5; }
+        .btn-blue:hover { background: rgba(30, 136, 229, 0.3); box-shadow: 0 0 15px rgba(30, 136, 229, 0.4); }
+        .btn-yellow { background: rgba(251, 192, 45, 0.15); border: 1.5px solid #fbc02d; }
+        .btn-yellow:hover { background: rgba(251, 192, 45, 0.3); box-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
+        .btn-green { background: rgba(67, 160, 71, 0.15); border: 1.5px solid #43a047; }
+        .btn-green:hover { background: rgba(67, 160, 71, 0.3); box-shadow: 0 0 15px rgba(67, 160, 71, 0.4); }
     </style>
 </head>
-<body class="relative">
-
-    <!-- Efeitos Globais -->
+<body class="min-h-screen flex flex-col justify-between relative select-none">
+    
+    <!-- Filtro de monitor CRT retro-futurista -->
     <div class="crt-scanlines"></div>
-    <canvas id="spaceCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
 
-    <!-- HEADER / HUD GLOBAL -->
-    <header class="w-full p-4 border-b border-cyan-500/20 bg-black/60 backdrop-blur-md z-20 flex justify-between items-center font-rajdhani sticky top-0">
+    <!-- Canvas para renderização física do espaço, nebulosas, estrelas cadentes e buraco negro simulado -->
+    <canvas id="spaceCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- CABEÇALHO DO HUD HOLOGRÁFICO -->
+    <header class="w-full p-4 border-b border-cyan-500/20 bg-black/60 backdrop-blur-md z-10 flex justify-between items-center font-rajdhani">
         <div class="flex items-center space-x-3">
             <div class="relative flex items-center justify-center w-8 h-8">
-                <i data-lucide="compass" class="text-cyan-400 absolute animate-[spin_10s_linear_infinite]"></i>
-                <i data-lucide="aperture" class="text-pink-500 absolute animate-[spin_5s_linear_infinite_reverse]"></i>
+                <i data-lucide="compass" class="text-cyan-400 animate-spin absolute" style="animation-duration: 25s; width: 1.25rem; height: 1.25rem;"></i>
+                <i data-lucide="aperture" class="text-pink-500 animate-spin" style="animation-duration: 8s; width: 1.25rem; height: 1.25rem;"></i>
             </div>
             <div>
-                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">SISTEMA ORBITAL v7.1</span>
-                <span id="ui-sys-status" class="text-[9px] text-purple-400 uppercase tracking-widest font-mono">AGUARDANDO DIRETRIZ</span>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v6.0</span>
+                <span id="systemStatus" class="text-[9px] text-purple-400 uppercase tracking-widest font-mono">Modo de Conexão: INDIVIDUAL</span>
             </div>
         </div>
+
         <div class="flex items-center space-x-6">
-            <button id="btn-toggle-sound" class="text-gray-400 hover:text-white transition flex items-center space-x-2">
-                <i id="icon-sound" data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i>
-                <span id="txt-sound" class="text-[10px] font-mono hidden sm:block">SOM ON</span>
+            <!-- Estatística Rápida LocalStorage -->
+            <div class="hidden md:flex items-center space-x-2 border-l border-cyan-500/20 pl-4">
+                <i data-lucide="trophy" class="text-yellow-400 w-4 h-4"></i>
+                <span class="text-[10px] font-mono text-gray-400">MAIOR PLACAR: <strong id="lblHighscore" class="text-yellow-400">0</strong></span>
+            </div>
+            <!-- Toggle de Som -->
+            <button id="soundToggle" class="text-gray-400 hover:text-white transition duration-300 focus:outline-none flex items-center space-x-1" title="Configurações de Áudio">
+                <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i>
+                <span id="soundText" class="text-[10px] font-mono text-gray-500">SOM LIGADO</span>
             </button>
         </div>
     </header>
 
-    <!-- CONTAINER DE TELAS -->
+    <!-- CONTEÚDO CENTRAL (COCKPIT DE COMANDO) -->
     <main class="flex-grow flex items-center justify-center p-4 md:p-6 z-10 relative">
-        <div class="w-full max-w-6xl relative">
+        <div id="gameWindow" class="w-full max-w-6xl holo-transition">
 
-            <!-- ================= TELA 1: MENU PRINCIPAL ================= -->
-            <div id="screen-menu" class="screen-transition active-screen w-full max-w-4xl mx-auto text-center space-y-8 py-6">
+            <!-- ================= TELA 1: SELEÇÃO DE MODO ================= -->
+            <div id="screenModeSelect" class="space-y-8 text-center max-w-3xl mx-auto py-6">
+                <div class="inline-flex items-center space-x-2 p-2 px-4 bg-cyan-950/40 border border-cyan-500/30 rounded-full text-cyan-400 text-xs tracking-widest uppercase mb-2 font-rajdhani">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>SELECIONE A DIRETRIZ DA MISSÃO</span>
+                </div>
+                
                 <h1 class="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 leading-none uppercase">
                     Horizonte de <br><span class="neon-text-magenta text-white text-6xl md:text-8xl">Eventos</span>
                 </h1>
-                
-                <p class="text-sm text-gray-300 font-mono bg-black/50 p-4 rounded-xl border border-cyan-500/10 shadow-lg inline-block">
-                    Selecione o protocolo de calibração gravitacional.
+
+                <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
+                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial.
                 </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                    <!-- Card Solo -->
-                    <button onclick="App.Navigation.goTo('game-solo')" class="glass-panel hover:border-cyan-400 hover:-translate-y-2 transition-all p-6 rounded-2xl flex flex-col items-center text-center group cursor-pointer">
-                        <i data-lucide="user" class="w-12 h-12 text-cyan-400 mb-4 group-hover:scale-110 transition"></i>
-                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Simulação Solo</h3>
-                        <p class="text-xs font-mono text-gray-400">Responda a questões táticas para estabilizar a órbita da Terra.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                    <!-- Modo Solo -->
+                    <button id="btnSelectSolo" class="glass-panel hover:border-cyan-400 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
+                        <div class="flex justify-between items-start w-full">
+                            <i data-lucide="user" class="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[10px] font-mono px-2 py-0.5 border border-cyan-500/20 text-cyan-400 rounded">INDIVIDUAL</span>
+                        </div>
+                        <div>
+                            <h3 class="font-orbitron font-bold text-lg text-white">Missão Solo</h3>
+                            <p class="text-xs font-mono text-gray-400 mt-1">Calibre os estabilizadores da Terra respondendo a 15 questões consecutivas com telemetria local.</p>
+                        </div>
                     </button>
 
-                    <!-- Card Survival (NOVO MODO) -->
-                    <button onclick="App.Navigation.goTo('game-survival')" class="glass-panel hover:border-yellow-400 hover:-translate-y-2 transition-all p-6 rounded-2xl flex flex-col items-center text-center group cursor-pointer neon-glow-purple">
-                        <i data-lucide="flame" class="w-12 h-12 text-yellow-400 mb-4 group-hover:scale-110 transition"></i>
-                        <span class="absolute top-2 right-2 bg-yellow-500 text-black text-[9px] font-bold px-2 py-0.5 rounded animate-pulse">NOVO</span>
-                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Colapso Estelar</h3>
-                        <p class="text-xs font-mono text-gray-400">Modo sobrevivência. Gerencie a energia dos propulsores contra a atração gravitacional.</p>
-                    </button>
-
-                    <!-- Card Multi -->
-                    <button onclick="App.Navigation.goTo('multi-menu')" class="glass-panel hover:border-pink-500 hover:-translate-y-2 transition-all p-6 rounded-2xl flex flex-col items-center text-center group cursor-pointer">
-                        <i data-lucide="users" class="w-12 h-12 text-pink-500 mb-4 group-hover:scale-110 transition"></i>
-                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Rede Coletiva</h3>
-                        <p class="text-xs font-mono text-gray-400">Modo Host/Jogador. Conecte-se em tempo real na nuvem.</p>
+                    <!-- Modo Multiplayer (Supabase) -->
+                    <button id="btnSelectMulti" class="glass-panel hover:border-pink-500 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
+                        <div class="flex justify-between items-start w-full">
+                            <i data-lucide="users" class="w-10 h-10 text-pink-500 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[10px] font-mono px-2 py-0.5 border border-pink-500/20 text-pink-500 rounded">COLETIVO</span>
+                        </div>
+                        <div>
+                            <h3 class="font-orbitron font-bold text-lg text-white">Protocolo Multiplayer</h3>
+                            <p class="text-xs font-mono text-gray-400 mt-1">Hospede uma simulação coletiva ou ligue-se como tripulante em tempo real para até 45 competidores.</p>
+                        </div>
                     </button>
                 </div>
 
-                <!-- Estatísticas Locais -->
-                <div class="pt-8 flex justify-center space-x-8 text-xs font-mono text-gray-400">
-                    <div>RECORD SOLO: <span id="ui-stat-highscore" class="text-yellow-400 font-bold text-lg block">0</span></div>
-                    <div>TEMPO SOBREVIVÊNCIA: <span id="ui-stat-survtime" class="text-cyan-400 font-bold text-lg block">0s</span></div>
+                <div class="pt-6 border-t border-cyan-500/10 max-w-md mx-auto flex justify-around text-xs font-mono text-gray-400">
+                    <div>
+                        <span class="block text-gray-600 uppercase text-[9px]">Patente Atual</span>
+                        <span id="startRank" class="text-cyan-400 font-bold">Cadete Espacial</span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-600 uppercase text-[9px]">Vitórias Registradas</span>
+                        <span id="startWins" class="text-purple-400 font-bold">0</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- ================= TELA 2: NOVO MODO - COLAPSO ESTELAR (SOBREVIVÊNCIA) ================= -->
-            <div id="screen-survival" class="screen-transition hidden-screen w-full max-w-3xl mx-auto glass-panel p-8 rounded-3xl text-center space-y-6 border-red-500/30">
-                <div class="flex justify-between items-center border-b border-red-500/20 pb-4">
-                    <div class="text-left font-mono">
-                        <span class="text-[10px] text-red-400 uppercase tracking-widest animate-pulse">ALERTA CRÍTICO: ERGOSFERA</span>
-                        <h3 class="text-xl font-bold font-orbitron text-white">Modo: Colapso Estelar</h3>
-                    </div>
-                    <div class="bg-black/50 p-2 px-4 rounded-xl border border-yellow-500/30">
-                        <span class="text-[9px] text-gray-400 block">TEMPO VIVO</span>
-                        <span id="surv-timer" class="text-2xl font-black text-yellow-400 font-orbitron">0.0s</span>
-                    </div>
-                </div>
+            <!-- ================= TELA 1B: MULTIPLAYER MENU (HOST / JOIN) ================= -->
+            <div id="screenMultiMenu" class="hidden space-y-8 text-center max-w-md mx-auto py-6">
+                <h2 class="text-3xl font-orbitron font-bold text-cyan-400 tracking-wider">MULTIPLAYER COMMAND</h2>
+                <p class="text-xs font-mono text-gray-400">Selecione o seu cargo no console tático de órbita.</p>
 
-                <div class="py-8 flex flex-col items-center relative">
-                    <!-- Visualização Simplificada -->
-                    <canvas id="survBlackholeCanvas" width="150" height="150" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10 opacity-50"></canvas>
-                    
-                    <i data-lucide="rocket" id="surv-ship" class="w-16 h-16 text-cyan-400 transition-transform duration-100 relative z-10" style="transform: translateY(0px)"></i>
-                    <p class="text-xs font-mono mt-4 text-gray-400 max-w-md">Mantenha a nave longe da Singularidade. A gravidade puxa constantemente. Use o propulsor, mas cuidado com a energia!</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-6">
-                    <!-- Barra de Gravidade (Ameaça) -->
-                    <div class="space-y-2 text-left">
-                        <div class="flex justify-between text-[10px] font-mono text-gray-400">
-                            <span>ATRAÇÃO GRAVITACIONAL</span>
-                            <span id="surv-grav-text" class="text-red-400 font-bold">0%</span>
-                        </div>
-                        <div class="w-full bg-zinc-900 rounded-full h-4 border border-red-900/50 p-0.5">
-                            <div id="surv-grav-bar" class="bg-gradient-to-r from-orange-500 to-red-600 h-full rounded-full transition-all" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Barra de Energia (Recurso) -->
-                    <div class="space-y-2 text-left">
-                        <div class="flex justify-between text-[10px] font-mono text-gray-400">
-                            <span>ENERGIA DO PROPULSOR</span>
-                            <span id="surv-energy-text" class="text-cyan-400 font-bold">100%</span>
-                        </div>
-                        <div class="w-full bg-zinc-900 rounded-full h-4 border border-cyan-900/50 p-0.5">
-                            <div id="surv-energy-bar" class="bg-gradient-to-r from-cyan-600 to-cyan-400 h-full rounded-full transition-all" style="width: 100%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="btn-surv-thrust" class="cyber-btn w-full sm:w-2/3 py-6 rounded-2xl text-white font-orbitron font-bold text-xl neon-glow-cyan active:scale-95 transition-transform">
-                        PULSAR MOTOR (ESPAÇO)
+                <div class="space-y-4">
+                    <!-- Criar Sala (Host) -->
+                    <button id="btnHostRoom" class="cyber-btn w-full py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-sm neon-glow-cyan">
+                        Criar Nova Sala (Host / Projetor)
                     </button>
-                    <button onclick="App.Navigation.goTo('menu')" class="w-full sm:w-1/3 py-6 bg-zinc-900/50 text-gray-400 border border-gray-700 hover:text-white rounded-2xl font-mono text-sm transition">
-                        Abortar
-                    </button>
-                </div>
-            </div>
 
-            <!-- ================= TELA 3: MENU MULTIPLAYER ================= -->
-            <div id="screen-multi-menu" class="screen-transition hidden-screen w-full max-w-md mx-auto space-y-6">
-                <button onclick="App.Navigation.goTo('menu')" class="text-gray-400 hover:text-white flex items-center text-xs font-mono mb-6"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Voltar</button>
-                
-                <h2 class="text-2xl font-orbitron font-bold text-cyan-400 text-center">NEXUS MULTIPLAYER</h2>
-                
-                <button id="btn-multi-host" class="w-full py-4 bg-gradient-to-r from-purple-900 to-pink-900 rounded-xl text-white font-orbitron font-bold tracking-wider hover:from-purple-800 hover:to-pink-800 border border-pink-500/30 transition">
-                    CRIAR SALA (HOST)
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-gray-800"></div>
+                        <span class="flex-shrink mx-4 text-gray-600 text-xs font-mono">OU ENTÃO</span>
+                        <div class="flex-grow border-t border-gray-800"></div>
+                    </div>
+
+                    <!-- Entrar em Sala (Jogador) -->
+                    <div class="bg-black/40 border border-purple-500/15 p-5 rounded-2xl space-y-3">
+                        <input id="inputPin" type="text" maxlength="4" placeholder="CÓDIGO PIN (4 DÍGITOS)" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-orbitron text-center text-lg text-cyan-300 tracking-widest focus:outline-none focus:border-cyan-400">
+                        <input id="inputNickname" type="text" maxlength="12" placeholder="NICKNAME DO CADETE" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-mono text-center text-sm text-white focus:outline-none focus:border-cyan-400">
+                        <button id="btnJoinRoom" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-orbitron font-bold uppercase text-xs tracking-wider hover:opacity-90">
+                            Conectar ao Servidor
+                        </button>
+                    </div>
+                </div>
+
+                <button id="btnBackToModeSelect" class="text-gray-500 hover:text-white font-mono text-xs transition underline block mx-auto">
+                    Voltar para Seleção de Diretriz
                 </button>
-                
-                <div class="relative flex items-center py-2">
-                    <div class="flex-grow border-t border-gray-800"></div>
-                    <span class="flex-shrink mx-4 text-gray-600 text-[10px] font-mono">OU ENTRAR</span>
-                    <div class="flex-grow border-t border-gray-800"></div>
+            </div>
+
+            <!-- ================= TELA 1C: MULTIPLAYER LOBBY (HOST / PROJETOR) ================= -->
+            <div id="screenLobby" class="hidden space-y-6 text-center max-w-3xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-4">
+                    <div class="text-left font-mono">
+                        <span class="text-[9px] text-purple-400 uppercase tracking-widest block">SISTEMA ATIVO</span>
+                        <h3 class="text-xl font-bold font-orbitron text-cyan-400">Sala de Simulação</h3>
+                    </div>
+                    <div class="bg-cyan-950/50 p-2 px-6 rounded-2xl border border-cyan-500/30 font-orbitron text-center">
+                        <span class="text-[9px] text-cyan-300 block uppercase">Código PIN</span>
+                        <span id="lobbyPin" class="text-3xl font-black text-white tracking-widest">----</span>
+                    </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-2xl space-y-4">
-                    <input id="input-pin" type="text" maxlength="4" placeholder="PIN (4 DÍGITOS)" class="w-full bg-black border border-cyan-500/30 rounded-lg p-3 text-center text-xl text-cyan-300 font-orbitron tracking-[0.5em] focus:outline-none focus:border-cyan-400">
-                    <input id="input-nick" type="text" maxlength="12" placeholder="NICKNAME" class="w-full bg-black border border-cyan-500/30 rounded-lg p-3 text-center text-sm text-white font-mono focus:outline-none focus:border-cyan-400">
-                    <button id="btn-multi-join" class="cyber-btn w-full py-3 rounded-lg text-white font-orbitron text-sm">
-                        CONECTAR NAVE
+                <div class="space-y-4">
+                    <div class="flex justify-between text-xs font-mono text-gray-400 px-2">
+                        <span>CADETES CONECTADOS: <strong id="lobbyCount" class="text-pink-500">0</strong> / 45</span>
+                        <span class="animate-pulse text-yellow-500">Aguardando lançamento...</span>
+                    </div>
+                    <!-- Lista de Jogadores Cadastrados no Lobby (Compacta para até 45) -->
+                    <div id="lobbyPlayers" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 bg-zinc-950/80 p-4 rounded-2xl min-h-[150px] max-h-[250px] overflow-y-auto font-mono text-xs text-cyan-400">
+                        <div class="col-span-full text-gray-600 italic py-8">Nenhum cadete conectado ainda...</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+                    <button id="btnLaunchLobby" class="cyber-btn px-8 py-3.5 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-xs neon-glow-cyan w-full sm:w-auto">
+                        Lançar Missão (Iniciar)
+                    </button>
+                    <button id="btnCancelLobby" class="px-6 py-3.5 bg-red-950/20 text-red-400 border border-red-500/25 rounded-xl text-xs font-orbitron hover:bg-red-900/30 transition w-full sm:w-auto">
+                        Abortar Conexão
                     </button>
                 </div>
             </div>
 
-            <!-- ================= TELA 4: LOBBY MULTIPLAYER (HOST) ================= -->
-            <div id="screen-lobby" class="screen-transition hidden-screen w-full max-w-3xl mx-auto glass-panel p-8 rounded-3xl neon-glow-purple text-center space-y-6">
-                <div class="flex justify-between items-center border-b border-gray-800 pb-4">
-                    <div class="text-left">
-                        <span class="text-[9px] font-mono text-purple-400 uppercase">SALA ATIVA</span>
-                        <h3 class="text-xl font-orbitron text-white">Lobby do Simulador</h3>
-                    </div>
-                    <div class="bg-black/50 p-2 px-6 rounded-xl border border-cyan-500/30">
-                        <span class="text-[9px] text-cyan-300 block font-mono">PIN DA SALA</span>
-                        <span id="ui-room-pin" class="text-3xl font-black text-white font-orbitron tracking-widest">----</span>
-                    </div>
+            <!-- ================= TELA 1D: MULTIPLAYER ESPERA (JOGADOR) ================= -->
+            <div id="screenWait" class="hidden text-center max-w-md mx-auto py-12 glass-panel p-8 rounded-3xl neon-glow-cyan space-y-6">
+                <div class="relative flex items-center justify-center mx-auto w-16 h-16 bg-cyan-950/30 border border-cyan-500/20 rounded-full">
+                    <i data-lucide="satellite-dish" class="w-8 h-8 text-cyan-400 animate-pulse"></i>
                 </div>
-                
-                <div class="text-xs font-mono text-gray-400 text-left">CADETES: <strong id="ui-lobby-count" class="text-pink-500">0</strong></div>
-                
-                <div id="ui-lobby-players" class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[150px] bg-black/40 p-4 rounded-xl text-xs font-mono text-cyan-400 border border-gray-800">
-                    <!-- Jogadores injetados aqui -->
-                </div>
-
-                <div class="flex gap-4 justify-center pt-4">
-                    <button id="btn-lobby-start" class="cyber-btn px-8 py-3 rounded-xl font-orbitron font-bold">INICIAR MISSÃO</button>
-                    <button onclick="App.Navigation.goTo('menu')" class="px-6 py-3 bg-red-900/20 text-red-400 rounded-xl font-mono text-xs border border-red-500/30">Cancelar</button>
-                </div>
+                <h3 class="text-xl font-bold font-orbitron text-white">SINAL DE REDE PAREADO</h3>
+                <p id="waitMsg" class="text-xs font-mono text-gray-300 leading-relaxed">
+                    Cadete <strong id="waitNickname" class="text-pink-400">---</strong>, está na sala <strong id="waitPin" class="text-cyan-400">---</strong>.<br><br>
+                    Aguarde que o host inicialize a partida. Fique atento ao monitor principal!
+                </p>
+                <div class="text-[9px] font-mono text-gray-600 uppercase tracking-widest">Sincronização orbital activa...</div>
             </div>
 
-            <!-- ================= TELA 5: CLIENTE JOGADOR (KAHOOT STYLE) ================= -->
-            <div id="screen-client" class="screen-transition hidden-screen w-full max-w-md mx-auto space-y-6">
-                <div class="flex justify-between font-mono text-[10px] text-gray-400 bg-black/60 p-3 rounded-xl border border-cyan-500/20">
-                    <div>NICK: <strong id="ui-cli-nick" class="text-cyan-400">---</strong></div>
-                    <div>PONTOS: <strong id="ui-cli-score" class="text-green-400">0</strong></div>
-                </div>
+            <!-- ================= TELA 2: TELA DO JOGO (INDIVIDUAL & HOST) ================= -->
+            <div id="screenGame" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+                
+                <!-- Radar Espacial Esquerdo (Painel Dinâmico de Telemetria) -->
+                <div class="lg:col-span-4 glass-panel p-6 rounded-3xl neon-glow-purple flex flex-col justify-between items-center min-h-[300px] lg:min-h-0 relative overflow-hidden">
+                    <div class="absolute top-2 left-3 font-mono text-[9px] text-purple-400 uppercase tracking-widest flex items-center">
+                        <i data-lucide="activity" class="w-3.5 h-3.5 text-pink-500 mr-1 animate-pulse"></i> SIMULADOR DE COORDENADAS ORBITAIS
+                    </div>
 
-                <div id="cli-wait" class="glass-panel p-10 rounded-2xl text-center space-y-4">
-                    <i data-lucide="radio" class="w-12 h-12 text-cyan-400 mx-auto animate-pulse"></i>
-                    <p class="font-orbitron font-bold text-white">Sincronizado.</p>
-                    <p class="text-xs font-mono text-gray-400">Olhe para o monitor principal do Host.</p>
-                </div>
-
-                <div id="cli-action" class="hidden grid grid-cols-2 gap-4">
-                    <button class="ans-btn btn-red py-16 rounded-2xl flex justify-center text-white text-5xl" data-ans="0">▲</button>
-                    <button class="ans-btn btn-blue py-16 rounded-2xl flex justify-center text-white text-5xl" data-ans="1">⬢</button>
-                    <button class="ans-btn btn-yellow py-16 rounded-2xl flex justify-center text-white text-5xl" data-ans="2">■</button>
-                    <button class="ans-btn btn-green py-16 rounded-2xl flex justify-center text-white text-5xl" data-ans="3">●</button>
-                </div>
-            </div>
-
-            <!-- ================= TELA 6: TELA PRINCIPAL DO JOGO (SOLO / HOST) ================= -->
-            <div id="screen-game" class="screen-transition hidden-screen grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-                <!-- Painel Esquerdo: Visualização Espacial -->
-                <div class="lg:col-span-4 glass-panel p-6 rounded-3xl flex flex-col justify-between items-center relative overflow-hidden h-[300px] lg:h-auto border border-cyan-500/20">
-                    <div class="w-full flex justify-between items-center my-auto relative px-6 z-10" id="sim-arena">
+                    <!-- Arena de Simulação Física Terra vs Singularidade -->
+                    <div class="w-full flex justify-between items-center my-auto relative px-6" id="simArena">
                         <!-- Terra -->
-                        <div id="ui-earth" class="transition-transform duration-500 flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-3xl shadow-[0_0_20px_blue] animate-[bounce_4s_infinite]">🌎</div>
+                        <div id="gameEarth" class="relative z-10 transition-all duration-300 flex flex-col items-center">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-tr from-blue-600 via-teal-400 to-indigo-900 border border-blue-400/40 flex items-center justify-center text-3xl shadow-2xl relative overflow-hidden animate-bounce" style="animation-duration: 6s;">
+                                🌎
+                                <div class="absolute inset-0 bg-cyan-400/10 animate-pulse"></div>
+                            </div>
+                            <span class="text-[9px] font-mono text-cyan-400 mt-2 font-bold tracking-widest uppercase bg-black/80 px-2 py-0.5 rounded border border-cyan-500/20">Terra</span>
                         </div>
-                        
-                        <!-- Buraco Negro Renderizado -->
-                        <div class="flex flex-col items-center">
-                            <canvas id="mainBlackholeCanvas" width="100" height="100"></canvas>
+
+                        <!-- Feixe Gravitacional de Sucção -->
+                        <div class="absolute left-16 right-16 top-8 md:top-10 h-1 border-t border-dashed border-red-500/40 z-0 overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 w-1/2 animate-ping" style="animation-duration: 2s;"></div>
+                        </div>
+
+                        <!-- Buraco Negro Renderizado Localmente no canvas -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <canvas id="blackholeCanvas" width="120" height="120" class="z-10"></canvas>
+                            <span class="text-[9px] font-mono text-pink-500 mt-2 font-bold tracking-widest uppercase bg-black/80 px-2 py-0.5 rounded border border-pink-500/20">Singularidade</span>
                         </div>
                     </div>
-                    
-                    <div class="w-full space-y-2 font-mono text-xs z-10 bg-black/60 p-3 rounded-xl border border-cyan-500/10">
-                        <div class="flex justify-between text-gray-400">
-                            <span>DISTÂNCIA LIMITE:</span>
-                            <span id="ui-game-dist" class="text-yellow-400 font-bold">120.000 KM</span>
+
+                    <!-- Telemetria do Escudo e Distância -->
+                    <div class="w-full space-y-4 font-mono">
+                        <div class="flex justify-between text-xs border-b border-cyan-500/10 pb-1">
+                            <span class="text-gray-400 uppercase">Proximidade Limite:</span>
+                            <span id="txtDistance" class="text-yellow-400 font-bold font-orbitron">120.000 KM</span>
                         </div>
-                        <div class="w-full bg-black rounded-full h-2">
-                            <div id="ui-game-distbar" class="bg-gradient-to-r from-cyan-400 to-red-500 h-full rounded-full transition-all" style="width: 100%;"></div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[9px] text-gray-500">
+                                <span>DISTÂNCIA ORBITAL DA TERRA</span>
+                                <span>0 KM</span>
+                            </div>
+                            <div class="w-full bg-zinc-950 rounded-full h-3 p-0.5 border border-purple-900/40 overflow-hidden">
+                                <div id="barDistance" class="bg-gradient-to-r from-cyan-400 via-yellow-500 to-red-600 h-full rounded-full transition-all duration-1000" style="width: 100%;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Painel Direito: HUD e Questões -->
-                <div class="lg:col-span-8 flex flex-col space-y-4">
-                    <!-- HUD Superior -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-center">
-                        <div class="glass-panel p-3 rounded-xl">
-                            <div class="text-[9px] text-cyan-400">QUESTÃO</div>
-                            <div id="ui-hud-q" class="text-lg font-bold text-white font-orbitron">1/10</div>
+                <!-- Painel de Questões Direito (HUD Ativo) -->
+                <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
+                    
+                    <!-- Linha de Status Superior do HUD -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div class="bg-black/60 p-3 rounded-2xl border border-cyan-500/10 font-mono text-center relative overflow-hidden">
+                            <div class="text-[9px] uppercase tracking-widest text-cyan-400 mb-1">Questão</div>
+                            <div id="txtQuestionCounter" class="text-lg font-bold font-orbitron text-white">01 / 15</div>
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-cyan-400"></div>
                         </div>
-                        <div class="glass-panel p-3 rounded-xl">
-                            <div class="text-[9px] text-green-400">PONTOS</div>
-                            <div id="ui-hud-score" class="text-lg font-bold text-green-400 font-orbitron">0</div>
+
+                        <div class="bg-black/60 p-3 rounded-2xl border border-cyan-500/10 font-mono text-center">
+                            <div class="text-[9px] uppercase tracking-widest text-green-400 mb-1">Pontos</div>
+                            <div id="txtScore" class="text-lg font-bold text-green-400 font-orbitron">0000</div>
                         </div>
-                        <div class="glass-panel p-3 rounded-xl" id="hud-shield-box">
-                            <div class="text-[9px] text-pink-400">ESCUDO</div>
-                            <div id="ui-hud-shield" class="text-lg font-bold text-pink-400 font-orbitron">100%</div>
+
+                        <div id="hudShieldRow" class="bg-black/60 p-3 rounded-2xl border border-cyan-500/10 font-mono text-center relative overflow-hidden">
+                            <div class="text-[9px] uppercase tracking-widest text-pink-400 mb-1 flex justify-center items-center">
+                                <i data-lucide="shield" class="w-3.5 h-3.5 mr-1 animate-pulse"></i> Escudo
+                            </div>
+                            <div id="txtShield" class="text-lg font-bold text-pink-400 font-orbitron">100%</div>
+                            <div class="absolute bottom-0 left-0 h-1 bg-pink-500 transition-all duration-300" id="barShield" style="width: 100%;"></div>
                         </div>
-                        <div class="glass-panel p-3 rounded-xl neon-glow-red border-red-500/50">
-                            <div class="text-[9px] text-yellow-500">TEMPO</div>
-                            <div id="ui-hud-time" class="text-lg font-bold text-yellow-500 font-orbitron">20s</div>
+
+                        <div class="bg-black/60 p-3 rounded-2xl border border-cyan-500/10 font-mono text-center relative">
+                            <div class="text-[9px] uppercase tracking-widest text-yellow-500 mb-1">Tempo Limite</div>
+                            <div id="txtTimer" class="text-lg font-bold text-yellow-500 font-orbitron">25s</div>
+                        </div>
+
+                        <div id="hudComboRow" class="col-span-2 md:col-span-1 bg-gradient-to-r from-pink-950/20 to-purple-950/20 p-3 rounded-2xl border border-pink-500/20 font-mono text-center relative overflow-hidden">
+                            <div class="text-[9px] uppercase tracking-widest text-purple-300 mb-1">Combo</div>
+                            <div id="txtCombo" class="text-lg font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-yellow-400">x1.0</div>
+                            <div id="lblComboCrit" class="absolute inset-0 bg-pink-600/20 flex items-center justify-center font-orbitron font-black text-[9px] text-white uppercase tracking-widest pointer-events-none opacity-0 transition-all duration-300">CRÍTICO!</div>
                         </div>
                     </div>
 
-                    <!-- Caixa de Pergunta -->
-                    <div class="glass-panel p-6 sm:p-8 rounded-3xl flex-grow flex flex-col justify-center">
-                        <span class="text-[10px] font-mono text-cyan-500/50 mb-2 block">TRANSMISSÃO RECEBIDA</span>
-                        <h2 id="ui-question-text" class="text-xl sm:text-2xl font-bold font-orbitron text-cyan-50 leading-relaxed">
-                            Carregando dados táticos...
+                    <!-- Caixa Principal de Questão (Visor da Nave) -->
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl neon-glow-cyan relative overflow-hidden">
+                        <div class="absolute top-2 right-4 text-[9px] font-mono text-cyan-500/30">TRANS-BAND: Q-WAVE #5</div>
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                            <span class="text-[9px] font-mono text-cyan-400 uppercase tracking-widest">SINAL ASTROFÍSICO ENTRANTE:</span>
+                        </div>
+                        <h2 id="lblQuestion" class="text-lg md:text-2xl font-bold tracking-wide leading-relaxed font-orbitron text-cyan-100">
+                            Carregando frequências ópticas de dados do espaço-tempo...
                         </h2>
                     </div>
 
-                    <!-- Botões de Resposta -->
-                    <div id="ui-answers-box" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <!-- Gerado dinamicamente no Solo, vazio no Host -->
+                    <!-- Alternativas de Resposta (Botões de Toque Confortável) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="answersContainer">
+                        <!-- Gerado de forma dinâmica -->
+                    </div>
+
+                    <!-- Rodapé do Cockpit: Dica / Curiosidade -->
+                    <div id="curiosityBox" class="bg-gradient-to-r from-purple-950/30 via-indigo-950/20 to-cyan-950/30 border border-purple-500/15 rounded-2xl p-4 flex items-start space-x-3 text-xs font-mono text-purple-200 transition-all duration-300">
+                        <i data-lucide="database" class="text-cyan-400 shrink-0 mt-0.5 w-4.5 h-4.5"></i>
+                        <div>
+                            <span class="font-bold text-cyan-300 uppercase tracking-widest block mb-1">ANÁLISE QUÂNTICA DA TRANSMISSÃO:</span>
+                            <p id="lblCuriosity">A gravidade de um buraco negro é capaz de curvar o caminho percorrido pelos fótons luminosos ao redor de seu horizonte de eventos.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= TELA 7: LEADERBOARD ================= -->
-            <div id="screen-leaderboard" class="screen-transition hidden-screen w-full max-w-2xl mx-auto glass-panel p-8 rounded-3xl text-center space-y-6">
-                <h2 class="text-3xl font-orbitron font-bold text-cyan-400">SITUAÇÃO ORBITAL</h2>
-                <div id="ui-leader-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-2 text-left font-mono">
+            <!-- ================= TELA 2B: INTERFACE DE RESPOSTA DO JOGADOR (CLIENTE KAHOOT) ================= -->
+            <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4">
+                <div class="flex justify-between items-center font-mono text-[10px] text-gray-400 px-2 bg-black/40 p-3 rounded-xl border border-gray-800">
+                    <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong></div>
+                    <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
+                </div>
+
+                <!-- Estado de Espera do Cliente -->
+                <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
+                    <i data-lucide="info" class="w-8 h-8 text-yellow-500 animate-pulse"></i>
+                    <p class="font-orbitron font-bold text-lg text-white">OLHE PARA O MONITOR DO HOST</p>
+                    <p class="text-xs font-mono text-gray-400">Escolha a resposta correspondente à cor ou símbolo abaixo quando a pergunta for liberada!</p>
+                </div>
+
+                <!-- Botões de Resposta Tipo Kahoot (Exibidos apenas quando a questão está aberta) -->
+                <div id="cliActionState" class="hidden grid grid-cols-2 gap-4">
+                    <button class="cli-ans-btn btn-red py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="0">
+                        <span class="text-5xl">▲</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">A</span>
+                    </button>
+                    <button class="cli-ans-btn btn-blue py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="1">
+                        <span class="text-5xl">⬢</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">B</span>
+                    </button>
+                    <button class="cli-ans-btn btn-yellow py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="2">
+                        <span class="text-5xl">■</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">C</span>
+                    </button>
+                    <button class="cli-ans-btn btn-green py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="3">
+                        <span class="text-5xl">●</span>
+                        <span class="text-xs font-mono tracking-widest text-white/70">D</span>
+                    </button>
+                </div>
+
+                <!-- Feedback Visual de Acertos -->
+                <div id="cliFeedbackState" class="hidden glass-panel p-10 rounded-2xl text-center space-y-4">
+                    <div id="cliFeedbackIcon" class="mx-auto flex justify-center items-center w-16 h-16 rounded-full"></div>
+                    <h3 id="cliFeedbackTitle" class="text-2xl font-orbitron font-bold"></h3>
+                    <p id="cliFeedbackPoints" class="text-sm font-mono text-gray-400"></p>
+                </div>
+            </div>
+
+            <!-- ================= TELA 2C: PLACAR DE MULTIPLAYER APÓS CADA QUESTÃO (HOST / PROJETOR) ================= -->
+            <div id="screenLeaderboard" class="hidden text-center max-w-2xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple space-y-6">
+                <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">PONTUAÇÃO DE DEFESA ATUAL</h2>
+                <p class="text-xs font-mono text-gray-400">Resultados parciais computados em tempo real de satélite.</p>
+
+                <!-- Lista de Classificação Dinâmica -->
+                <div id="leaderboardContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1">
                     <!-- Injetado dinamicamente -->
                 </div>
-                <button id="btn-leader-next" class="cyber-btn w-full py-4 rounded-xl font-orbitron font-bold">AVANÇAR</button>
+
+                <button id="btnNextQuestion" class="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-black font-orbitron font-black rounded-xl tracking-widest shadow-lg text-xs transition">
+                    AVANÇAR PARA A PRÓXIMA ETAPA
+                </button>
             </div>
 
         </div>
     </main>
 
-    <!-- =========================================
-         ARQUITETURA DE SOFTWARE (JS)
-         ========================================= -->
+    <!-- ARQUITETURA DE REDE E ENGINE DE CINTILAÇÃO -->
     <script>
-        /**
-         * Namespace Global da Aplicação
-         * Simula a modularidade dividindo responsabilidades.
-         */
-        const App = {
-            Config: {},
-            State: {},
-            Audio: {},
-            Graphics: {},
-            Network: {},
-            Navigation: {},
-            Core: {},
-            SurvivalMode: {}
-        };
+        // CREDENCIAIS INTEGRADAS DO SUPABASE (COMPORTA ATÉ 45 CADETES EM REALTIME BROADCAST)
+        const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq"; 
 
-        /* --- MÓDULO 1: DADOS E CONFIGURAÇÕES --- */
-        App.Config = {
-            Questions: [
-                { q: "Qual a fronteira da qual nada escapa de um buraco negro?", options: ["Esfera Fótons", "Horizonte Eventos", "Ergosfera", "Singularidade"], correct: 1 },
-                { q: "O tempo passa de forma diferente perto de um buraco negro devido a qual teoria?", options: ["Relatividade Geral", "Mecânica Quântica", "Teoria das Cordas", "Lei de Newton"], correct: 0 },
-                { q: "Qual processo teórico faz um buraco negro perder massa lentamente?", options: ["Efeito Doppler", "Fissão Estelar", "Radiação Hawking", "Colapso Planck"], correct: 2 },
-                { q: "Qual componente compõe a maior parte da densidade do universo, repelindo a gravidade?", options: ["Matéria Escura", "Antimatéria", "Plasma", "Energia Escura"], correct: 3 },
-                { q: "Buracos negros supermassivos costumam residir em qual local?", options: ["Centros de Galáxias", "Nuvens de Oort", "Aglomerados Globulares", "Sistemas Binários"], correct: 0 }
-            ],
-            TimePerQuestion: 20,
-            TotalQuestions: 5
-        };
+        // Instanciação segura e tardia para evitar erros de renderização/bloqueios
+        let _supabaseClient = null;
 
-        /* --- MÓDULO 2: GERENCIAMENTO DE ESTADO --- */
-        App.State = {
-            soundEnabled: true,
-            highScore: parseInt(localStorage.getItem('bh_hs')) || 0,
-            survivalTime: parseFloat(localStorage.getItem('bh_surv')) || 0,
-            mode: 'menu', // menu, solo, host, client, survival
-            
-            // Jogo Base
-            qIndex: 0,
-            score: 0,
-            shield: 100,
-            timeLeft: 0,
-            timerId: null,
-            canAnswer: false,
-
-            // Multiplayer
-            pin: '',
-            nickname: '',
-            players: {}, // { uid: { name, score, answered } }
-            
-            // Survival
-            survActive: false,
-            survGravity: 0,
-            survEnergy: 100,
-            survLoop: null,
-            survStartTime: 0
-        };
-
-        /* --- MÓDULO 3: MOTOR DE ÁUDIO --- */
-        App.Audio = {
-            ctx: null,
-            init() {
-                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
-            play(freq, type = 'sine', duration = 0.1, vol = 0.05) {
-                if (!App.State.soundEnabled) return;
+        function getSupabase() {
+            if (_supabaseClient) return _supabaseClient;
+            const globalSupa = window.supabase || (typeof globalThis !== 'undefined' ? globalThis.supabase : null);
+            if (globalSupa && globalSupa.createClient) {
                 try {
-                    this.init();
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + duration);
-                } catch(e) {}
-            },
-            uiClick() { this.play(600, 'sine', 0.05, 0.02); },
-            success() { this.play(880, 'square', 0.15, 0.05); },
-            error() { this.play(150, 'sawtooth', 0.3, 0.08); },
-            alarm() { this.play(400, 'square', 0.1, 0.05); },
-            thrust() { this.play(100, 'sawtooth', 0.2, 0.1); }
-        };
-
-        /* --- MÓDULO 4: GRÁFICOS E CANVAS --- */
-        App.Graphics = {
-            engines: [],
-            initGlobalBg() {
-                const cvs = document.getElementById('spaceCanvas');
-                const ctx = cvs.getContext('2d');
-                let stars = [];
-                const resize = () => { cvs.width = window.innerWidth; cvs.height = window.innerHeight; };
-                window.addEventListener('resize', resize); resize();
-                
-                for(let i=0; i<100; i++) stars.push({x: Math.random()*cvs.width, y: Math.random()*cvs.height, s: Math.random()*1.5, a: Math.random()});
-                
-                const loop = () => {
-                    ctx.clearRect(0,0,cvs.width, cvs.height);
-                    stars.forEach(s => {
-                        s.a += 0.02; if(s.a > 1) s.a = 0;
-                        ctx.fillStyle = `rgba(0, 240, 255, ${s.a * 0.5})`;
-                        ctx.fillRect(s.x, s.y, s.s, s.s);
-                    });
-                    requestAnimationFrame(loop);
-                };
-                loop();
-            },
-            createBlackHole(canvasId) {
-                const cvs = document.getElementById(canvasId);
-                if(!cvs) return;
-                const ctx = cvs.getContext('2d');
-                let angle = 0;
-                
-                const loop = () => {
-                    ctx.clearRect(0,0,cvs.width,cvs.height);
-                    const cx = cvs.width/2, cy = cvs.height/2;
-                    angle += 0.05;
-                    
-                    ctx.save();
-                    ctx.translate(cx, cy);
-                    ctx.rotate(angle);
-                    let g = ctx.createRadialGradient(0,0,5,0,0,cvs.width/2);
-                    g.addColorStop(0, 'rgba(255,0,119,0.8)');
-                    g.addColorStop(0.5, 'rgba(157,0,255,0.4)');
-                    g.addColorStop(1, 'transparent');
-                    ctx.fillStyle = g;
-                    ctx.beginPath(); ctx.arc(0,0,cvs.width/2,0,Math.PI*2); ctx.fill();
-                    ctx.restore();
-                    
-                    ctx.fillStyle = '#000';
-                    ctx.beginPath(); ctx.arc(cx, cy, cvs.width*0.2, 0, Math.PI*2); ctx.fill();
-                    requestAnimationFrame(loop);
-                };
-                loop();
-            }
-        };
-
-        /* --- MÓDULO 5: REDE (SUPABASE MULTIPLAYER) --- */
-        App.Network = {
-            client: null,
-            channel: null,
-            
-            async init() {
-                try {
-                    const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
-                    const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq";
-                    this.client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                    _supabaseClient = globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
                         realtime: { params: { eventsPerSecond: 50 } }
                     });
-                    return true;
-                } catch(e) {
-                    console.warn("Supabase Init Falhou:", e);
-                    return false;
+                } catch (e) {
+                    console.error("Falha ao inicializar Supabase client", e);
                 }
-            },
-            async createRoom(pin) {
-                if(!this.client) return alert("Rede offline.");
-                this.channel = this.client.channel(`room_${pin}`);
-                
-                this.channel.on('broadcast', { event: 'join_lobby' }, (payload) => {
-                    const { nickname } = payload.payload;
-                    if(!App.State.players[nickname] && Object.keys(App.State.players).length < 45) {
-                        App.State.players[nickname] = { name: nickname, score: 0, answered: false };
-                        App.Navigation.updateLobbyUI();
-                        App.Audio.uiClick();
-                    }
-                }).on('broadcast', { event: 'submit_answer' }, (payload) => {
-                    const { nickname, points } = payload.payload;
-                    let p = App.State.players[nickname];
-                    if(p && !p.answered) {
-                        p.answered = true;
-                        p.score += points;
-                        
-                        const pList = Object.values(App.State.players);
-                        const allAnswered = pList.length > 0 && pList.every(pl => pl.answered);
-                        if(allAnswered) App.Core.evaluateHostQuestion();
-                    }
-                }).subscribe();
-            },
-            async joinRoom(pin, nick) {
-                if(!this.client) return alert("Rede offline.");
-                this.channel = this.client.channel(`room_${pin}`);
-                
-                this.channel.on('broadcast', { event: 'start_game' }, () => {
-                    App.Navigation.goTo('client');
-                    document.getElementById('cli-wait').classList.remove('hidden');
-                    document.getElementById('cli-action').classList.add('hidden');
-                }).on('broadcast', { event: 'next_question' }, (payload) => {
-                    App.State.qIndex = payload.payload.qIndex;
-                    App.State.canAnswer = true;
-                    document.getElementById('cli-wait').classList.add('hidden');
-                    document.getElementById('cli-action').classList.remove('hidden');
-                }).on('broadcast', { event: 'show_leaderboard' }, () => {
-                    document.getElementById('cli-wait').classList.remove('hidden');
-                    document.getElementById('cli-action').classList.add('hidden');
-                    document.querySelector('#cli-wait p').innerText = "Verifique o placar no monitor principal!";
-                }).subscribe((status) => {
-                    if(status === 'SUBSCRIBED') {
-                        this.channel.send({
-                            type: 'broadcast',
-                            event: 'join_lobby',
-                            payload: { nickname: nick }
-                        });
-                        App.Navigation.goTo('client');
-                        document.getElementById('cli-wait').classList.remove('hidden');
-                        document.querySelector('#cli-wait p').innerText = "Aguardando Host iniciar a missão...";
-                    } else {
-                        alert("Falha ao conectar na sala.");
-                    }
-                });
-            },
-            async sendAnswer(ansIdx, isCorrect) {
-                if(!this.channel) return;
-                const points = isCorrect ? 500 : 0;
-                App.State.score += points;
-                
-                this.channel.send({
-                    type: 'broadcast',
-                    event: 'submit_answer',
-                    payload: { nickname: App.State.nickname, isCorrect, points }
-                });
-                document.getElementById('ui-cli-score').innerText = App.State.score;
-            },
-            async hostStartGame() {
-                if(!this.channel) return;
-                this.channel.send({
+            }
+            return _supabaseClient;
+        }
+
+        // BANCO DE QUESTÕES (ASTRONOMIA E ASTROFÍSICA)
+        const QUESTIONS = [
+            { q: "Qual é a velocidade aproximada da luz no vácuo, limite universal para propagação de dados cósmicos?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
+            { q: "O que define a fronteira teórica ao redor de um buraco negro da qual nada, nem mesmo a luz, pode escapar?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade Gravitacional", "Ergosfera"], correct: 1, curiosity: "Uma vez cruzado o Horizonte de Eventos, a velocidade de escape excede a velocidade da luz." },
+            { q: "Qual cientista propôs a Teoria da Relatividade Geral, prevendo a curvatura do espaço-tempo pela massa?", options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Stephen Hawking"], correct: 2, curiosity: "A relatividade geral foi comprovada empiricamente em 1919 durante um eclipse solar em Sobral, no Brasil." },
+            { q: "Qual o nome do efeito de dilatação e compressão de ondas emitidas por corpos celestes em movimento relativo?", options: ["Efeito Doppler", "Efeito Fotoelétrico", "Efeito Estufa Cósmico", "Efeito Joule"], correct: 0, curiosity: "O desvio para o vermelho (redshift) Doppler ajuda a descobrir que o universo está em expansão acelerada." },
+            { q: "Que radiação residual e uniforme preenche todo o cosmos, considerada o 'eco' térmico do Big Bang?", options: ["Radiação Hawking", "Radiação Cósmica de Fundo", "Raios Gama de Magnetar", "Pulso de Vento Solar"], correct: 1, curiosity: "Esta radiação foi descoberta acidentalmente em 1964 por engenheiros que captavam um ruído constante de rádio." },
+            { q: "Qual o nome do raio crítico que determina o tamanho do horizonte de eventos de um buraco negro esférico?", options: ["Raio de Hubble", "Raio de Hawking", "Raio de Bohr", "Raio de Schwarzschild"], correct: 3, curiosity: "Se comprimíssemos a massa da Terra ao tamanho de uma bola de gude (9mm), ela viraria um buraco negro." },
+            { q: "Qual componente invisível compõe cerca de 27% do universo e não interage com a força eletromagnética?", options: ["Matéria Escura", "Energia Escura", "Antimatéria Quântica", "Plasma Interestelar"], correct: 0, curiosity: "A matéria escura é detectada puramente através dos seus efeitos gravitacionais na rotação de galáxias." },
+            { q: "O processo físico que alimenta a energia das estrelas fundindo núcleos leves em pesados chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão Fotônica", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um núcleo de hélio a milhões de graus." },
+            { q: "Que estrelas colapsadas e hiperdensas giram rapidamente emitindo feixes de radiação eletromagnética?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares possuem campos magnéticos bilhões de vezes mais fortes que o campo magnético terrestre." },
+            { q: "Qual força fundamental da física atua como motor expansivo do universo, superando a gravidade a longas distâncias?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade de energia do universo atual." },
+            { q: "A perda teórica de massa e energia de um buraco negro por efeitos térmicos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Quântico Planck", "Evaporação de Schwarzschild", "Ejeção de Massa Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria em 1974, provando que buracos negros emitem radiação térmica." },
+            { q: "Que distorções no tecido do espaço-tempo são geradas por colisões massivas de buracos negros?", options: ["Ondas de Rádio Estelares", "Ondas Gravitacionais", "Fendas Hiperesfaciais", "Ventos Geomagnéticos"], correct: 1, curiosity: "As ondas gravitacionais foram detectadas pela primeira vez de forma direta em 2015 pelo observatório LIGO." },
+            { q: "Qual é o elemento químico mais abundante e primitivo distribuído pelo espaço interestelar cósmico?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "O hidrogênio representa cerca de 75% da massa elementar visível de todo o nosso universo." },
+            { q: "O limite máximo de massa estável para uma estrela anã branca antes de explodir em uma Supernova é o:", options: ["Limite de Chandrasekhar", "Limite de Oppenheimer", "Limite de Roche", "Limite de Eddington"], correct: 0, curiosity: "Esse limite crítico equivale a aproximadamente 1,44 vezes a massa atual do nosso Sol." },
+            { q: "Como se chama o fenômeno óptico em que a gravidade de um objeto massivo dobra a luz de uma galáxia ao fundo?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Lentes gravitacionais agem como telescópios naturais, permitindo ver os objetos mais distantes do universo." }
+        ];
+
+        // MÁQUINA DE ESTADOS GLOBAL
+        let state = {
+            isSoundOn: true,
+            highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
+            wins: parseInt(localStorage.getItem('eo_wins')) || 0,
+            mode: null, // 'solo', 'host', 'player'
+            currentQuestionIdx: 0,
+            score: 0,
+            shields: 100,
+            combo: 1.0,
+            timer: 25,
+            timerId: null,
+            canAnswer: false,
+            roomPin: '',
+            nickname: '',
+            players: [],
+            channelInstance: null,
+            myLastAnswerCorrect: null,
+            myLastEarned: 0
+        };
+
+        const screens = {
+            modeSelect: document.getElementById('screenModeSelect'),
+            multiMenu: document.getElementById('screenMultiMenu'),
+            lobby: document.getElementById('screenLobby'),
+            wait: document.getElementById('screenWait'),
+            game: document.getElementById('screenGame'),
+            playerClient: document.getElementById('screenPlayerClient'),
+            leaderboard: document.getElementById('screenLeaderboard')
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initSpaceCanvas();
+            initBlackholeCanvas();
+            loadStats();
+            setupEventHandlers();
+        });
+
+        function loadStats() {
+            document.getElementById('lblHighscore').innerText = state.highScore;
+            document.getElementById('startWins').innerText = state.wins;
+            let rank = "Cadete Espacial";
+            if (state.highScore >= 12000) rank = "Almirante da Matriz";
+            else if (state.highScore >= 8000) rank = "Comandante Operacional";
+            else if (state.highScore >= 4000) rank = "Tenente de Órbita";
+            document.getElementById('startRank').innerText = rank;
+        }
+
+        function switchScreen(targetScreen) {
+            Object.values(screens).forEach(s => { s.classList.add('hidden'); s.style.opacity = '0'; });
+            targetScreen.classList.remove('hidden');
+            setTimeout(() => { targetScreen.style.opacity = '1'; }, 50);
+        }
+
+        function setupEventHandlers() {
+            // Sound Toggle
+            document.getElementById('soundToggle').addEventListener('click', () => {
+                state.isSoundOn = !state.isSoundOn;
+                document.getElementById('soundText').innerText = state.isSoundOn ? "SOM LIGADO" : "MUTADO";
+                document.getElementById('soundIcon').setAttribute('data-lucide', state.isSoundOn ? "volume-2" : "volume-x");
+                lucide.createIcons();
+                playBeep(440, 0.05);
+            });
+
+            // Seleção de Modos
+            document.getElementById('btnSelectSolo').addEventListener('click', () => {
+                playBeep(600, 0.1);
+                state.mode = 'solo';
+                document.getElementById('systemStatus').innerText = "Modo de Conexão: INDIVIDUAL";
+                document.getElementById('hudShieldRow').classList.remove('hidden');
+                document.getElementById('hudComboRow').classList.remove('hidden');
+                startSoloGame();
+            });
+
+            document.getElementById('btnSelectMulti').addEventListener('click', () => {
+                playBeep(600, 0.1);
+                if (!getSupabase()) {
+                    alert("Aviso: Configurações de rede pendentes ou indisponíveis no servidor.");
+                    return;
+                }
+                switchScreen(screens.multiMenu);
+            });
+
+            document.getElementById('btnBackToModeSelect').addEventListener('click', () => {
+                playBeep(300, 0.1);
+                switchScreen(screens.modeSelect);
+            });
+
+            // Host - Criar Sala
+            document.getElementById('btnHostRoom').addEventListener('click', () => {
+                playBeep(700, 0.1);
+                state.mode = 'host';
+                document.getElementById('systemStatus').innerText = "CONEXÃO: MATRIZ DE SERVIÇO";
+                document.getElementById('hudShieldRow').classList.add('hidden');
+                document.getElementById('hudComboRow').classList.add('hidden');
+
+                state.roomPin = Math.floor(1000 + Math.random() * 9000).toString();
+                document.getElementById('lobbyPin').innerText = state.roomPin;
+
+                initHostChannel();
+                switchScreen(screens.lobby);
+            });
+
+            // Player - Entrar na Sala
+            document.getElementById('btnJoinRoom').addEventListener('click', () => {
+                const pin = document.getElementById('inputPin').value.trim();
+                const nick = document.getElementById('inputNickname').value.trim().toUpperCase();
+
+                if (pin.length !== 4 || !nick) {
+                    alert("Aviso: Introduza um PIN de 4 dígitos e um Nickname.");
+                    return;
+                }
+
+                playBeep(700, 0.1);
+                state.mode = 'player';
+                state.roomPin = pin;
+                state.nickname = nick;
+                document.getElementById('systemStatus').innerText = `PILOTO: ${nick} | CANAL: ${pin}`;
+
+                document.getElementById('waitNickname').innerText = nick;
+                document.getElementById('waitPin').innerText = pin;
+                document.getElementById('cliName').innerText = nick;
+
+                initPlayerChannel();
+            });
+
+            document.getElementById('btnCancelLobby').addEventListener('click', () => {
+                playBeep(300, 0.1);
+                if (state.channelInstance) state.channelInstance.unsubscribe();
+                switchScreen(screens.modeSelect);
+            });
+
+            document.getElementById('btnLaunchLobby').addEventListener('click', () => {
+                if (state.players.length === 0) {
+                    alert("Aviso: Aguarde a conexão de pelo menos um cadete.");
+                    return;
+                }
+                playBeep(880, 0.2);
+
+                state.channelInstance.send({
                     type: 'broadcast',
                     event: 'start_game',
                     payload: {}
                 });
-            },
-            async hostNextQuestion(qIndex) {
-                if(!this.channel) return;
-                for(let uid in App.State.players) App.State.players[uid].answered = false;
-                
-                this.channel.send({
+
+                state.currentQuestionIdx = 0;
+                switchScreen(screens.game);
+                loadQuestion();
+            });
+
+            // Botões de clique das respostas do jogador móvel
+            document.querySelectorAll('.cli-ans-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!state.canAnswer) return;
+                    state.canAnswer = false;
+                    const ansIdx = parseInt(btn.getAttribute('data-ans'));
+
+                    const qData = QUESTIONS[state.currentQuestionIdx];
+                    const isCorrect = (ansIdx === qData.correct);
+
+                    let pointsEarned = 0;
+                    if (isCorrect) {
+                        pointsEarned = Math.round(500 + (state.timer / 25) * 500);
+                        state.score += pointsEarned;
+                    }
+
+                    state.myLastAnswerCorrect = isCorrect;
+                    state.myLastEarned = pointsEarned;
+
+                    state.channelInstance.send({
+                        type: 'broadcast',
+                        event: 'submit_answer',
+                        payload: {
+                            nickname: state.nickname,
+                            isCorrect: isCorrect,
+                            points: pointsEarned,
+                            ansIdx: ansIdx
+                        }
+                    });
+
+                    document.getElementById('cliActionState').classList.add('hidden');
+                    document.getElementById('cliWaitState').classList.remove('hidden');
+                    playBeep(523, 0.08);
+                });
+            });
+        }
+
+        // REDE: INICIALIZAÇÃO DO CANAL DO HOST
+        function initHostChannel() {
+            const client = getSupabase();
+            if (!client) return;
+
+            state.players = [];
+            state.channelInstance = client.channel(`room_${state.roomPin}`);
+
+            state.channelInstance
+                .on('broadcast', { event: 'join_lobby' }, (payload) => {
+                    const { nickname } = payload.payload;
+                    if (!state.players.find(p => p.name === nickname) && state.players.length < 45) {
+                        state.players.push({ name: nickname, score: 0, answered: false });
+
+                        const container = document.getElementById('lobbyPlayers');
+                        document.getElementById('lobbyCount').innerText = state.players.length;
+
+                        container.innerHTML = state.players.map(p => `
+                            <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex items-center justify-center">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> ${p.name}
+                            </div>
+                        `).join('');
+                        playBeep(587, 0.05);
+                    }
+                })
+                .on('broadcast', { event: 'submit_answer' }, (payload) => {
+                    const { nickname, points } = payload.payload;
+                    let p = state.players.find(pl => pl.name === nickname);
+                    if (p && !p.answered) {
+                        p.answered = true;
+                        p.score += points;
+
+                        const totalAnswered = state.players.filter(pl => pl.answered).length;
+                        if (totalAnswered >= state.players.length) {
+                            evaluateQuestionTimeout();
+                        }
+                    }
+                })
+                .subscribe();
+        }
+
+        // REDE: INICIALIZAÇÃO DO CANAL DO JOGADOR
+        function initPlayerChannel() {
+            const client = getSupabase();
+            if (!client) return;
+
+            state.channelInstance = client.channel(`room_${state.roomPin}`);
+
+            state.channelInstance
+                .on('broadcast', { event: 'start_game' }, () => {
+                    switchScreen(screens.playerClient);
+                    document.getElementById('cliActionState').classList.add('hidden');
+                    document.getElementById('cliWaitState').classList.remove('hidden');
+                    document.getElementById('cliFeedbackState').classList.add('hidden');
+                })
+                .on('broadcast', { event: 'next_question' }, (payload) => {
+                    state.currentQuestionIdx = payload.payload.questionIdx;
+                    state.canAnswer = true;
+
+                    document.getElementById('cliScore').innerText = state.score;
+                    document.getElementById('cliWaitState').classList.add('hidden');
+                    document.getElementById('cliFeedbackState').classList.add('hidden');
+                    document.getElementById('cliActionState').classList.remove('hidden');
+                })
+                .on('broadcast', { event: 'show_leaderboard' }, () => {
+                    document.getElementById('cliWaitState').classList.add('hidden');
+                    document.getElementById('cliActionState').classList.add('hidden');
+
+                    const fBox = document.getElementById('cliFeedbackState');
+                    const icon = document.getElementById('cliFeedbackIcon');
+                    const title = document.getElementById('cliFeedbackTitle');
+                    const pts = document.getElementById('cliFeedbackPoints');
+
+                    fBox.classList.remove('hidden');
+
+                    if (state.myLastAnswerCorrect) {
+                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-green-500 text-green-400 font-bold text-lg";
+                        icon.innerHTML = "✓";
+                        title.className = "text-base font-orbitron font-bold text-green-400";
+                        title.innerText = "ALVO BLOQUEADO";
+                        pts.innerText = `+${state.myLastEarned} Pontos computados.`;
+                    } else {
+                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-red-500 text-red-400 font-bold text-lg";
+                        icon.innerHTML = "✕";
+                        title.className = "text-base font-orbitron font-bold text-red-400";
+                        title.innerText = "DESALINHADO";
+                        pts.innerText = "0 pontos computados.";
+                    }
+                })
+                .on('broadcast', { event: 'game_over' }, () => {
+                    alert("Simulação Concluída! Redirecionando para console principal.");
+                    location.reload();
+                })
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        state.channelInstance.send({
+                            type: 'broadcast',
+                            event: 'join_lobby',
+                            payload: { nickname: state.nickname }
+                        });
+                        switchScreen(screens.wait);
+                    } else {
+                        alert("Falha de conexão com a sala.");
+                        switchScreen(screens.modeSelect);
+                    }
+                });
+        }
+
+        // MOTOR DO JOGO INDIVIDUAL
+        function startSoloGame() {
+            state.currentQuestionIdx = 0;
+            state.score = 0;
+            state.shields = 100;
+            state.combo = 1.0;
+
+            document.getElementById('txtScore').innerText = "0000";
+            document.getElementById('txtCombo').innerText = "x1.0";
+            document.getElementById('txtShield').innerText = "100%";
+            document.getElementById('barShield').style.width = "100%";
+            document.getElementById('gameEarth').classList.remove('succumb-earth');
+
+            switchScreen(screens.game);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (state.currentQuestionIdx >= QUESTIONS.length) {
+                endGame();
+                return;
+            }
+
+            const qData = QUESTIONS[state.currentQuestionIdx];
+            document.getElementById('lblQuestion').innerText = qData.q;
+            document.getElementById('lblCuriosity').innerText = qData.curiosity;
+
+            const remainingRatio = (QUESTIONS.length - state.currentQuestionIdx) / QUESTIONS.length;
+            const distanceKM = Math.round(remainingRatio * 120000);
+            document.getElementById('txtDistance').innerText = distanceKM.toLocaleString('pt-PT') + " KM";
+            document.getElementById('barDistance').style.width = (remainingRatio * 100) + "%";
+
+            // Modifica posição visual da Terra
+            const earthEl = document.getElementById('gameEarth');
+            if (earthEl) {
+                earthEl.style.transform = `scale(${0.4 + remainingRatio * 0.6})`;
+            }
+
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `${colors[idx]} w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white`;
+                btn.innerHTML = `<span class="font-orbitron font-black text-white/50 mr-2">[${prefixes[idx]}]</span> <span>${opt}</span>`;
+
+                btn.addEventListener('click', () => {
+                    if (state.mode === 'solo' && state.canAnswer) {
+                        state.canAnswer = false;
+                        evaluateSoloAnswer(idx);
+                    }
+                });
+                container.appendChild(btn);
+            });
+
+            state.timer = 25;
+            document.getElementById('txtTimer').innerText = state.timer + "s";
+            document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400";
+
+            state.canAnswer = true;
+
+            if (state.mode === 'host') {
+                state.players.forEach(p => p.answered = false);
+                state.channelInstance.send({
                     type: 'broadcast',
                     event: 'next_question',
-                    payload: { qIndex: qIndex }
+                    payload: { questionIdx: state.currentQuestionIdx }
                 });
-            },
-            async hostShowLeaderboard() {
-                if(!this.channel) return;
-                this.channel.send({
+            }
+
+            if (state.timerId) clearInterval(state.timerId);
+            state.timerId = setInterval(() => {
+                state.timer--;
+                document.getElementById('txtTimer').innerText = state.timer + "s";
+
+                if (state.timer <= 5) {
+                    document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-red-500 animate-pulse";
+                    playBeep(350, 0.05);
+                }
+
+                if (state.timer <= 0) {
+                    evaluateQuestionTimeout();
+                }
+            }, 1000);
+        }
+
+        function evaluateSoloAnswer(idx) {
+            clearInterval(state.timerId);
+            const qData = QUESTIONS[state.currentQuestionIdx];
+
+            if (idx === qData.correct) {
+                const points = Math.round((100 + state.timer * 10) * state.combo);
+                state.score += points;
+                state.combo = Math.min(3.0, state.combo + 0.2);
+                playBeep(880, 0.1);
+
+                const lbl = document.getElementById('lblComboCrit');
+                if (lbl) {
+                    lbl.style.opacity = '1';
+                    setTimeout(() => { lbl.style.opacity = '0'; }, 500);
+                }
+            } else {
+                state.combo = 1.0;
+                applyDamage(20);
+            }
+
+            document.getElementById('txtScore').innerText = String(state.score).padStart(4, '0');
+            document.getElementById('txtCombo').innerText = `x${state.combo.toFixed(1)}`;
+
+            state.currentQuestionIdx++;
+            setTimeout(() => { loadQuestion(); }, 1200);
+        }
+
+        function evaluateQuestionTimeout() {
+            clearInterval(state.timerId);
+            state.canAnswer = false;
+
+            if (state.mode === 'solo') {
+                state.combo = 1.0;
+                document.getElementById('txtCombo').innerText = "x1.0";
+                applyDamage(20);
+                state.currentQuestionIdx++;
+                setTimeout(() => { loadQuestion(); }, 1200);
+            } else if (state.mode === 'host') {
+                state.channelInstance.send({
                     type: 'broadcast',
                     event: 'show_leaderboard',
                     payload: {}
                 });
-            },
-            cleanup() {
-                if(this.channel) { this.channel.unsubscribe(); this.channel = null; }
+                showLeaderboardScreen();
             }
-        };
+        }
 
-        /* --- MÓDULO 6: NAVEGAÇÃO E UI --- */
-        App.Navigation = {
-            screens: ['menu', 'survival', 'multi-menu', 'lobby', 'client', 'game', 'leaderboard'],
-            goTo(screenId) {
-                App.Audio.uiClick();
-                this.screens.forEach(s => {
-                    const el = document.getElementById(`screen-${s}`);
-                    if(el) {
-                        el.classList.remove('active-screen');
-                        el.classList.add('hidden-screen');
-                    }
-                });
-                const target = document.getElementById(`screen-${screenId}`);
-                if(target) {
-                    target.classList.remove('hidden-screen');
-                    target.classList.add('active-screen');
-                }
-                App.State.mode = screenId;
-            },
-            updateLobbyUI() {
-                const list = Object.values(App.State.players);
-                document.getElementById('ui-lobby-count').innerText = list.length;
-                document.getElementById('ui-lobby-players').innerHTML = list.map(p => 
-                    `<div class="bg-black border border-cyan-500/20 rounded p-2 text-center truncate">${p.name}</div>`
-                ).join('');
-            },
-            renderAnswers(isHost) {
-                const box = document.getElementById('ui-answers-box');
-                box.innerHTML = '';
-                if(isHost) return; // Host não responde
+        function applyDamage(amount) {
+            state.shields = Math.max(0, state.shields - amount);
+            document.getElementById('txtShield').innerText = state.shields + "%";
+            const bar = document.getElementById('barShield');
+            if (bar) bar.style.width = state.shields + "%";
 
-                const q = App.Config.Questions[App.State.qIndex];
-                const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
-                const prefixes = ['A', 'B', 'C', 'D'];
+            const win = document.getElementById('gameWindow');
+            win.classList.add('shake-active');
+            setTimeout(() => { win.classList.remove('shake-active'); }, 500);
+            playBeep(140, 0.3);
 
-                q.options.forEach((opt, i) => {
-                    const btn = document.createElement('button');
-                    btn.className = `ans-btn ${colors[i]} w-full p-4 rounded-xl text-left font-mono text-sm text-white flex items-center space-x-3`;
-                    btn.innerHTML = `<span class="font-orbitron font-black text-white/50">[${prefixes[i]}]</span> <span>${opt}</span>`;
-                    btn.onclick = () => App.Core.submitSoloAnswer(i);
-                    box.appendChild(btn);
-                });
+            if (state.shields <= 0) {
+                clearInterval(state.timerId);
+                const earth = document.getElementById('gameEarth');
+                if (earth) earth.classList.add('succumb-earth');
+                setTimeout(() => { endGame(); }, 2200);
             }
-        };
+        }
 
-        /* --- MÓDULO 7: LÓGICA CORE DO JOGO (SOLO E HOST) --- */
-        App.Core = {
-            startSolo() {
-                App.State.qIndex = 0; App.State.score = 0; App.State.shield = 100;
-                document.getElementById('ui-hud-score').innerText = 0;
-                this.updateShieldUI();
-                App.Navigation.goTo('game');
-                document.getElementById('hud-shield-box').classList.remove('hidden');
-                document.getElementById('ui-earth').classList.remove('succumb-earth');
-                this.loadQuestion();
-            },
-            startHost() {
-                if(Object.keys(App.State.players).length === 0) return alert("Aguarde cadetes.");
-                App.State.qIndex = 0;
-                App.Navigation.goTo('game');
-                document.getElementById('hud-shield-box').classList.add('hidden'); // Host não tem escudo
-                App.Network.hostStartGame();
-                App.Network.hostNextQuestion(0);
-                this.loadQuestion();
-            },
-            loadQuestion() {
-                const q = App.Config.Questions[App.State.qIndex];
-                document.getElementById('ui-question-text').innerText = q.q;
-                document.getElementById('ui-hud-q').innerText = `${App.State.qIndex + 1}/${App.Config.TotalQuestions}`;
-                
-                // Atualiza visual da distância
-                const pct = 100 - ((App.State.qIndex / App.Config.TotalQuestions) * 100);
-                document.getElementById('ui-game-distbar').style.width = `${pct}%`;
-                document.getElementById('ui-earth').style.transform = `translateY(${100 - pct}px) scale(${0.5 + pct/200})`;
+        function showLeaderboardScreen() {
+            switchScreen(screens.leaderboard);
+            state.players.sort((a, b) => b.score - a.score);
 
-                App.Navigation.renderAnswers(App.State.mode === 'lobby' || App.State.mode === 'game' && Object.keys(App.State.players).length > 0);
-                
-                App.State.canAnswer = true;
-                this.startTimer();
-            },
-            startTimer() {
-                clearInterval(App.State.timerId);
-                App.State.timeLeft = App.Config.TimePerQuestion;
-                document.getElementById('ui-hud-time').innerText = `${App.State.timeLeft}s`;
-                document.getElementById('ui-hud-time').className = "text-lg font-bold text-yellow-500 font-orbitron";
-
-                App.State.timerId = setInterval(() => {
-                    App.State.timeLeft--;
-                    document.getElementById('ui-hud-time').innerText = `${App.State.timeLeft}s`;
-                    if(App.State.timeLeft <= 5) {
-                        document.getElementById('ui-hud-time').classList.replace('text-yellow-500', 'text-red-500');
-                        document.getElementById('ui-hud-time').classList.add('animate-pulse');
-                        App.Audio.alarm();
-                    }
-                    if(App.State.timeLeft <= 0) {
-                        if(App.State.mode === 'game' && Object.keys(App.State.players).length === 0) this.submitSoloAnswer(-1); // Timeout solo
-                        else this.evaluateHostQuestion(); // Timeout host
-                    }
-                }, 1000);
-            },
-            submitSoloAnswer(idx) {
-                if(!App.State.canAnswer) return;
-                App.State.canAnswer = false;
-                clearInterval(App.State.timerId);
-
-                const q = App.Config.Questions[App.State.qIndex];
-                if(idx === q.correct) {
-                    App.Audio.success();
-                    App.State.score += 100 + (App.State.timeLeft * 10);
-                    document.getElementById('ui-hud-score').innerText = App.State.score;
-                } else {
-                    App.Audio.error();
-                    App.State.shield -= 25;
-                    this.updateShieldUI();
-                    document.getElementById('screen-game').classList.add('shake-active');
-                    setTimeout(() => document.getElementById('screen-game').classList.remove('shake-active'), 500);
-                    
-                    if(App.State.shield <= 0) return this.gameOver(false);
-                }
-
-                setTimeout(() => this.nextStep(), 1500);
-            },
-            evaluateHostQuestion() {
-                clearInterval(App.State.timerId);
-                App.State.canAnswer = false;
-                App.Network.hostShowLeaderboard();
-                
-                const list = Object.values(App.State.players).sort((a,b) => b.score - a.score);
-                const html = list.map((p, i) => `
-                    <div class="flex justify-between bg-black/50 p-3 rounded border border-cyan-500/20">
-                        <span>#${i+1} ${p.name}</span> <span class="text-green-400">${p.score} pt</span>
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = state.players.slice(0, 5).map((p, idx) => `
+                <div class="flex justify-between items-center bg-black/60 p-3 border border-cyan-500/15 rounded-xl font-mono text-sm">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-orbitron font-bold text-cyan-500/50">#0${idx+1}</span>
+                        <span class="font-bold text-white">${p.name}</span>
                     </div>
-                `).join('');
-                document.getElementById('ui-leader-list').innerHTML = html;
-                App.Navigation.goTo('leaderboard');
-            },
-            nextStep() {
-                App.State.qIndex++;
-                if(App.State.qIndex >= App.Config.TotalQuestions) this.gameOver(true);
-                else {
-                    if(App.State.mode === 'leaderboard') { // é host
-                        App.Network.hostNextQuestion(App.State.qIndex);
-                        App.Navigation.goTo('game');
-                    }
-                    this.loadQuestion();
-                }
-            },
-            updateShieldUI() {
-                document.getElementById('ui-hud-shield').innerText = `${App.State.shield}%`;
-                if(App.State.shield <= 25) document.getElementById('ui-hud-shield').classList.replace('text-pink-400', 'text-red-500');
-            },
-            gameOver(win) {
-                if(App.State.mode === 'game' && Object.keys(App.State.players).length === 0) { // Solo
-                    if(win) {
-                        alert(`Vitória! Score: ${App.State.score}`);
-                        if(App.State.score > App.State.highScore) {
-                            App.State.highScore = App.State.score;
-                            localStorage.setItem('bh_hs', App.State.highScore);
-                            document.getElementById('ui-stat-highscore').innerText = App.State.highScore;
-                        }
-                    } else {
-                        document.getElementById('ui-earth').classList.add('succumb-earth');
-                        setTimeout(() => alert("A Terra foi consumida pelo Horizonte de Eventos."), 2000);
-                    }
-                } else {
+                    <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
+                </div>
+            `).join('');
+
+            const btnNext = document.getElementById('btnNextQuestion');
+            if (state.currentQuestionIdx + 1 >= QUESTIONS.length) {
+                btnNext.innerText = "FINALIZAR DIAGNÓSTICO";
+            } else {
+                btnNext.innerText = `AVANÇAR PARA QUESTÃO 0${state.currentQuestionIdx + 2}`;
+            }
+
+            btnNext.onclick = () => {
+                playBeep(600, 0.1);
+                state.currentQuestionIdx++;
+                if (state.currentQuestionIdx >= QUESTIONS.length) {
+                    state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} });
                     alert("Simulação Concluída!");
-                }
-                setTimeout(() => location.reload(), 2000);
-            }
-        };
-
-        /* --- MÓDULO 8: NOVO MODO (SOBREVIVÊNCIA GRAVITACIONAL) --- */
-        App.SurvivalMode = {
-            start() {
-                App.State.survActive = true;
-                App.State.survGravity = 0;
-                App.State.survEnergy = 100;
-                App.State.survStartTime = Date.now();
-                App.Navigation.goTo('survival');
-                
-                const btn = document.getElementById('btn-surv-thrust');
-                
-                // Suporte Multi-Plataforma para o botão de Propulsão
-                const thrustHandler = (e) => {
-                    e.preventDefault();
-                    if(App.State.survEnergy >= 15 && App.State.survActive) {
-                        App.State.survEnergy -= 15;
-                        App.State.survGravity = Math.max(0, App.State.survGravity - 12);
-                        App.Audio.thrust();
-                        
-                        // Efeito visual nave subindo
-                        const ship = document.getElementById('surv-ship');
-                        ship.style.transform = `translateY(-30px)`;
-                        setTimeout(() => { if(ship) ship.style.transform = `translateY(0px)`; }, 150);
-                        
-                        this.updateUI();
-                    } else if (App.State.survEnergy < 15) {
-                        App.Audio.error(); // Sem energia
-                    }
-                };
-
-                // Remove listeners antigos para evitar duplicação e readiciona
-                btn.removeEventListener('mousedown', thrustHandler);
-                btn.removeEventListener('touchstart', thrustHandler);
-                btn.addEventListener('mousedown', thrustHandler);
-                btn.addEventListener('touchstart', thrustHandler);
-
-                // Atalho Teclado (Barra de Espaço)
-                window.onkeydown = (e) => { if(e.code === 'Space' && App.State.mode === 'survival') thrustHandler(e); };
-
-                this.loop();
-            },
-            loop() {
-                clearInterval(App.State.survLoop);
-                App.State.survLoop = setInterval(() => {
-                    if(!App.State.survActive) return clearInterval(App.State.survLoop);
-
-                    // Lógica de Dificuldade Progressiva
-                    const timeAlive = (Date.now() - App.State.survStartTime) / 1000;
-                    const gravPull = 1 + (timeAlive * 0.05); // Puxa mais forte com o tempo
-                    
-                    App.State.survGravity += gravPull;
-                    App.State.survEnergy = Math.min(100, App.State.survEnergy + 2); // Recarga passiva
-                    
-                    document.getElementById('surv-timer').innerText = timeAlive.toFixed(1) + "s";
-                    this.updateUI();
-
-                    if(App.State.survGravity >= 100) this.gameOver(timeAlive);
-                }, 100);
-            },
-            updateUI() {
-                const gBar = document.getElementById('surv-grav-bar');
-                const eBar = document.getElementById('surv-energy-bar');
-                
-                gBar.style.width = `${Math.min(100, App.State.survGravity)}%`;
-                eBar.style.width = `${App.State.survEnergy}%`;
-                
-                document.getElementById('surv-grav-text').innerText = `${Math.round(App.State.survGravity)}%`;
-                document.getElementById('surv-energy-text').innerText = `${Math.round(App.State.survEnergy)}%`;
-
-                // Efeito Tremor Crítico
-                const container = document.getElementById('screen-survival');
-                if(App.State.survGravity > 80) container.classList.add('shake-active');
-                else container.classList.remove('shake-active');
-            },
-            gameOver(finalTime) {
-                App.State.survActive = false;
-                clearInterval(App.State.survLoop);
-                App.Audio.error();
-                
-                const ship = document.getElementById('surv-ship');
-                ship.classList.add('succumb-earth'); // Reaproveitando classe de sucção
-                
-                setTimeout(() => {
-                    alert(`O horizonte de eventos te engoliu.\nTempo sobrevivido: ${finalTime.toFixed(1)} segundos.`);
-                    if(finalTime > App.State.survivalTime) {
-                        localStorage.setItem('bh_surv', finalTime);
-                    }
                     location.reload();
-                }, 1500);
+                } else {
+                    switchScreen(screens.game);
+                    loadQuestion();
+                }
+            };
+        }
+
+        function endGame() {
+            if (state.mode === 'solo') {
+                if (state.shields <= 0) {
+                    alert(`SISTEMA CRÍTICO: Perda total de integridade orbital. Score: ${state.score}`);
+                } else {
+                    alert(`MISSÃO BEM-SUCEDIDA! Estabilizadores alinhados. Score final: ${state.score}`);
+                    state.wins++;
+                    localStorage.setItem('eo_wins', state.wins);
+                }
+                if (state.score > state.highScore) {
+                    localStorage.setItem('eo_highscore', state.score);
+                }
             }
-        };
+            location.reload();
+        }
 
-        /* --- INICIALIZAÇÃO DE EVENTOS GLOBAIS --- */
-        window.addEventListener('DOMContentLoaded', async () => {
-            lucide.createIcons();
-            
-            // Inicia Gráficos
-            App.Graphics.initGlobalBg();
-            App.Graphics.createBlackHole('mainBlackholeCanvas');
-            App.Graphics.createBlackHole('survBlackholeCanvas');
+        function playBeep(frequency, duration) {
+            if (!state.isSoundOn) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
 
-            // Carrega Status
-            document.getElementById('ui-stat-highscore').innerText = App.State.highScore;
-            document.getElementById('ui-stat-survtime').innerText = App.State.survivalTime + "s";
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
 
-            // Inicia Rede
-            await App.Network.init();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
 
-            // Event Listeners (Tratamentos de interface básicos)
-            document.getElementById('btn-toggle-sound').onclick = () => {
-                App.State.soundEnabled = !App.State.soundEnabled;
-                document.getElementById('txt-sound').innerText = App.State.soundEnabled ? "SOM ON" : "MUTADO";
-                document.getElementById('icon-sound').setAttribute('data-lucide', App.State.soundEnabled ? 'volume-2' : 'volume-x');
-                lucide.createIcons();
-                App.Audio.uiClick();
-            };
+        // MOTOR PROCEDURAL DO ESPAÇO
+        function initSpaceCanvas() {
+            const canvas = document.getElementById('spaceCanvas');
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize);
+            resize();
 
-            // Eventos Multiplayer (Menus)
-            document.getElementById('btn-multi-host').onclick = () => {
-                App.Audio.uiClick();
-                const pin = Math.floor(1000 + Math.random() * 9000).toString();
-                document.getElementById('ui-room-pin').innerText = pin;
-                App.Network.createRoom(pin);
-                App.Navigation.goTo('lobby');
-            };
+            const stars = Array.from({ length: 80 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.01 + 0.003
+            }));
 
-            document.getElementById('btn-multi-join').onclick = () => {
-                App.Audio.uiClick();
-                const pin = document.getElementById('input-pin').value.trim();
-                const nick = document.getElementById('input-nick').value.trim().toUpperCase();
-                if(pin.length !== 4 || !nick) return alert("PIN (4 dígitos) e Nickname são obrigatórios.");
-                
-                App.State.pin = pin; App.State.nickname = nick;
-                document.getElementById('ui-cli-nick').innerText = nick;
-                App.Network.joinRoom(pin, nick);
-            };
+            function animate() {
+                ctx.fillStyle = '#03010a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(s => {
+                    s.alpha += s.speed;
+                    if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
+                    ctx.fillStyle = `rgba(34, 211, 238, ${Math.max(0, s.alpha * 0.45)})`;
+                    ctx.fillRect(s.x, s.y, s.size, s.size);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
 
-            document.getElementById('btn-lobby-start').onclick = () => {
-                App.Audio.uiClick();
-                App.Core.startHost();
-            };
+        // MOTOR DO BURACO NEGRO DO COCKPIT
+        function initBlackholeCanvas() {
+            const canvas = document.getElementById('blackholeCanvas');
+            const ctx = canvas.getContext('2d');
+            let angle = 0;
 
-            document.getElementById('btn-leader-next').onclick = () => {
-                App.Audio.uiClick();
-                App.Core.nextStep();
-            };
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+                angle += 0.04;
 
-            // Cliente (Kahoot botões)
-            document.querySelectorAll('.ans-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    if(!App.State.canAnswer) return;
-                    App.State.canAnswer = false;
-                    const ansIdx = parseInt(e.currentTarget.getAttribute('data-ans'));
-                    const isCorrect = (ansIdx === App.Config.Questions[App.State.qIndex].correct);
-                    
-                    document.getElementById('cli-action').classList.add('hidden');
-                    document.getElementById('cli-wait').classList.remove('hidden');
-                    document.querySelector('#cli-wait p').innerText = "Resposta enviada.";
-                    
-                    App.Network.sendAnswer(ansIdx, isCorrect);
-                };
-            });
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(angle);
 
-            // Intercepta navegação para Modo Solo e Survival (Definidos nos botões HTML)
-            window.App = App; // Expõe ao contexto global para os onclicks do HTML
-            
-            // Sobrescreve Navigation.goTo especificamente para disparar lógica do jogo
-            const originalGoTo = App.Navigation.goTo.bind(App.Navigation);
-            App.Navigation.goTo = (screenId) => {
-                if(screenId === 'game-solo') { App.Core.startSolo(); return; }
-                if(screenId === 'game-survival') { App.SurvivalMode.start(); return; }
-                originalGoTo(screenId);
-            };
-        });
+                let grad = ctx.createRadialGradient(0, 0, 10, 0, 0, 45);
+                grad.addColorStop(0, 'rgba(255, 0, 119, 0.9)');
+                grad.addColorStop(0.35, 'rgba(157, 0, 255, 0.6)');
+                grad.addColorStop(0.8, 'rgba(0, 240, 255, 0.25)');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(0, 0, 50, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Esfera do horizonte interno
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+                ctx.fill();
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
     </script>
 </body>
 </html>
