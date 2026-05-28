@@ -9,10 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Firebase SDKs (Compatibilidade) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/umd/supabase.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
@@ -539,113 +537,120 @@
             }
         };
 
-        /* --- MÓDULO 5: REDE (FIREBASE MULTIPLAYER) --- */
+        /* --- MÓDULO 5: REDE (SUPABASE MULTIPLAYER) --- */
         App.Network = {
-            db: null,
-            roomRef: null,
-            unsubRoom: null,
-            appId: typeof __app_id !== 'undefined' ? __app_id : 'event-horizon-app',
+            client: null,
+            channel: null,
             
             async init() {
                 try {
-                    const cfg = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-                    if(Object.keys(cfg).length === 0) throw new Error("Sem config de rede");
-                    firebase.initializeApp(cfg);
-                    this.db = firebase.firestore();
-                    
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await firebase.auth().signInWithCustomToken(__initial_auth_token);
-                    } else {
-                        await firebase.auth().signInAnonymously();
-                    }
+                    const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
+                    const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq";
+                    this.client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                        realtime: { params: { eventsPerSecond: 50 } }
+                    });
                     return true;
                 } catch(e) {
-                    console.warn("Firebase Init Falhou (Rodando local):", e);
+                    console.warn("Supabase Init Falhou:", e);
                     return false;
                 }
             },
-            getRoomDoc(pin) {
-                // REGRA 1 E 2 APLICADAS: Caminho estrito e query simples
-                return this.db.collection('artifacts').doc(this.appId).collection('public').doc('data').collection('rooms').doc(`room_${pin}`);
-            },
             async createRoom(pin) {
-                if(!this.db) return alert("Rede offline.");
-                this.roomRef = this.getRoomDoc(pin);
-                await this.roomRef.set({ state: 'lobby', qIndex: 0, players: {} });
+                if(!this.client) return alert("Rede offline.");
+                this.channel = this.client.channel(`room_${pin}`);
                 
-                this.unsubRoom = this.roomRef.onSnapshot(doc => {
-                    if(!doc.exists) return;
-                    const data = doc.data();
-                    App.State.players = data.players || {};
-                    App.Navigation.updateLobbyUI();
-                    
-                    // Host gerencia o avanço global avaliando os players
-                    if(data.state === 'playing') {
-                        const pList = Object.values(data.players);
-                        const allAnswered = pList.length > 0 && pList.every(p => p.answered);
+                this.channel.on('broadcast', { event: 'join_lobby' }, (payload) => {
+                    const { nickname } = payload.payload;
+                    if(!App.State.players[nickname] && Object.keys(App.State.players).length < 45) {
+                        App.State.players[nickname] = { name: nickname, score: 0, answered: false };
+                        App.Navigation.updateLobbyUI();
+                        App.Audio.uiClick();
+                    }
+                }).on('broadcast', { event: 'submit_answer' }, (payload) => {
+                    const { nickname, points } = payload.payload;
+                    let p = App.State.players[nickname];
+                    if(p && !p.answered) {
+                        p.answered = true;
+                        p.score += points;
+                        
+                        const pList = Object.values(App.State.players);
+                        const allAnswered = pList.length > 0 && pList.every(pl => pl.answered);
                         if(allAnswered) App.Core.evaluateHostQuestion();
                     }
-                }, err => console.error(err));
+                }).subscribe();
             },
             async joinRoom(pin, nick) {
-                if(!this.db) return alert("Rede offline.");
-                this.roomRef = this.getRoomDoc(pin);
-                const uid = firebase.auth().currentUser?.uid || Date.now().toString();
+                if(!this.client) return alert("Rede offline.");
+                this.channel = this.client.channel(`room_${pin}`);
                 
-                this.unsubRoom = this.roomRef.onSnapshot(doc => {
-                    if(!doc.exists) return alert("Sala não encontrada.");
-                    const data = doc.data();
-                    
-                    if(data.state === 'lobby') {
+                this.channel.on('broadcast', { event: 'start_game' }, () => {
+                    App.Navigation.goTo('client');
+                    document.getElementById('cli-wait').classList.remove('hidden');
+                    document.getElementById('cli-action').classList.add('hidden');
+                }).on('broadcast', { event: 'next_question' }, (payload) => {
+                    App.State.qIndex = payload.payload.qIndex;
+                    App.State.canAnswer = true;
+                    document.getElementById('cli-wait').classList.add('hidden');
+                    document.getElementById('cli-action').classList.remove('hidden');
+                }).on('broadcast', { event: 'show_leaderboard' }, () => {
+                    document.getElementById('cli-wait').classList.remove('hidden');
+                    document.getElementById('cli-action').classList.add('hidden');
+                    document.querySelector('#cli-wait p').innerText = "Verifique o placar no monitor principal!";
+                }).subscribe((status) => {
+                    if(status === 'SUBSCRIBED') {
+                        this.channel.send({
+                            type: 'broadcast',
+                            event: 'join_lobby',
+                            payload: { nickname: nick }
+                        });
                         App.Navigation.goTo('client');
                         document.getElementById('cli-wait').classList.remove('hidden');
-                        document.getElementById('cli-action').classList.add('hidden');
-                    } else if (data.state === 'playing') {
-                        // Nova pergunta
-                        App.State.qIndex = data.qIndex;
-                        const myData = data.players[uid];
-                        if(!myData || !myData.answered) {
-                            App.State.canAnswer = true;
-                            document.getElementById('cli-wait').classList.add('hidden');
-                            document.getElementById('cli-action').classList.remove('hidden');
-                        }
-                    } else if (data.state === 'leaderboard') {
-                        document.getElementById('cli-wait').classList.remove('hidden');
-                        document.getElementById('cli-action').classList.add('hidden');
-                        document.querySelector('#cli-wait p').innerText = "Verifique o placar no monitor principal!";
+                        document.querySelector('#cli-wait p').innerText = "Aguardando Host iniciar a missão...";
+                    } else {
+                        alert("Falha ao conectar na sala.");
                     }
-                }, err => console.error(err));
-
-                // Registra jogador
-                await this.roomRef.set({ [`players.${uid}`]: { name: nick, score: 0, answered: false } }, {merge: true});
+                });
             },
             async sendAnswer(ansIdx, isCorrect) {
-                if(!this.db) return;
-                const uid = firebase.auth().currentUser?.uid;
+                if(!this.channel) return;
                 const points = isCorrect ? 500 : 0;
                 App.State.score += points;
                 
-                // Transaction seria o ideal, mas merge update é suficiente para este escopo
-                await this.roomRef.set({ 
-                    [`players.${uid}.answered`]: true,
-                    [`players.${uid}.score`]: App.State.score 
-                }, {merge: true});
-                
+                this.channel.send({
+                    type: 'broadcast',
+                    event: 'submit_answer',
+                    payload: { nickname: App.State.nickname, isCorrect, points }
+                });
                 document.getElementById('ui-cli-score').innerText = App.State.score;
             },
+            async hostStartGame() {
+                if(!this.channel) return;
+                this.channel.send({
+                    type: 'broadcast',
+                    event: 'start_game',
+                    payload: {}
+                });
+            },
             async hostNextQuestion(qIndex) {
-                if(!this.db) return;
-                // Reseta status de answered dos players
-                let updates = { state: 'playing', qIndex: qIndex };
-                for(let uid in App.State.players) updates[`players.${uid}.answered`] = false;
-                await this.roomRef.set(updates, {merge:true});
+                if(!this.channel) return;
+                for(let uid in App.State.players) App.State.players[uid].answered = false;
+                
+                this.channel.send({
+                    type: 'broadcast',
+                    event: 'next_question',
+                    payload: { qIndex: qIndex }
+                });
             },
             async hostShowLeaderboard() {
-                if(!this.db) return;
-                await this.roomRef.set({ state: 'leaderboard' }, {merge:true});
+                if(!this.channel) return;
+                this.channel.send({
+                    type: 'broadcast',
+                    event: 'show_leaderboard',
+                    payload: {}
+                });
             },
             cleanup() {
-                if(this.unsubRoom) { this.unsubRoom(); this.unsubRoom = null; }
+                if(this.channel) { this.channel.unsubscribe(); this.channel = null; }
             }
         };
 
@@ -710,6 +715,7 @@
                 App.State.qIndex = 0;
                 App.Navigation.goTo('game');
                 document.getElementById('hud-shield-box').classList.add('hidden'); // Host não tem escudo
+                App.Network.hostStartGame();
                 App.Network.hostNextQuestion(0);
                 this.loadQuestion();
             },
