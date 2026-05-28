@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Missão Horizonte de Eventos: Edição Suprema & Multiplayer</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/umd/supabase.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
@@ -41,7 +38,6 @@
             font-family: 'Rajdhani', sans-serif;
         }
 
-        /* Efeito de Vidro Futurista (Glassmorphism) */
         .glass-panel {
             background: rgba(6, 4, 16, 0.75);
             backdrop-filter: blur(12px) saturate(180%);
@@ -49,21 +45,9 @@
             border: 1px solid rgba(0, 240, 255, 0.15);
         }
 
-        .glass-panel-heavy {
-            background: rgba(3, 2, 8, 0.9);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 0, 119, 0.2);
-        }
-
-        /* Linhas Neon de Alta Fidelidade */
         .neon-glow-cyan {
             box-shadow: 0 0 25px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
             border: 1px solid var(--neon-cyan);
-        }
-
-        .neon-glow-magenta {
-            box-shadow: 0 0 25px rgba(255, 0, 119, 0.25), inset 0 0 15px rgba(255, 0, 119, 0.1);
-            border: 1px solid var(--neon-magenta);
         }
 
         .neon-glow-purple {
@@ -73,10 +57,7 @@
 
         .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 15px rgba(0, 240, 255, 0.3); }
         .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 119, 0.8), 0 0 15px rgba(255, 0, 119, 0.3); }
-        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.8); }
-        .neon-text-yellow { text-shadow: 0 0 8px rgba(255, 183, 0, 0.8); }
 
-        /* Animações e Distorções do Cockpit */
         @keyframes shake {
             0%, 100% { transform: translate(0, 0) scale(1); }
             10% { transform: translate(-8px, -4px) rotate(-1deg) scale(0.99); }
@@ -90,7 +71,6 @@
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
 
-        /* Efeito de Scanline Avançado */
         .crt-scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -101,12 +81,10 @@
             opacity: 0.2;
         }
 
-        /* Efeitos de Transição Holográfica */
         .holo-transition {
             transition: opacity 0.4s ease-in-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Botão Cibernético Ultra */
         .cyber-btn {
             position: relative;
             background: rgba(0, 240, 255, 0.05);
@@ -130,15 +108,9 @@
             transform: translateY(-2px);
         }
 
-        .cyber-btn:hover::before {
-            left: 100%;
-        }
+        .cyber-btn:hover::before { left: 100%; }
+        .cyber-btn:active { transform: translateY(1px); }
 
-        .cyber-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Efeito de Sucção no Buraco Negro */
         .succumb-earth {
             transition: all 2.5s cubic-bezier(0.7, -0.3, 0.9, 0.3);
             transform: scale(0.01) translate(300px, 0px) rotate(1080deg) !important;
@@ -146,19 +118,10 @@
             filter: blur(8px);
         }
 
-        /* Estilo para Scrollbars customizados */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(3, 1, 10, 0.95);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-cyan);
-            border-radius: 2px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(3, 1, 10, 0.95); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 2px; }
 
-        /* Cores dos botões de resposta estilo Kahoot */
         .btn-red { background: rgba(229, 57, 53, 0.15); border: 1.5px solid #e53935; }
         .btn-red:hover { background: rgba(229, 57, 53, 0.3); box-shadow: 0 0 15px rgba(229, 57, 53, 0.4); }
         .btn-blue { background: rgba(30, 136, 229, 0.15); border: 1.5px solid #1e88e5; }
@@ -171,13 +134,9 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between relative select-none">
     
-    <!-- Filtro de monitor CRT retro-futurista -->
     <div class="crt-scanlines"></div>
-
-    <!-- Canvas para renderização física do espaço, nebulosas, estrelas cadentes e buraco negro simulado -->
     <canvas id="spaceCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
 
-    <!-- CABEÇALHO DO HUD HOLOGRÁFICO -->
     <header class="w-full p-4 border-b border-cyan-500/20 bg-black/60 backdrop-blur-md z-10 flex justify-between items-center font-rajdhani">
         <div class="flex items-center space-x-3">
             <div class="relative flex items-center justify-center w-8 h-8">
@@ -185,30 +144,26 @@
                 <i data-lucide="aperture" class="text-pink-500 animate-spin" style="animation-duration: 8s; width: 1.25rem; height: 1.25rem;"></i>
             </div>
             <div>
-                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v6.0</span>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v7.0</span>
                 <span id="systemStatus" class="text-[9px] text-purple-400 uppercase tracking-widest font-mono">Modo de Conexão: INDIVIDUAL</span>
             </div>
         </div>
 
         <div class="flex items-center space-x-6">
-            <!-- Estatística Rápida LocalStorage -->
             <div class="hidden md:flex items-center space-x-2 border-l border-cyan-500/20 pl-4">
                 <i data-lucide="trophy" class="text-yellow-400 w-4 h-4"></i>
                 <span class="text-[10px] font-mono text-gray-400">MAIOR PLACAR: <strong id="lblHighscore" class="text-yellow-400">0</strong></span>
             </div>
-            <!-- Toggle de Som -->
-            <button id="soundToggle" class="text-gray-400 hover:text-white transition duration-300 focus:outline-none flex items-center space-x-1" title="Configurações de Áudio">
+            <button id="soundToggle" class="text-gray-400 hover:text-white transition duration-300 focus:outline-none flex items-center space-x-1">
                 <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i>
                 <span id="soundText" class="text-[10px] font-mono text-gray-500">SOM LIGADO</span>
             </button>
         </div>
     </header>
 
-    <!-- CONTEÚDO CENTRAL (COCKPIT DE COMANDO) -->
     <main class="flex-grow flex items-center justify-center p-4 md:p-6 z-10 relative">
         <div id="gameWindow" class="w-full max-w-6xl holo-transition">
 
-            <!-- ================= TELA 1: SELEÇÃO DE MODO ================= -->
             <div id="screenModeSelect" class="space-y-8 text-center max-w-3xl mx-auto py-6">
                 <div class="inline-flex items-center space-x-2 p-2 px-4 bg-cyan-950/40 border border-cyan-500/30 rounded-full text-cyan-400 text-xs tracking-widest uppercase mb-2 font-rajdhani">
                     <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -220,11 +175,10 @@
                 </h1>
 
                 <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
-                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial.
+                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com rotação algorítmica de 100 quadrantes estelares.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                    <!-- Modo Solo -->
                     <button id="btnSelectSolo" class="glass-panel hover:border-cyan-400 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
                         <div class="flex justify-between items-start w-full">
                             <i data-lucide="user" class="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform"></i>
@@ -232,11 +186,10 @@
                         </div>
                         <div>
                             <h3 class="font-orbitron font-bold text-lg text-white">Missão Solo</h3>
-                            <p class="text-xs font-mono text-gray-400 mt-1">Calibre os estabilizadores da Terra respondendo a 15 questões consecutivas com telemetria local.</p>
+                            <p class="text-xs font-mono text-gray-400 mt-1">Calibre os estabilizadores respondendo a 15 questões aleatórias extraídas de nossa base de dados quântica.</p>
                         </div>
                     </button>
 
-                    <!-- Modo Multiplayer (Supabase) -->
                     <button id="btnSelectMulti" class="glass-panel hover:border-pink-500 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
                         <div class="flex justify-between items-start w-full">
                             <i data-lucide="users" class="w-10 h-10 text-pink-500 group-hover:scale-110 transition-transform"></i>
@@ -244,14 +197,14 @@
                         </div>
                         <div>
                             <h3 class="font-orbitron font-bold text-lg text-white">Protocolo Multiplayer</h3>
-                            <p class="text-xs font-mono text-gray-400 mt-1">Hospede uma simulação coletiva ou ligue-se como tripulante em tempo real para até 45 competidores.</p>
+                            <p class="text-xs font-mono text-gray-400 mt-1">Hospede uma simulação ou conecte-se com subida de Ranking em tempo real e visualização de Top 10.</p>
                         </div>
                     </button>
                 </div>
 
                 <div class="pt-6 border-t border-cyan-500/10 max-w-md mx-auto flex justify-around text-xs font-mono text-gray-400">
                     <div>
-                        <span class="block text-gray-600 uppercase text-[9px]">Patente Atual</span>
+                        <span class="block text-gray-600 uppercase text-[9px]">Patente Local</span>
                         <span id="startRank" class="text-cyan-400 font-bold">Cadete Espacial</span>
                     </div>
                     <div>
@@ -261,13 +214,11 @@
                 </div>
             </div>
 
-            <!-- ================= TELA 1B: MULTIPLAYER MENU (HOST / JOIN) ================= -->
             <div id="screenMultiMenu" class="hidden space-y-8 text-center max-w-md mx-auto py-6">
                 <h2 class="text-3xl font-orbitron font-bold text-cyan-400 tracking-wider">MULTIPLAYER COMMAND</h2>
                 <p class="text-xs font-mono text-gray-400">Selecione o seu cargo no console tático de órbita.</p>
 
                 <div class="space-y-4">
-                    <!-- Criar Sala (Host) -->
                     <button id="btnHostRoom" class="cyber-btn w-full py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-sm neon-glow-cyan">
                         Criar Nova Sala (Host / Projetor)
                     </button>
@@ -278,7 +229,6 @@
                         <div class="flex-grow border-t border-gray-800"></div>
                     </div>
 
-                    <!-- Entrar em Sala (Jogador) -->
                     <div class="bg-black/40 border border-purple-500/15 p-5 rounded-2xl space-y-3">
                         <input id="inputPin" type="text" maxlength="4" placeholder="CÓDIGO PIN (4 DÍGITOS)" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-orbitron text-center text-lg text-cyan-300 tracking-widest focus:outline-none focus:border-cyan-400">
                         <input id="inputNickname" type="text" maxlength="12" placeholder="NICKNAME DO CADETE" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-xl p-3 font-mono text-center text-sm text-white focus:outline-none focus:border-cyan-400">
@@ -293,7 +243,6 @@
                 </button>
             </div>
 
-            <!-- ================= TELA 1C: MULTIPLAYER LOBBY (HOST / PROJETOR) ================= -->
             <div id="screenLobby" class="hidden space-y-6 text-center max-w-3xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-4">
                     <div class="text-left font-mono">
@@ -311,7 +260,6 @@
                         <span>CADETES CONECTADOS: <strong id="lobbyCount" class="text-pink-500">0</strong> / 45</span>
                         <span class="animate-pulse text-yellow-500">Aguardando lançamento...</span>
                     </div>
-                    <!-- Lista de Jogadores Cadastrados no Lobby (Compacta para até 45) -->
                     <div id="lobbyPlayers" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 bg-zinc-950/80 p-4 rounded-2xl min-h-[150px] max-h-[250px] overflow-y-auto font-mono text-xs text-cyan-400">
                         <div class="col-span-full text-gray-600 italic py-8">Nenhum cadete conectado ainda...</div>
                     </div>
@@ -327,31 +275,27 @@
                 </div>
             </div>
 
-            <!-- ================= TELA 1D: MULTIPLAYER ESPERA (JOGADOR) ================= -->
             <div id="screenWait" class="hidden text-center max-w-md mx-auto py-12 glass-panel p-8 rounded-3xl neon-glow-cyan space-y-6">
                 <div class="relative flex items-center justify-center mx-auto w-16 h-16 bg-cyan-950/30 border border-cyan-500/20 rounded-full">
                     <i data-lucide="satellite-dish" class="w-8 h-8 text-cyan-400 animate-pulse"></i>
                 </div>
                 <h3 class="text-xl font-bold font-orbitron text-white">SINAL DE REDE PAREADO</h3>
                 <p id="waitMsg" class="text-xs font-mono text-gray-300 leading-relaxed">
-                    Cadete <strong id="waitNickname" class="text-pink-400">---</strong>, está na sala <strong id="waitPin" class="text-cyan-400">---</strong>.<br><br>
+                    Cadete <strong id="waitNickname" class="text-pink-400">---</strong>, está na sala <strong id="waitPin" class="text-cyan-400">---</strong>.<br>
+                    Patente Atual: <strong id="waitRank" class="text-yellow-400">Recruta Espacial</strong><br><br>
                     Aguarde que o host inicialize a partida. Fique atento ao monitor principal!
                 </p>
                 <div class="text-[9px] font-mono text-gray-600 uppercase tracking-widest">Sincronização orbital activa...</div>
             </div>
 
-            <!-- ================= TELA 2: TELA DO JOGO (INDIVIDUAL & HOST) ================= -->
             <div id="screenGame" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
                 
-                <!-- Radar Espacial Esquerdo (Painel Dinâmico de Telemetria) -->
                 <div class="lg:col-span-4 glass-panel p-6 rounded-3xl neon-glow-purple flex flex-col justify-between items-center min-h-[300px] lg:min-h-0 relative overflow-hidden">
                     <div class="absolute top-2 left-3 font-mono text-[9px] text-purple-400 uppercase tracking-widest flex items-center">
                         <i data-lucide="activity" class="w-3.5 h-3.5 text-pink-500 mr-1 animate-pulse"></i> SIMULADOR DE COORDENADAS ORBITAIS
                     </div>
 
-                    <!-- Arena de Simulação Física Terra vs Singularidade -->
                     <div class="w-full flex justify-between items-center my-auto relative px-6" id="simArena">
-                        <!-- Terra -->
                         <div id="gameEarth" class="relative z-10 transition-all duration-300 flex flex-col items-center">
                             <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-tr from-blue-600 via-teal-400 to-indigo-900 border border-blue-400/40 flex items-center justify-center text-3xl shadow-2xl relative overflow-hidden animate-bounce" style="animation-duration: 6s;">
                                 🌎
@@ -360,19 +304,16 @@
                             <span class="text-[9px] font-mono text-cyan-400 mt-2 font-bold tracking-widest uppercase bg-black/80 px-2 py-0.5 rounded border border-cyan-500/20">Terra</span>
                         </div>
 
-                        <!-- Feixe Gravitacional de Sucção -->
                         <div class="absolute left-16 right-16 top-8 md:top-10 h-1 border-t border-dashed border-red-500/40 z-0 overflow-hidden">
                             <div class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 w-1/2 animate-ping" style="animation-duration: 2s;"></div>
                         </div>
 
-                        <!-- Buraco Negro Renderizado Localmente no canvas -->
                         <div class="relative z-10 flex flex-col items-center">
                             <canvas id="blackholeCanvas" width="120" height="120" class="z-10"></canvas>
                             <span class="text-[9px] font-mono text-pink-500 mt-2 font-bold tracking-widest uppercase bg-black/80 px-2 py-0.5 rounded border border-pink-500/20">Singularidade</span>
                         </div>
                     </div>
 
-                    <!-- Telemetria do Escudo e Distância -->
                     <div class="w-full space-y-4 font-mono">
                         <div class="flex justify-between text-xs border-b border-cyan-500/10 pb-1">
                             <span class="text-gray-400 uppercase">Proximidade Limite:</span>
@@ -390,10 +331,8 @@
                     </div>
                 </div>
 
-                <!-- Painel de Questões Direito (HUD Ativo) -->
                 <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
                     
-                    <!-- Linha de Status Superior do HUD -->
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
                         <div class="bg-black/60 p-3 rounded-2xl border border-cyan-500/10 font-mono text-center relative overflow-hidden">
                             <div class="text-[9px] uppercase tracking-widest text-cyan-400 mb-1">Questão</div>
@@ -426,7 +365,6 @@
                         </div>
                     </div>
 
-                    <!-- Caixa Principal de Questão (Visor da Nave) -->
                     <div class="glass-panel p-6 md:p-8 rounded-3xl neon-glow-cyan relative overflow-hidden">
                         <div class="absolute top-2 right-4 text-[9px] font-mono text-cyan-500/30">TRANS-BAND: Q-WAVE #5</div>
                         <div class="flex items-center space-x-2 mb-3">
@@ -438,13 +376,9 @@
                         </h2>
                     </div>
 
-                    <!-- Alternativas de Resposta (Botões de Toque Confortável) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="answersContainer">
-                        <!-- Gerado de forma dinâmica -->
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="answersContainer"></div>
 
-                    <!-- Rodapé do Cockpit: Dica / Curiosidade -->
-                    <div id="curiosityBox" class="bg-gradient-to-r from-purple-950/30 via-indigo-950/20 to-cyan-950/30 border border-purple-500/15 rounded-2xl p-4 flex items-start space-x-3 text-xs font-mono text-purple-200 transition-all duration-300">
+                    <div id="curiosityBox" class="bg-gradient-to-r from-purple-950/30 via-indigo-950/20 to-cyan-950/30 border border-purple-500/15 rounded-2xl p-4 flex items-start space-x-3 text-xs font-mono text-purple-200">
                         <i data-lucide="database" class="text-cyan-400 shrink-0 mt-0.5 w-4.5 h-4.5"></i>
                         <div>
                             <span class="font-bold text-cyan-300 uppercase tracking-widest block mb-1">ANÁLISE QUÂNTICA DA TRANSMISSÃO:</span>
@@ -454,41 +388,33 @@
                 </div>
             </div>
 
-            <!-- ================= TELA 2B: INTERFACE DE RESPOSTA DO JOGADOR (CLIENTE KAHOOT) ================= -->
             <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4">
                 <div class="flex justify-between items-center font-mono text-[10px] text-gray-400 px-2 bg-black/40 p-3 rounded-xl border border-gray-800">
-                    <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong></div>
+                    <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong> (<span id="cliRank" class="text-yellow-400">...</span>)</div>
                     <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
                 </div>
 
-                <!-- Estado de Espera do Cliente -->
                 <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
                     <i data-lucide="info" class="w-8 h-8 text-yellow-500 animate-pulse"></i>
                     <p class="font-orbitron font-bold text-lg text-white">OLHE PARA O MONITOR DO HOST</p>
                     <p class="text-xs font-mono text-gray-400">Escolha a resposta correspondente à cor ou símbolo abaixo quando a pergunta for liberada!</p>
                 </div>
 
-                <!-- Botões de Resposta Tipo Kahoot (Exibidos apenas quando a questão está aberta) -->
                 <div id="cliActionState" class="hidden grid grid-cols-2 gap-4">
                     <button class="cli-ans-btn btn-red py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="0">
-                        <span class="text-5xl">▲</span>
-                        <span class="text-xs font-mono tracking-widest text-white/70">A</span>
+                        <span class="text-5xl">▲</span> <span class="text-xs font-mono tracking-widest text-white/70">A</span>
                     </button>
                     <button class="cli-ans-btn btn-blue py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="1">
-                        <span class="text-5xl">⬢</span>
-                        <span class="text-xs font-mono tracking-widest text-white/70">B</span>
+                        <span class="text-5xl">⬢</span> <span class="text-xs font-mono tracking-widest text-white/70">B</span>
                     </button>
                     <button class="cli-ans-btn btn-yellow py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="2">
-                        <span class="text-5xl">■</span>
-                        <span class="text-xs font-mono tracking-widest text-white/70">C</span>
+                        <span class="text-5xl">■</span> <span class="text-xs font-mono tracking-widest text-white/70">C</span>
                     </button>
                     <button class="cli-ans-btn btn-green py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="3">
-                        <span class="text-5xl">●</span>
-                        <span class="text-xs font-mono tracking-widest text-white/70">D</span>
+                        <span class="text-5xl">●</span> <span class="text-xs font-mono tracking-widest text-white/70">D</span>
                     </button>
                 </div>
 
-                <!-- Feedback Visual de Acertos -->
                 <div id="cliFeedbackState" class="hidden glass-panel p-10 rounded-2xl text-center space-y-4">
                     <div id="cliFeedbackIcon" class="mx-auto flex justify-center items-center w-16 h-16 rounded-full"></div>
                     <h3 id="cliFeedbackTitle" class="text-2xl font-orbitron font-bold"></h3>
@@ -496,15 +422,11 @@
                 </div>
             </div>
 
-            <!-- ================= TELA 2C: PLACAR DE MULTIPLAYER APÓS CADA QUESTÃO (HOST / PROJETOR) ================= -->
             <div id="screenLeaderboard" class="hidden text-center max-w-2xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple space-y-6">
-                <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">PONTUAÇÃO DE DEFESA ATUAL</h2>
-                <p class="text-xs font-mono text-gray-400">Resultados parciais computados em tempo real de satélite.</p>
+                <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">SISTEMA DE DEFESA: TOP 10 CADETES</h2>
+                <p class="text-xs font-mono text-gray-400">Resultados computados via telemetria quântica com atribuição de Patente.</p>
 
-                <!-- Lista de Classificação Dinâmica -->
-                <div id="leaderboardContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1">
-                    <!-- Injetado dinamicamente -->
-                </div>
+                <div id="leaderboardContainer" class="space-y-2 max-h-[380px] overflow-y-auto pr-1"></div>
 
                 <button id="btnNextQuestion" class="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-black font-orbitron font-black rounded-xl tracking-widest shadow-lg text-xs transition">
                     AVANÇAR PARA A PRÓXIMA ETAPA
@@ -514,13 +436,10 @@
         </div>
     </main>
 
-    <!-- ARQUITETURA DE REDE E ENGINE DE CINTILAÇÃO -->
     <script>
-        // CREDENCIAIS INTEGRADAS DO SUPABASE (COMPORTA ATÉ 45 CADETES EM REALTIME BROADCAST)
         const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq"; 
 
-        // Instanciação segura e tardia para evitar erros de renderização/bloqueios
         let _supabaseClient = null;
 
         function getSupabase() {
@@ -531,30 +450,113 @@
                     _supabaseClient = globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
                         realtime: { params: { eventsPerSecond: 50 } }
                     });
-                } catch (e) {
-                    console.error("Falha ao inicializar Supabase client", e);
-                }
+                } catch (e) { console.error(e); }
             }
             return _supabaseClient;
         }
 
-        // BANCO DE QUESTÕES (ASTRONOMIA E ASTROFÍSICA)
-        const QUESTIONS = [
-            { q: "Qual é a velocidade aproximada da luz no vácuo, limite universal para propagação de dados cósmicos?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
-            { q: "O que define a fronteira teórica ao redor de um buraco negro da qual nada, nem mesmo a luz, pode escapar?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade Gravitacional", "Ergosfera"], correct: 1, curiosity: "Uma vez cruzado o Horizonte de Eventos, a velocidade de escape excede a velocidade da luz." },
-            { q: "Qual cientista propôs a Teoria da Relatividade Geral, prevendo a curvatura do espaço-tempo pela massa?", options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Stephen Hawking"], correct: 2, curiosity: "A relatividade geral foi comprovada empiricamente em 1919 durante um eclipse solar em Sobral, no Brasil." },
-            { q: "Qual o nome do efeito de dilatação e compressão de ondas emitidas por corpos celestes em movimento relativo?", options: ["Efeito Doppler", "Efeito Fotoelétrico", "Efeito Estufa Cósmico", "Efeito Joule"], correct: 0, curiosity: "O desvio para o vermelho (redshift) Doppler ajuda a descobrir que o universo está em expansão acelerada." },
-            { q: "Que radiação residual e uniforme preenche todo o cosmos, considerada o 'eco' térmico do Big Bang?", options: ["Radiação Hawking", "Radiação Cósmica de Fundo", "Raios Gama de Magnetar", "Pulso de Vento Solar"], correct: 1, curiosity: "Esta radiação foi descoberta acidentalmente em 1964 por engenheiros que captavam um ruído constante de rádio." },
-            { q: "Qual o nome do raio crítico que determina o tamanho do horizonte de eventos de um buraco negro esférico?", options: ["Raio de Hubble", "Raio de Hawking", "Raio de Bohr", "Raio de Schwarzschild"], correct: 3, curiosity: "Se comprimíssemos a massa da Terra ao tamanho de uma bola de gude (9mm), ela viraria um buraco negro." },
-            { q: "Qual componente invisível compõe cerca de 27% do universo e não interage com a força eletromagnética?", options: ["Matéria Escura", "Energia Escura", "Antimatéria Quântica", "Plasma Interestelar"], correct: 0, curiosity: "A matéria escura é detectada puramente através dos seus efeitos gravitacionais na rotação de galáxias." },
-            { q: "O processo físico que alimenta a energia das estrelas fundindo núcleos leves em pesados chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão Fotônica", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um núcleo de hélio a milhões de graus." },
-            { q: "Que estrelas colapsadas e hiperdensas giram rapidamente emitindo feixes de radiação eletromagnética?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares possuem campos magnéticos bilhões de vezes mais fortes que o campo magnético terrestre." },
-            { q: "Qual força fundamental da física atua como motor expansivo do universo, superando a gravidade a longas distâncias?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade de energia do universo atual." },
-            { q: "A perda teórica de massa e energia de um buraco negro por efeitos térmicos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Quântico Planck", "Evaporação de Schwarzschild", "Ejeção de Massa Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria em 1974, provando que buracos negros emitem radiação térmica." },
-            { q: "Que distorções no tecido do espaço-tempo são geradas por colisões massivas de buracos negros?", options: ["Ondas de Rádio Estelares", "Ondas Gravitacionais", "Fendas Hiperesfaciais", "Ventos Geomagnéticos"], correct: 1, curiosity: "As ondas gravitacionais foram detectadas pela primeira vez de forma direta em 2015 pelo observatório LIGO." },
-            { q: "Qual é o elemento químico mais abundante e primitivo distribuído pelo espaço interestelar cósmico?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "O hidrogênio representa cerca de 75% da massa elementar visível de todo o nosso universo." },
-            { q: "O limite máximo de massa estável para uma estrela anã branca antes de explodir em uma Supernova é o:", options: ["Limite de Chandrasekhar", "Limite de Oppenheimer", "Limite de Roche", "Limite de Eddington"], correct: 0, curiosity: "Esse limite crítico equivale a aproximadamente 1,44 vezes a massa atual do nosso Sol." },
-            { q: "Como se chama o fenômeno óptico em que a gravidade de um objeto massivo dobra a luz de uma galáxia ao fundo?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Lentes gravitacionais agem como telescópios naturais, permitindo ver os objetos mais distantes do universo." }
+        // AGORA COM 100 PERGUNTAS DE ALTA FIDELIDADE CÓSMICA NO ESTOQUE
+        const BASE_QUESTIONS = [
+            { q: "Qual é a velocidade aproximada da luz no vácuo?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
+            { q: "O que define a fronteira teórica ao redor de um buraco negro?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade", "Ergosfera"], correct: 1, curiosity: "Cruzando o Horizonte de Eventos, a velocidade de escape excede a da luz." },
+            { q: "Qual cientista propôs a Teoria da Relatividade Geral?", options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Stephen Hawking"], correct: 2, curiosity: "A relatividade geral foi comprovada em 1919 num eclipse em Sobral, no Brasil." },
+            { q: "Qual o nome do efeito de dilatação/compressão de ondas em movimento?", options: ["Efeito Doppler", "Efeito Fotoelétrico", "Efeito Estufa", "Efeito Joule"], correct: 0, curiosity: "O redshift Doppler prova que o universo está em expansão acelerada." },
+            { q: "Que radiação residual e uniforme é considerada o 'eco' do Big Bang?", options: ["Radiação Hawking", "Radiação Cósmica de Fundo", "Raios Gama", "Vento Solar"], correct: 1, curiosity: "Foi descoberta acidentalmente em 1964 por engenheiros de rádio." },
+            { q: "Qual o raio crítico que determina o tamanho do horizonte de eventos?", options: ["Raio de Hubble", "Raio de Hawking", "Raio de Bohr", "Raio de Schwarzschild"], correct: 3, curiosity: "Se a Terra fosse comprimida ao tamanho de uma gude, viraria um buraco negro." },
+            { q: "Qual componente invisível compõe cerca de 27% do universo?", options: ["Matéria Escura", "Energia Escura", "Antiméria", "Plasma Interestelar"], correct: 0, curiosity: "É detectada puramente através dos seus efeitos gravitacionais em galáxias." },
+            { q: "O processo que alimenta as estrelas fundindo núcleos leves chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um de hélio." },
+            { q: "Que estrelas colapsadas giram rápido emitindo feixes de radiação?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares têm campos magnéticos bilhões de vezes mais fortes que a Terra." },
+            { q: "Qual força atua como motor expansivo do universo superando a gravidade?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade cósmica." },
+            { q: "A perda teórica de massa de um buraco negro por efeitos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Planck", "Evaporação de Schwarzschild", "Ejeção Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria em 1974." },
+            { q: "Que distorções no espaço-tempo são geradas por colisões de buracos negros?", options: ["Ondas de Rádio", "Ondas Gravitacionais", "Fendas Hiperespaciais", "Ventos Geomagnéticos"], correct: 1, curiosity: "Foram detectadas pela primeira vez de forma direta em 2015 pelo LIGO." },
+            { q: "Qual é o elemento químico mais abundante do espaço cósmico?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "Representa cerca de 75% da massa elementar visível de todo o universo." },
+            { q: "O limite máximo de massa estável para uma estrela anã branca é o:", options: ["Limite de Chandrasekhar", "Limite de Oppenheimer", "Limite de Roche", "Limite de Eddington"], correct: 0, curiosity: "Esse limite equivale a aproximadamente 1,44 vezes a massa do Sol." },
+            { q: "Como se chama o fenômeno em que a gravidade de um objeto dobra a luz?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Age como um telescópio natural para observar o universo profundo." },
+            // Expandindo para o estoque de 100 itens (Abreviações científicas precisas para preservar performance)
+            { q: "O que é o Redshift na astronomia?", options: ["Deslocamento para o vermelho", "Aumento de temperatura", "Colapso estelar", "Velocidade nula"], correct: 0, curiosity: "Indica que o objeto está se afastando de nós." },
+            { q: "Qual galáxia está em rota de colisão com a Via Láctea?", options: ["Andrômeda", "Magalhães", "Sombreiro", "Triângulo"], correct: 0, curiosity: "O impacto ocorrerá em cerca de 4.5 bilhões de anos." },
+            { q: "Quantos planetas existem no nosso sistema solar?", options: ["7", "8", "9", "10"], correct: 1, curiosity: "Plutão foi reclassificado como planeta anão em 2006." },
+            { q: "Qual é o maior planeta do Sistema Solar?", options: ["Saturno", "Marte", "Júpiter", "Urano"], correct: 2, curiosity: "Júpiter tem uma massa duas vezes maior que todos os outros planetas juntos." },
+            { q: "Qual o nome da maior lua de Saturno?", options: ["Titã", "Europa", "Ganimedes", "Fobos"], correct: 0, curiosity: "É a única lua do sistema solar com uma atmosfera densa estável." },
+            { q: "O que é uma Unidade Astronômica (UA)?", options: ["Distância Terra-Lua", "Distância Terra-Sol", "Raio de Júpiter", "Tamanho da Via Láctea"], correct: 1, curiosity: "1 UA equivale a aproximadamente 150 milhões de quilômetros." },
+            { q: "Que tipo de galáxia é a nossa Via Láctea?", options: ["Elíptica", "Irregular", "Espiral Barrada", "Lenticular"], correct: 2, curiosity: "Ela possui quatro braços espirais principais identificados." },
+            { q: "Qual a temperatura aproximada no núcleo do Sol?", options: ["1.5 milhão °C", "15 milhões °C", "150.000 °C", "5.500 °C"], correct: 1, curiosity: "A essa temperatura, a matéria existe apenas na forma de plasma quântico." },
+            { q: "O que causa as Auroras Polares na Terra?", options: ["Efeito Estufa", "Partículas do Vento Solar", "Poluição Atmosférica", "Reflexo dos oceanos"], correct: 1, curiosity: "O campo magnético terrestre canaliza as partículas rumo aos polos." },
+            { q: "Qual planeta tem o dia mais longo que o seu ano?", options: ["Mercúrio", "Vênus", "Marte", "Netuno"], correct: 1, curiosity: "Vênus leva mais tempo para girar em torno de si do que ao redor do Sol." },
+            { q: "Qual planeta possui a maior montanha do Sistema Solar?", options: ["Marte", "Vênus", "Terra", "Júpiter"], correct: 0, curiosity: "O Monte Olimpo tem mais de 21 km de altura, 3x o Everest." },
+            { q: "O telescópio James Webb opera principalmente em qual espectro?", options: ["Luz Visível", "Ultravioleta", "Infravermelho", "Raios-X"], correct: 2, curiosity: "Permite ver através das nuvens de poeira cósmica interestelar." },
+            { q: "Quem foi o primeiro humano a viajar para o espaço sideral?", options: ["Neil Armstrong", "Yuri Gagarin", "Buzz Aldrin", "John Glenn"], correct: 1, curiosity: "Disse a famosa frase: 'A Terra é azul'." },
+            { q: "Que nome se dá às manchas escuras na superfície solar?", options: ["Manchas Solares", "Crateras", "Erupções", "Zonas Mortas"], correct: 0, curiosity: "São áreas ligeiramente mais frias causadas por fluxos magnéticos." },
+            { q: "O que é um Ano-Luz?", options: ["Medida de tempo", "Medida de distância", "Medida de velocidade", "Intensidade luminosa"], correct: 1, curiosity: "É a distância que a luz percorre em um ano: 9.46 trilhões de km." },
+            { q: "Qual a lua mais densa e geologicamente ativa do sistema solar?", options: ["Europa", "Ío", "Titã", "Calisto"], correct: 1, curiosity: "Ío possui centenas de vulcões ativos gerados por forças de maré." },
+            { q: "Qual planeta orbita mais próximo do Sol?", options: ["Vênus", "Mercúrio", "Marte", "Terra"], correct: 1, curiosity: "Apesar de próximo, não é o mais quente devido à falta de atmosfera." },
+            { q: "O que é a Ergosfera de um buraco negro em rotação?", options: ["Zona de colapso", "Região externa ao horizonte", "Ponto central", "Anel de fótons"], correct: 1, curiosity: "Nesta área, o próprio tecido do espaço é arrastado pelo giro." },
+            { q: "Qual elemento químico confere a cor azul a Netuno?", options: ["Hidrogênio", "Hélio", "Metano", "Nitrogênio"], correct: 2, curiosity: "O metano absorve a luz vermelha e reflete a azul de volta ao espaço." },
+            { q: "Que nome se dá aos meteoroides que conseguem atingir o solo da Terra?", options: ["Meteoros", "Meteoritos", "Asteroides", "Cometas"], correct: 1, curiosity: "Antes de atingir o solo, na atmosfera, são chamados apenas de meteoros." },
+            { q: "Qual constelação abriga a estrela supergigante vermelha Betelgeuse?", options: ["Ursa Maior", "Orion", "Escorpião", "Touro"], correct: 1, curiosity: "Betelgeuse está no estágio final de vida e virará uma supernova." },
+            { q: "O paradoxo de Olbers questiona o quê?", options: ["A escuridão da noite", "A velocidade da luz", "A órbita de Marte", "A gravidade quântica"], correct: 0, curiosity: "Se o universo fosse infinito e estático, a noite deveria ser clara." },
+            { q: "Qual cientista calculou as órbitas elípticas dos planetas?", options: ["Galileu Galilei", "Johannes Kepler", "Copérnico", "Cassini"], correct: 1, curiosity: "Suas conclusões originaram as famosas três Leis de Kepler." },
+            { q: "Qual a estrela mais próxima do nosso Sistema Solar?", options: ["Sirius", "Proxima Centauri", "Vega", "Altair"], correct: 1, curiosity: "Fica localizada a cerca de 4.24 anos-luz de distância de nós." },
+            { q: "O que compõe a maior parte dos anéis de Saturno?", options: ["Rocha vulcânica", "Gelo de água e poeira", "Ferro líquido", "Gás hélio"], correct: 1, curiosity: "Os pedaços variam de grãos de poeira a blocos do tamanho de prédios." },
+            { q: "Que nome se dá ao aglomerado de trilhões de cometas nos limites do Sistema Solar?", options: ["Cinturão de Asteroides", "Cinturão de Kuiper", "Nuvem de Oort", "Disco Disperso"], correct: 2, curiosity: "É o berço teórico dos cometas de longo período cósmico." },
+            { q: "Quem utilizou a luneta pela primeira vez para observar os planetas?", options: ["Newton", "Galileu Galilei", "Kepler", "Bruno"], correct: 1, curiosity: "Descobriu as quatro maiores luas de Júpiter em 1610." },
+            { q: "O que é uma Singularidade?", options: ["Ponto de densidade infinita", "Estrela apagada", "Órbita circular", "Galáxia jovem"], correct: 0, curiosity: "O local onde as leis da física tradicional perdem a validade." },
+            { q: "Qual planeta gasoso possui o eixo de rotação inclinado em quase 98 graus?", options: ["Urano", "Netuno", "Saturno", "Júpiter"], correct: 0, curiosity: "Urano praticamente 'rola' de lado em sua órbita solar." },
+            { q: "Qual a idade estimada do nosso Universo?", options: ["4.6 bilhões anos", "13.8 bilhões anos", "9.3 bilhões anos", "20 bilhões anos"], correct: 1, curiosity: "Medida calculada com precisão por dados do satélite Planck." },
+            { q: "Qual a idade estimada do nosso Sistema Solar?", options: ["13.8 bilhões anos", "4.6 bilhões anos", "1 bilhão de anos", "500 milhões anos"], correct: 1, curiosity: "Datado via análise de meteoritos primitivos coletados." },
+            { q: "O que define um exoplaneta?", options: ["Planeta sem órbita", "Planeta fora do Sistema Solar", "Planeta gasoso gigante", "Cometa modificado"], correct: 1, curiosity: "Milhares deles já foram detectados em nossa galáxia." },
+            { q: "A Grande Mancha Vermelha de Júpiter é o quê?", options: ["Uma cratera de impacto", "Uma tempestade anticiclônica", "Um vulcão ativo", "Uma nuvem de ferro"], correct: 1, curiosity: "Ela dura há mais de 300 anos e é maior que a Terra." },
+            { q: "Qual o principal componente da atmosfera de Vênus?", options: ["Oxigênio", "Nitrogênio", "Dióxido de Carbono", "Metano"], correct: 2, curiosity: "Gera um efeito estufa devastador, tornando-o o planeta mais quente." },
+            { q: "Qual lua possui um oceano subsuperficial sob uma camada de gelo?", options: ["Europa", "Lua da Terra", "Fobos", "Deimos"], correct: 0, curiosity: "É um dos locais mais promissores na busca por vida microbiana." },
+            { q: "O que são pulsares?", options: ["Estrelas de nêutrons", "Buracos negros pequenos", "Buracos de minhoca", "Planetas de ferro"], correct: 0, curiosity: "Funcionam como faróis cósmicos girando a velocidades extremas." },
+            { q: "O modelo heliocêntrico propõe o que no centro?", options: ["A Terra", "O Sol", "O buraco negro", "A Galáxia"], correct: 1, curiosity: "Defendido arduamente por Nicolau Copérnico e Galileu." },
+            { q: "O modelo geocêntrico propõe o que no centro?", options: ["O Sol", "A Terra", "A Lua", "O Universo"], correct: 1, curiosity: "Foi a visão dominante no mundo ocidental durante a antiguidade." },
+            { q: "Qual sonda humana saiu pela primeira vez do Sistema Solar?", options: ["Voyager 1", "Voyager 2", "Hubble", "New Horizons"], correct: 0, curiosity: "Leva consigo o famoso Disco de Ouro com saudações terrestres." },
+            { q: "O Cinturão de Asteroides fica localizado entre quais planetas?", options: ["Terra e Marte", "Marte e Júpiter", "Júpiter e Saturno", "Vênus e Terra"], correct: 1, curiosity: "Contém milhões de fragmentos rochosos remanescentes do sistema solar." },
+            { q: "Qual o maior asteroide e planeta anão do cinturão interno?", options: ["Ceres", "Vesta", "Eris", "Plutão"], correct: 0, curiosity: "Ceres possui cerca de um terço de toda a massa do cinturão." },
+            { q: "O que causa a queima de um meteoro ao entrar na atmosfera?", options: ["Fricção/Compressão do ar", "Calor do espaço", "Magnetismo", "Combustão interna"], correct: 0, curiosity: "O ar à frente comprime tão rápido que superaquece o fragmento." },
+            { q: "Que tipo de estrela é o nosso Sol?", options: ["Anã Vermelha", "Anã Amarela", "Gigante Azul", "Supergigante"], correct: 1, curiosity: "Classificado espectralmente como uma estrela do tipo G2V." },
+            { q: "Qual o estágio final de vida do Sol?", options: ["Supernova", "Anã Negra (via Anã Branca)", "Buraco Negro", "Estrela de Nêutrons"], correct: 1, curiosity: "Ele não possui massa suficiente para explodir em supernova." },
+            { q: "Que tipo de corpo celeste brilha ao evaporar gelo perto do Sol?", options: ["Asteroide", "Cometa", "Meteoro", "Anã Marrom"], correct: 1, curiosity: "O aquecimento cria a famosa cauda que aponta contra o vento solar." },
+            { q: "Qual o nome da velocidade mínima para sair da atração gravitacional de um corpo?", options: ["Velocidade Terminal", "Velocidade de Escape", "Velocidade Quântica", "Inércia Estelar"], correct: 1, curiosity: "Para a Terra, essa velocidade é de cerca de 11.2 km/s." },
+            { q: "O horizonte de eventos é uma barreira de que tipo?", options: ["Física sólida", "Teórica/Gravitacional", "Gasosa densa", "Magnética pura"], correct: 1, curiosity: "Não há superfície ali, apenas o ponto onde a luz não escapa." },
+            { q: "Qual galáxia elíptica gigante fica próxima do Grupo Local?", options: ["M87", "Sombreiro", "Via Láctea", "Magalhães"], correct: 0, curiosity: "Seu buraco negro supermassivo foi o primeiro a ser fotografado na história." },
+            { q: "A radiação Hawking baseia-se em qual ramo da ciência?", options: ["Mecânica Quântica", "Física Newtoniana", "Eletrostática", "Termodinâmica clássica"], correct: 0, curiosity: "Une conceitos de relatividade geral e mecânica quântica molecular." },
+            { q: "Qual radiação possui fótons de maior energia?", options: ["Infravermelho", "Raios Gama", "Ondas de Rádio", "Luz Visível"], correct: 1, curiosity: "São emitidos em eventos cataclísmicos como hipernovas." },
+            { q: "Qual planeta foi descoberto por cálculos matemáticos antes de visto?", options: ["Urano", "Netuno", "Saturno", "Plutão"], correct: 1, curiosity: "Descoberto em 1846 após anomalias na órbita de Urano." },
+            { q: "O Cinturão de Kuiper localiza-se após qual planeta?", options: ["Urano", "Netuno", "Saturno", "Plutão"], correct: 1, curiosity: "É onde Plutão e vários outros planetas anões residem." },
+            { q: "O que são Anãs Marrons?", options: ["Planetas de metal", "Estrelas fracassadas", "Supernovas antigas", "Luas gigantes"], correct: 1, curiosity: "Não possuem massa suficiente para iniciar fusão estável de hidrogênio." },
+            { q: "O telescópio espacial Hubble foi lançado em qual década?", options: ["1970", "1980", "1990", "2000"], correct: 2, curiosity: "Revolucionou a astrofísica com imagens de campo ultra profundo." },
+            { q: "Qual a principal composição química das estrelas gigantes azuis?", options: ["Ferro e Carbono", "Hidrogênio e Hélio", "Oxigênio puro", "Silício"], correct: 1, curiosity: "Queimam combustível de forma extremamente rápida devido à massa." },
+            { q: "O Sol converte hidrogênio em hélio por qual processo?", options: ["Fissão", "Fusão", "Combustão", "Oxidação"], correct: 1, curiosity: "Este processo libera fótons que viajam até o nosso planeta." },
+            { q: "Qual é o planeta mais denso do nosso Sistema Solar?", options: ["Júpiter", "Terra", "Mercúrio", "Saturno"], correct: 1, curiosity: "A Terra possui densidade elevada devido ao seu grande núcleo metálico." },
+            { q: "Qual é o planeta menos denso do nosso Sistema Solar?", options: ["Netuno", "Saturno", "Urano", "Mercúrio"], correct: 1, curiosity: "Saturno flutuaria em uma banheira gigante de água se fosse possível." },
+            { q: "Quantas estrelas existem aproximadamente na Via Láctea?", options: ["1 a 4 bilhões", "100 a 400 bilhões", "10 a 20 trilhões", "50 milhões"], correct: 1, curiosity: "O Sol é apenas uma entre essas centenas de bilhões de estrelas." },
+            { q: "Que nome se dá à poeira e gás entre as estrelas?", options: ["Vácuo absoluto", "Meio Interestelar", "Esmegma Cósmico", "Antimatéria"], correct: 1, curiosity: "É de onde novas estrelas e sistemas planetários se aglutinam." },
+            { q: "O que acontece com o tempo perto de um forte campo gravitacional?", options: ["Passa mais rápido", "Passa mais devagar", "Para completamente", "Inverte o sentido"], correct: 1, curiosity: "Efeito conhecido como dilatação temporal gravitacional." },
+            { q: "Quem propôs a constante cosmológica inserida na relatividade?", options: ["Hubble", "Einstein", "Hawking", "Newton"], correct: 1, curiosity: "Ele a removeu chamando de seu maior erro, mas hoje apoia a energia escura." },
+            { q: "A velocidade da luz pode ser superada por qual elemento material?", options: ["Tachyon", "Elétrons excitados", "Nenhum elemento", "Fótons solares"], correct: 2, curiosity: "A relatividade impõe a velocidade da luz como o limite absoluto local." },
+            { q: "Qual força une os prótons no núcleo atômico das estrelas?", options: ["Gravidade", "Eletromagnetismo", "Força Nuclear Forte", "Força Fraca"], correct: 2, curiosity: "Vence a repulsão elétrica natural de cargas iguais." },
+            { q: "O efeito de lente gravitacional apoia qual teoria?", options: ["Relatividade Geral", "Gravitação Newtoniana", "Teoria das Cordas", "Mecânica Quântica"], correct: 0, curiosity: "Prova que a massa curva o espaço geométrico ao seu redor." },
+            { q: "O que é uma estrela de nêutrons?", options: ["Remanescente ultra denso", "Planeta em fusão", "Nuvem de gás", "Estrela fria"], correct: 0, curiosity: "Uma colher de chá de sua matéria pesaria bilhões de toneladas." },
+            { q: "Qual o maior exoplaneta mapeado em densidade gasosa?", options: ["Kepler-22b", "HD 100546 b", "Gliese 581g", "Proxima b"], correct: 1, curiosity: "É uma supergigante com raio dezenas de vezes maior que Júpiter." },
+            { q: "Qual satélite estuda os sismos estelares e exoplanetas?", options: ["Kepler", "COBE", "WMAP", "SOHO"], correct: 0, curiosity: "O telescópio caçador de exoplanetas da NASA monitorou mais de 150 mil estrelas." },
+            { q: "O eclipse solar ocorre em qual fase da Lua?", options: ["Cheia", "Nova", "Crescente", "Minguante"], correct: 1, curiosity: "Quando a Lua posiciona-se exatamente entre a Terra e o Sol." },
+            { q: "O eclipse lunar ocorre em qual fase da Lua?", options: ["Nova", "Minguante", "Cheia", "Crescente"], correct: 2, curiosity: "A Terra projeta sua sombra diretamente na superfície lunar visível." },
+            { q: "Qual o gás mais abundante no planeta Terra?", options: ["Oxigênio", "Nitrogênio", "Argônio", "Carbono"], correct: 1, curiosity: "O Nitrogênio compõe aproximadamente 78% da nossa atmosfera." },
+            { q: "Qual planeta do sistema solar não possui luas?", options: ["Marte", "Vênus", "Netuno", "Urano"], correct: 1, curiosity: "Mercúrio e Vênus são os únicos sem satélites naturais." },
+            { q: "Qual planeta possui as luas Fobos e Deimos?", options: ["Júpiter", "Marte", "Saturno", "Netuno"], correct: 1, curiosity: "São dois asteroides capturados pela gravidade do planeta vermelho." },
+            { q: "O que são estrelas da População III?", options: ["Estrelas muito velhas", "Estrelas primordiais sem metais", "Estrelas como o Sol", "Anãs brancas frias"], correct: 1, curiosity: "As primeiras estrelas formadas após o Big Bang cósmico." },
+            { q: "Qual o nome do plano imaginário onde os planetas orbitam o Sol?", options: ["Eclíptica", "Equador Celeste", "Zodíaco", "Horizonte Local"], correct: 0, curiosity: "A maioria dos planetas varia apenas alguns graus desse alinhamento." },
+            { q: "Qual constante física dita a força da gravidade no universo?", options: ["Constante de Planck", "Constante Gravitacional (G)", "Constante de Boltzmann", "Velocidade C"], correct: 1, curiosity: "Foi medida originariamente por Henry Cavendish em laboratório." },
+            { q: "Que radiação o corpo humano emite naturalmente no espaço?", options: ["Raios ultravioleta", "Infravermelho térmico", "Micro-ondas", "Raios X"], correct: 1, curiosity: "Radiação eletromagnética invisível associada ao calor celular." },
+            { q: "O que é a espaghetificação estelar?", options: ["Fusão de galáxias", "Efeito de estiramento gravitacional", "Explosão de cometas", "Arrefecimento gasoso"], correct: 1, curiosity: "Objetos que caem em buracos negros são esticados como fios de esparguete." },
+            { q: "O que mede o ano cósmico?", options: ["Tempo do giro da Via Láctea", "Tempo de uma órbita da Terra", "Idade do Sol", "O tempo total do Big Bang"], correct: 0, curiosity: "O tempo para o Sol dar uma volta completa na Galáxia: ~230 milhões de anos." },
+            { q: "Qual partícula transmite a força eletromagnética?", options: ["Glúon", "Bóson W", "Fóton", "Gravíton"], correct: 2, curiosity: "O fóton é a partícula mediadora da luz e ondas de rádio." },
+            { q: "Qual partícula transmite a força gravitacional teorizada?", options: ["Glúon", "Fóton", "Gravíton", "Neutrino"], correct: 2, curiosity: "Uma partícula elementar hipotética na física quântica." },
+            { q: "Quantas dimensões compõem o tecido do espaço-tempo?", options: ["3 dimensões", "4 dimensões", "11 dimensões", "2 dimensões"], correct: 1, curiosity: "Três dimensões de espaço unificadas a uma dimensão temporal." },
+            { q: "Qual o maior objeto mapeado no universo observável?", options: ["Superaglomerado Laniakea", "Grande Muralha de Hércules-Corona Borealis", "Galáxia IC 1101", "Vazio de Boötes"], correct: 1, curiosity: "Uma estrutura de filamentos galácticos medindo bilhões de anos-luz." },
+            { q: "O vazio de Boötes é conhecido pelo quê?", options: ["Alta densidade de estrelas", "Uma gigantesca região vazia de galáxias", "Um super buraco negro", "Uma nebulosa brilhante"], correct: 1, curiosity: "Contém pouquíssimas galáxias em um diâmetro imenso de espaço." }
         ];
 
         // MÁQUINA DE ESTADOS GLOBAL
@@ -562,7 +564,7 @@
             isSoundOn: true,
             highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
             wins: parseInt(localStorage.getItem('eo_wins')) || 0,
-            mode: null, // 'solo', 'host', 'player'
+            mode: null, 
             currentQuestionIdx: 0,
             score: 0,
             shields: 100,
@@ -572,10 +574,11 @@
             canAnswer: false,
             roomPin: '',
             nickname: '',
-            players: [],
+            players: [], // { name, score, answered, rank }
             channelInstance: null,
             myLastAnswerCorrect: null,
-            myLastEarned: 0
+            myLastEarned: 0,
+            gameQuestions: [] // VARIÁVEL DE ESTOQUE PARA AS 15 SORTEADAS
         };
 
         const screens = {
@@ -596,14 +599,25 @@
             setupEventHandlers();
         });
 
+        // ALGORITMO SHUFFLE DE EXTRAÇÃO: 15 DE 100
+        function extractFifteenQuestions() {
+            let shuffled = [...BASE_QUESTIONS].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 15);
+        }
+
+        // SISTEMA DE ATRIBUIÇÃO DE RANKING BASEADO EM TELEMETRIA DE PONTUAÇÃO
+        function computeRank(score) {
+            if (score >= 12000) return "Almirante da Matriz";
+            if (score >= 8000) return "Comandante de Órbita";
+            if (score >= 4000) return "Tenente Estelar";
+            if (score >= 1500) return "Piloto de Voo";
+            return "Recruta Espacial";
+        }
+
         function loadStats() {
             document.getElementById('lblHighscore').innerText = state.highScore;
             document.getElementById('startWins').innerText = state.wins;
-            let rank = "Cadete Espacial";
-            if (state.highScore >= 12000) rank = "Almirante da Matriz";
-            else if (state.highScore >= 8000) rank = "Comandante Operacional";
-            else if (state.highScore >= 4000) rank = "Tenente de Órbita";
-            document.getElementById('startRank').innerText = rank;
+            document.getElementById('startRank').innerText = computeRank(state.highScore);
         }
 
         function switchScreen(targetScreen) {
@@ -613,7 +627,6 @@
         }
 
         function setupEventHandlers() {
-            // Sound Toggle
             document.getElementById('soundToggle').addEventListener('click', () => {
                 state.isSoundOn = !state.isSoundOn;
                 document.getElementById('soundText').innerText = state.isSoundOn ? "SOM LIGADO" : "MUTADO";
@@ -622,20 +635,20 @@
                 playBeep(440, 0.05);
             });
 
-            // Seleção de Modos
             document.getElementById('btnSelectSolo').addEventListener('click', () => {
                 playBeep(600, 0.1);
                 state.mode = 'solo';
                 document.getElementById('systemStatus').innerText = "Modo de Conexão: INDIVIDUAL";
                 document.getElementById('hudShieldRow').classList.remove('hidden');
                 document.getElementById('hudComboRow').classList.remove('hidden');
+                state.gameQuestions = extractFifteenQuestions(); // Sorteia 15 das 100 perguntas
                 startSoloGame();
             });
 
             document.getElementById('btnSelectMulti').addEventListener('click', () => {
                 playBeep(600, 0.1);
                 if (!getSupabase()) {
-                    alert("Aviso: Configurações de rede pendentes ou indisponíveis no servidor.");
+                    alert("Aviso: Inicialização pendente.");
                     return;
                 }
                 switchScreen(screens.multiMenu);
@@ -646,7 +659,6 @@
                 switchScreen(screens.modeSelect);
             });
 
-            // Host - Criar Sala
             document.getElementById('btnHostRoom').addEventListener('click', () => {
                 playBeep(700, 0.1);
                 state.mode = 'host';
@@ -657,17 +669,18 @@
                 state.roomPin = Math.floor(1000 + Math.random() * 9000).toString();
                 document.getElementById('lobbyPin').innerText = state.roomPin;
 
+                state.gameQuestions = extractFifteenQuestions(); // Sorteia as 15 perguntas para a sala
+
                 initHostChannel();
                 switchScreen(screens.lobby);
             });
 
-            // Player - Entrar na Sala
             document.getElementById('btnJoinRoom').addEventListener('click', () => {
                 const pin = document.getElementById('inputPin').value.trim();
                 const nick = document.getElementById('inputNickname').value.trim().toUpperCase();
 
                 if (pin.length !== 4 || !nick) {
-                    alert("Aviso: Introduza um PIN de 4 dígitos e um Nickname.");
+                    alert("Aviso: Forneça PIN e Nickname válidos.");
                     return;
                 }
 
@@ -679,7 +692,9 @@
 
                 document.getElementById('waitNickname').innerText = nick;
                 document.getElementById('waitPin').innerText = pin;
+                document.getElementById('waitRank').innerText = computeRank(0);
                 document.getElementById('cliName').innerText = nick;
+                document.getElementById('cliRank').innerText = computeRank(0);
 
                 initPlayerChannel();
             });
@@ -692,15 +707,16 @@
 
             document.getElementById('btnLaunchLobby').addEventListener('click', () => {
                 if (state.players.length === 0) {
-                    alert("Aviso: Aguarde a conexão de pelo menos um cadete.");
+                    alert("Aviso: Aguarde conexões para liberar a ignição.");
                     return;
                 }
                 playBeep(880, 0.2);
 
+                // Envia as perguntas sorteadas codificadas para os clientes para manter sincronismo completo
                 state.channelInstance.send({
                     type: 'broadcast',
                     event: 'start_game',
-                    payload: {}
+                    payload: { questionsPayload: state.gameQuestions }
                 });
 
                 state.currentQuestionIdx = 0;
@@ -708,14 +724,13 @@
                 loadQuestion();
             });
 
-            // Botões de clique das respostas do jogador móvel
             document.querySelectorAll('.cli-ans-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     if (!state.canAnswer) return;
                     state.canAnswer = false;
                     const ansIdx = parseInt(btn.getAttribute('data-ans'));
 
-                    const qData = QUESTIONS[state.currentQuestionIdx];
+                    const qData = state.gameQuestions[state.currentQuestionIdx];
                     const isCorrect = (ansIdx === qData.correct);
 
                     let pointsEarned = 0;
@@ -727,6 +742,8 @@
                     state.myLastAnswerCorrect = isCorrect;
                     state.myLastEarned = pointsEarned;
 
+                    document.getElementById('cliRank').innerText = computeRank(state.score);
+
                     state.channelInstance.send({
                         type: 'broadcast',
                         event: 'submit_answer',
@@ -734,7 +751,8 @@
                             nickname: state.nickname,
                             isCorrect: isCorrect,
                             points: pointsEarned,
-                            ansIdx: ansIdx
+                            ansIdx: ansIdx,
+                            currentRank: computeRank(state.score)
                         }
                     });
 
@@ -745,7 +763,6 @@
             });
         }
 
-        // REDE: INICIALIZAÇÃO DO CANAL DO HOST
         function initHostChannel() {
             const client = getSupabase();
             if (!client) return;
@@ -757,25 +774,27 @@
                 .on('broadcast', { event: 'join_lobby' }, (payload) => {
                     const { nickname } = payload.payload;
                     if (!state.players.find(p => p.name === nickname) && state.players.length < 45) {
-                        state.players.push({ name: nickname, score: 0, answered: false });
+                        state.players.push({ name: nickname, score: 0, answered: false, rank: computeRank(0) });
 
                         const container = document.getElementById('lobbyPlayers');
                         document.getElementById('lobbyCount').innerText = state.players.length;
 
                         container.innerHTML = state.players.map(p => `
-                            <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex items-center justify-center">
-                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> ${p.name}
+                            <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex flex-col items-center justify-center">
+                                <span class="text-white">${p.name}</span>
+                                <span class="text-[8px] text-gray-500">${p.rank}</span>
                             </div>
                         `).join('');
                         playBeep(587, 0.05);
                     }
                 })
                 .on('broadcast', { event: 'submit_answer' }, (payload) => {
-                    const { nickname, points } = payload.payload;
+                    const { nickname, points, currentRank } = payload.payload;
                     let p = state.players.find(pl => pl.name === nickname);
                     if (p && !p.answered) {
                         p.answered = true;
                         p.score += points;
+                        p.rank = currentRank;
 
                         const totalAnswered = state.players.filter(pl => pl.answered).length;
                         if (totalAnswered >= state.players.length) {
@@ -786,7 +805,6 @@
                 .subscribe();
         }
 
-        // REDE: INICIALIZAÇÃO DO CANAL DO JOGADOR
         function initPlayerChannel() {
             const client = getSupabase();
             if (!client) return;
@@ -794,7 +812,8 @@
             state.channelInstance = client.channel(`room_${state.roomPin}`);
 
             state.channelInstance
-                .on('broadcast', { event: 'start_game' }, () => {
+                .on('broadcast', { event: 'start_game' }, (payload) => {
+                    state.gameQuestions = payload.payload.questionsPayload; // Recebe o vetor de 15 do Host
                     switchScreen(screens.playerClient);
                     document.getElementById('cliActionState').classList.add('hidden');
                     document.getElementById('cliWaitState').classList.remove('hidden');
@@ -825,17 +844,17 @@
                         icon.innerHTML = "✓";
                         title.className = "text-base font-orbitron font-bold text-green-400";
                         title.innerText = "ALVO BLOQUEADO";
-                        pts.innerText = `+${state.myLastEarned} Pontos computados.`;
+                        pts.innerText = `+${state.myLastEarned} Pontos. Patente: ${computeRank(state.score)}`;
                     } else {
                         icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-red-500 text-red-400 font-bold text-lg";
                         icon.innerHTML = "✕";
                         title.className = "text-base font-orbitron font-bold text-red-400";
                         title.innerText = "DESALINHADO";
-                        pts.innerText = "0 pontos computados.";
+                        pts.innerText = `0 pontos acumulados.`;
                     }
                 })
                 .on('broadcast', { event: 'game_over' }, () => {
-                    alert("Simulação Concluída! Redirecionando para console principal.");
+                    alert("Simulação Concluída! Retornando para calibração.");
                     location.reload();
                 })
                 .subscribe((status) => {
@@ -847,13 +866,12 @@
                         });
                         switchScreen(screens.wait);
                     } else {
-                        alert("Falha de conexão com a sala.");
+                        alert("Falha de conexão.");
                         switchScreen(screens.modeSelect);
                     }
                 });
         }
 
-        // MOTOR DO JOGO INDIVIDUAL
         function startSoloGame() {
             state.currentQuestionIdx = 0;
             state.score = 0;
@@ -871,21 +889,20 @@
         }
 
         function loadQuestion() {
-            if (state.currentQuestionIdx >= QUESTIONS.length) {
+            if (state.currentQuestionIdx >= state.gameQuestions.length) {
                 endGame();
                 return;
             }
 
-            const qData = QUESTIONS[state.currentQuestionIdx];
+            const qData = state.gameQuestions[state.currentQuestionIdx];
             document.getElementById('lblQuestion').innerText = qData.q;
             document.getElementById('lblCuriosity').innerText = qData.curiosity;
 
-            const remainingRatio = (QUESTIONS.length - state.currentQuestionIdx) / QUESTIONS.length;
+            const remainingRatio = (state.gameQuestions.length - state.currentQuestionIdx) / state.gameQuestions.length;
             const distanceKM = Math.round(remainingRatio * 120000);
             document.getElementById('txtDistance').innerText = distanceKM.toLocaleString('pt-PT') + " KM";
             document.getElementById('barDistance').style.width = (remainingRatio * 100) + "%";
 
-            // Modifica posição visual da Terra
             const earthEl = document.getElementById('gameEarth');
             if (earthEl) {
                 earthEl.style.transform = `scale(${0.4 + remainingRatio * 0.6})`;
@@ -914,6 +931,7 @@
             state.timer = 25;
             document.getElementById('txtTimer').innerText = state.timer + "s";
             document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400";
+            document.getElementById('txtQuestionCounter').innerText = `${String(state.currentQuestionIdx + 1).padStart(2, '0')} / 15`;
 
             state.canAnswer = true;
 
@@ -944,7 +962,7 @@
 
         function evaluateSoloAnswer(idx) {
             clearInterval(state.timerId);
-            const qData = QUESTIONS[state.currentQuestionIdx];
+            const qData = state.gameQuestions[state.currentQuestionIdx];
 
             if (idx === qData.correct) {
                 const points = Math.round((100 + state.timer * 10) * state.combo);
@@ -1008,34 +1026,40 @@
             }
         }
 
+        // ALTERADO PARA MOSTRAR EXATAMENTE O TOP 10 INTEGRADO AO SISTEMA DE RANKING
         function showLeaderboardScreen() {
             switchScreen(screens.leaderboard);
             state.players.sort((a, b) => b.score - a.score);
 
             const container = document.getElementById('leaderboardContainer');
-            container.innerHTML = state.players.slice(0, 5).map((p, idx) => `
-                <div class="flex justify-between items-center bg-black/60 p-3 border border-cyan-500/15 rounded-xl font-mono text-sm">
+            
+            // Extrai as 10 melhores pontuações em vez de apenas 5
+            container.innerHTML = state.players.slice(0, 10).map((p, idx) => `
+                <div class="flex justify-between items-center bg-black/60 p-3 border ${idx === 0 ? 'border-yellow-500/30' : 'border-cyan-500/15'} rounded-xl font-mono text-sm">
                     <div class="flex items-center space-x-3">
-                        <span class="text-xs font-orbitron font-bold text-cyan-500/50">#0${idx+1}</span>
-                        <span class="font-bold text-white">${p.name}</span>
+                        <span class="text-xs font-orbitron font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-500/50'}">#${String(idx+1).padStart(2, '0')}</span>
+                        <div class="text-left">
+                            <span class="font-bold text-white block">${p.name}</span>
+                            <span class="text-[9px] uppercase tracking-wider text-purple-400">${p.rank}</span>
+                        </div>
                     </div>
                     <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
                 </div>
             `).join('');
 
             const btnNext = document.getElementById('btnNextQuestion');
-            if (state.currentQuestionIdx + 1 >= QUESTIONS.length) {
-                btnNext.innerText = "FINALIZAR DIAGNÓSTICO";
+            if (state.currentQuestionIdx + 1 >= state.gameQuestions.length) {
+                btnNext.innerText = "FINALIZAR MAPA DE FLUXO";
             } else {
-                btnNext.innerText = `AVANÇAR PARA QUESTÃO 0${state.currentQuestionIdx + 2}`;
+                btnNext.innerText = `AVANÇAR PARA ETAPA 0${state.currentQuestionIdx + 2}`;
             }
 
             btnNext.onclick = () => {
                 playBeep(600, 0.1);
                 state.currentQuestionIdx++;
-                if (state.currentQuestionIdx >= QUESTIONS.length) {
+                if (state.currentQuestionIdx >= state.gameQuestions.length) {
                     state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} });
-                    alert("Simulação Concluída!");
+                    alert("Simulação Concluída! Verifique o console final.");
                     location.reload();
                 } else {
                     switchScreen(screens.game);
@@ -1079,7 +1103,6 @@
             } catch(e) {}
         }
 
-        // MOTOR PROCEDURAL DO ESPAÇO
         function initSpaceCanvas() {
             const canvas = document.getElementById('spaceCanvas');
             const ctx = canvas.getContext('2d');
@@ -1109,7 +1132,6 @@
             animate();
         }
 
-        // MOTOR DO BURACO NEGRO DO COCKPIT
         function initBlackholeCanvas() {
             const canvas = document.getElementById('blackholeCanvas');
             const ctx = canvas.getContext('2d');
@@ -1137,7 +1159,6 @@
                 ctx.fill();
                 ctx.restore();
 
-                // Esfera do horizonte interno
                 ctx.fillStyle = '#000000';
                 ctx.beginPath();
                 ctx.arc(cx, cy, 16, 0, Math.PI * 2);
