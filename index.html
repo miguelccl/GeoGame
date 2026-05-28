@@ -13,47 +13,44 @@
     <style>
         body {
             font-family: 'Share Tech Mono', monospace;
-            background-color: #03010a;
+            background-color: #020205;
         }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .hidden { display: none !important; }
         
-        /* Cores Temáticas de Botões (Estilo Kahoot Espacial) */
-        .btn-red { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border: 1px solid #f87171; }
-        .btn-red:hover { background: linear-gradient(135deg, #f87171 0%, #b91c1c 100%); }
-        .btn-blue { background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); border: 1px solid #60a5fa; }
-        .btn-blue:hover { background: linear-gradient(135deg, #60a5fa 0%, #1d4ed8 100%); }
-        .btn-yellow { background: linear-gradient(135deg, #eab308 0%, #854d0e 100%); border: 1px solid #fde047; }
-        .btn-yellow:hover { background: linear-gradient(135deg, #fde047 0%, #a16207 100%); }
-        .btn-green { background: linear-gradient(135deg, #22c55e 0%, #14532d 100%); border: 1px solid #4ade80; }
-        .btn-green:hover { background: linear-gradient(135deg, #4ade80 0%, #15803d 100%); }
+        /* Cores Originais do Painel de Navegação Cyberpunk */
+        .btn-ans { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            border: 1px solid #22d3ee; 
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
+        }
+        .btn-ans:hover { 
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%); 
+            border-color: #06b6d4;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
 
-        /* Animação de tremor do Cockpit ao errar */
-        @keyframes shake {
+        /* Animação de tremor suave na falha do sistema */
+        @keyframes glitch-shake {
             0%, 100% { transform: translate(0, 0); }
-            20%, 60% { transform: translate(-8px, 5px); }
-            40%, 80% { transform: translate(8px, -5px); }
+            20% { transform: translate(-4px, 2px); }
+            40% { transform: translate(4px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
         }
-        .shake-active { animation: shake 0.4s ease-in-out; }
-        
-        /* Animação da Terra sendo sugada */
-        @keyframes succumb {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); }
-            100% { transform: scale(0) rotate(720deg); opacity: 0; filter: blur(8px); }
-        }
-        .succumb-earth { animation: succumb 2.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
+        .shake-active { animation: glitch-shake 0.3s ease-in-out; }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen overflow-x-hidden relative select-none">
 
     <canvas id="spaceCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
 
-    <header class="w-full border-b border-cyan-500/20 bg-black/40 backdrop-blur-md p-4 flex justify-between items-center z-50 relative">
+    <header class="w-full border-b border-cyan-500/20 bg-black/60 backdrop-blur-md p-4 flex justify-between items-center z-50 relative">
         <div class="flex items-center space-x-3">
             <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse"></div>
             <h1 class="font-orbitron font-black text-sm md:text-lg tracking-widest text-cyan-400">HORIZON'S EDGE</h1>
         </div>
-        <div id="systemStatus" class="text-xs text-cyan-500/70 hidden md:block font-mono">SISTEMA OPERACIONAL ESTÁVEL // DIRETRIZ PRIME</div>
+        <div id="systemStatus" class="text-xs text-cyan-500/70 hidden md:block font-mono">SISTEMA ONLINE // PAINEL DE NAVEGAÇÃO DIGITAL</div>
         <button id="soundToggle" class="flex items-center space-x-2 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider hover:bg-cyan-500/10 transition">
             <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i>
             <span id="soundText" class="text-cyan-400">SOM LIGADO</span>
@@ -62,51 +59,51 @@
 
     <main class="max-w-5xl mx-auto px-4 py-8 relative z-10 min-h-[calc(100vh-80px)] flex flex-col justify-center">
 
-        <section id="screenModeSelect" class="w-full max-w-xl mx-auto bg-zinc-950/60 border border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-lg shadow-[0_0_40px_rgba(6,182,212,0.15)] transition duration-300">
+        <section id="screenModeSelect" class="w-full max-w-xl mx-auto bg-zinc-950/80 border border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-lg shadow-[0_0_40px_rgba(6,182,212,0.15)] transition duration-300">
             <div class="text-center mb-8">
                 <h2 class="font-orbitron font-black text-3xl md:text-4xl tracking-tight text-white mb-2">OPERAÇÃO SINGULARIDADE</h2>
-                <p class="text-xs text-cyan-400/70 uppercase tracking-widest">Simulador Astro-Quântico de Resposta Tática</p>
+                <p class="text-xs text-cyan-400/70 uppercase tracking-widest">Interface de Treinamento e Resposta Tática</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <button id="btnSelectSolo" class="p-5 border border-cyan-500/30 rounded-2xl bg-gradient-to-b from-cyan-950/20 to-cyan-900/10 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition text-left group">
                     <i data-lucide="user" class="w-8 h-8 text-cyan-400 mb-3 group-hover:scale-110 transition"></i>
                     <h3 class="font-orbitron font-bold text-lg text-white mb-1">Voo Solo</h3>
-                    <p class="text-xs text-gray-400">Defenda a Terra sozinho respondendo o questionário sob pressão gravitacional.</p>
+                    <p class="text-xs text-gray-400">Teste seus conhecimentos individualmente e tente segurar a estabilidade do sistema.</p>
                 </button>
 
-                <button id="btnSelectMulti" class="p-5 border border-purple-500/30 rounded-2xl bg-gradient-to-b from-purple-950/20 to-purple-900/10 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition text-left group">
-                    <i data-lucide="users" class="w-8 h-8 text-purple-400 mb-3 group-hover:scale-110 transition"></i>
+                <button id="btnSelectMulti" class="p-5 border border-cyan-500/30 rounded-2xl bg-gradient-to-b from-cyan-950/10 to-cyan-900/5 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition text-left group">
+                    <i data-lucide="users" class="w-8 h-8 text-cyan-400 mb-3 group-hover:scale-110 transition"></i>
                     <h3 class="font-orbitron font-bold text-lg text-white mb-1">Esquadrão Multi</h3>
-                    <p class="text-xs text-gray-400">Conecte até 45 cadetes via rede em tempo real no estilo arena competitiva.</p>
+                    <p class="text-xs text-gray-400">Abra conexões WebSocket para conectar até 45 competidores na mesma sala.</p>
                 </button>
             </div>
 
             <div class="border-t border-cyan-500/10 pt-4 flex justify-between items-center text-xs text-gray-400">
                 <div>RECORDE ATUAL: <span id="lblHighscore" class="font-bold text-cyan-400">0</span> PTS</div>
-                <div>PATENTE: <span id="startRank" class="font-bold text-purple-400">Cadete Espacial</span> (<span id="startWins">0</span> Vitórias)</div>
+                <div>PATENTE: <span id="startRank" class="font-bold text-cyan-400">Cadete Espacial</span> (<span id="startWins">0</span> Vitórias)</div>
             </div>
         </section>
 
-        <section id="screenMultiMenu" class="w-full max-w-md mx-auto bg-zinc-950/60 border border-purple-500/30 rounded-3xl p-6 backdrop-blur-lg hidden transition duration-300">
-            <h2 class="font-orbitron font-black text-xl text-center text-purple-400 mb-6 uppercase tracking-wider">Painel de Comunicação Multicliente</h2>
+        <section id="screenMultiMenu" class="w-full max-w-md mx-auto bg-zinc-950/80 border border-cyan-500/30 rounded-3xl p-6 backdrop-blur-lg hidden transition duration-300">
+            <h2 class="font-orbitron font-black text-xl text-center text-cyan-400 mb-6 uppercase tracking-wider">Conexões de Rede</h2>
             
             <div class="space-y-4">
-                <button id="btnHostRoom" class="w-full py-4 rounded-xl font-orbitron font-bold bg-purple-600 hover:bg-purple-500 text-white shadow-lg transition">
+                <button id="btnHostRoom" class="w-full py-4 rounded-xl font-orbitron font-bold bg-cyan-600 hover:bg-cyan-500 text-black shadow-lg transition">
                     CRIAR SALA (HOST / TELA PRINCIPAL)
                 </button>
                 
                 <div class="relative flex py-2 items-center">
-                    <div class="flex-grow border-t border-purple-500/20"></div>
-                    <span class="flex-shrink mx-4 text-purple-400/50 text-xs">OU CONECTAR COMO PILOTO</span>
-                    <div class="flex-grow border-t border-purple-500/20"></div>
+                    <div class="flex-grow border-t border-cyan-500/20"></div>
+                    <span class="flex-shrink mx-4 text-cyan-400/50 text-xs">OU CONECTAR COMO CADETE</span>
+                    <div class="flex-grow border-t border-cyan-500/20"></div>
                 </div>
 
                 <div class="space-y-2">
-                    <input id="inputPin" type="text" placeholder="PIN DE 4 DÍGITOS" maxlength="4" class="w-full bg-black/50 border border-purple-500/30 rounded-xl p-3 text-center text-xl font-orbitron font-bold tracking-widest text-purple-300 focus:outline-none focus:border-purple-400">
-                    <input id="inputNickname" type="text" placeholder="NICKNAME DO PILOTO" maxlength="12" class="w-full bg-black/50 border border-purple-500/30 rounded-xl p-3 text-center font-mono tracking-wider text-white focus:outline-none focus:border-purple-400">
-                    <button id="btnJoinRoom" class="w-full py-3 rounded-xl border border-purple-500 bg-purple-950/40 hover:bg-purple-900/60 text-purple-300 font-bold tracking-wider transition">
-                        CONECTAR JATO À SALA
+                    <input id="inputPin" type="text" placeholder="PIN DE 4 DÍGITOS" maxlength="4" class="w-full bg-black/60 border border-cyan-500/30 rounded-xl p-3 text-center text-xl font-orbitron font-bold tracking-widest text-cyan-300 focus:outline-none focus:border-cyan-400">
+                    <input id="inputNickname" type="text" placeholder="NICKNAME DO PILOTO" maxlength="12" class="w-full bg-black/60 border border-cyan-500/30 rounded-xl p-3 text-center font-mono tracking-wider text-white focus:outline-none focus:border-cyan-400">
+                    <button id="btnJoinRoom" class="w-full py-3 rounded-xl border border-cyan-500 bg-cyan-950/40 hover:bg-cyan-900/40 text-cyan-300 font-bold tracking-wider transition">
+                        CONECTAR AO SINAL
                     </button>
                 </div>
 
@@ -116,14 +113,14 @@
             </div>
         </section>
 
-        <section id="screenLobby" class="w-full max-w-3xl mx-auto bg-zinc-950/60 border border-purple-500/30 rounded-3xl p-6 backdrop-blur-lg hidden transition duration-300">
-            <div class="flex flex-col md:flex-row justify-between items-center border-b border-purple-500/20 pb-4 mb-6">
+        <section id="screenLobby" class="w-full max-w-3xl mx-auto bg-zinc-950/80 border border-cyan-500/30 rounded-3xl p-6 backdrop-blur-lg hidden transition duration-300">
+            <div class="flex flex-col md:flex-row justify-between items-center border-b border-cyan-500/20 pb-4 mb-6">
                 <div>
-                    <h2 class="font-orbitron font-black text-2xl text-white">SALA DE EMBARQUE REMOTO</h2>
-                    <p class="text-xs text-purple-400">Aguardando a tripulação de cadetes conectar-se via WebSocket...</p>
+                    <h2 class="font-orbitron font-black text-2xl text-white">SALA DE EMBARQUE</h2>
+                    <p class="text-xs text-cyan-400/70">Aguardando a tripulação sintonizar o sinal...</p>
                 </div>
-                <div class="mt-4 md:mt-0 bg-purple-950/60 border border-purple-500 p-3 rounded-2xl text-center px-6 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                    <div class="text-[10px] text-purple-400 tracking-widest uppercase">PIN DE ACESSO</div>
+                <div class="mt-4 md:mt-0 bg-cyan-950/40 border border-cyan-500 p-3 rounded-2xl text-center px-6 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                    <div class="text-[10px] text-cyan-400 tracking-widest uppercase">PIN DE ACESSO</div>
                     <div id="lobbyPin" class="text-3xl font-orbitron font-black text-white tracking-widest">0000</div>
                 </div>
             </div>
@@ -131,29 +128,29 @@
             <div class="mb-6">
                 <div class="flex justify-between items-center text-xs text-gray-400 mb-2 font-mono">
                     <span>FROTA DE PILOTOS CONECTADOS:</span>
-                    <span><span id="lobbyCount" class="font-bold text-purple-400">0</span> / 45 CONECTADOS</span>
+                    <span><span id="lobbyCount" class="font-bold text-cyan-400">0</span> / 45 CONECTADOS</span>
                 </div>
                 <div id="lobbyPlayers" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 bg-black/40 p-4 rounded-xl min-h-[150px] max-h-[250px] overflow-y-auto text-xs font-mono">
-                    <div class="col-span-full text-center text-gray-600 italic py-8">Nenhum cadete na escuta ainda...</div>
+                    <div class="col-span-full text-center text-gray-600 italic py-8">Nenhum sinal detectado na frequência...</div>
                 </div>
             </div>
 
             <div class="flex space-x-3">
-                <button id="btnCancelLobby" class="w-1/3 py-3 border border-red-500/30 text-red-400 rounded-xl font-bold hover:bg-red-500/10 text-xs tracking-wider transition">
-                    ABORTAR MISSÃO
+                <button id="btnCancelLobby" class="w-1/3 py-3 border border-gray-600 text-gray-400 rounded-xl font-bold hover:bg-white/5 text-xs tracking-wider transition">
+                    DESCONECTAR SALA
                 </button>
-                <button id="btnLaunchLobby" class="w-2/3 py-3 bg-purple-600 hover:bg-purple-500 text-white font-orbitron font-bold rounded-xl shadow-lg text-sm tracking-widest transition animate-pulse">
-                    LANÇAR SIMULAÇÃO DE VOO
+                <button id="btnLaunchLobby" class="w-2/3 py-3 bg-cyan-600 hover:bg-cyan-500 text-black font-orbitron font-bold rounded-xl shadow-lg text-sm tracking-widest transition animate-pulse">
+                    INICIAR EXERCÍCIO DE SINAL
                 </button>
             </div>
         </section>
 
-        <section id="screenWait" class="w-full max-w-sm mx-auto text-center p-8 bg-zinc-950/60 border border-purple-500/20 rounded-3xl backdrop-blur-lg hidden transition duration-300">
-            <div class="w-16 h-16 border-4 border-purple-500/30 border-t-purple-400 rounded-full animate-spin mx-auto mb-6"></div>
+        <section id="screenWait" class="w-full max-w-sm mx-auto text-center p-8 bg-zinc-950/80 border border-cyan-500/20 rounded-3xl backdrop-blur-lg hidden transition duration-300">
+            <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin mx-auto mb-6"></div>
             <h2 id="waitNickname" class="font-orbitron font-black text-2xl text-white mb-1">PILOTO</h2>
-            <p class="text-xs text-purple-400 tracking-widest uppercase mb-4">Conectado na Sala <span id="waitPin">0000</span></p>
-            <div class="p-3 bg-purple-950/30 border border-purple-500/20 rounded-xl text-xs text-gray-400 italic">
-                Olhe para a tela principal do Host. A simulação começará assim que o comandante acionar os motores.
+            <p class="text-xs text-cyan-400 tracking-widest uppercase mb-4">Sinal Pareado na Sala <span id="waitPin">0000</span></p>
+            <div class="p-3 bg-cyan-950/20 border border-cyan-500/10 rounded-xl text-xs text-gray-400 italic">
+                Aguardando autorização do painel central para liberar os controles auxiliares...
             </div>
         </section>
 
@@ -161,63 +158,63 @@
             <div id="gameWindow" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="lg:col-span-1 space-y-4 flex flex-col justify-between">
-                    <div class="bg-zinc-950/60 border border-cyan-500/20 rounded-2xl p-4 backdrop-blur-md space-y-4">
+                    <div class="bg-zinc-950/80 border border-cyan-500/20 rounded-2xl p-4 backdrop-blur-md space-y-4">
                         <div class="flex justify-between items-center border-b border-cyan-500/10 pb-2">
-                            <span class="text-xs text-cyan-500 font-bold uppercase tracking-wider">Módulo de Questão</span>
+                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Módulo Operacional</span>
                             <span id="txtQuestionCounter" class="font-orbitron text-sm font-bold text-white">01 / 15</span>
                         </div>
                         
                         <div id="hudScoreRow" class="flex justify-between items-center">
-                            <span class="text-xs text-gray-400">Carga de Dados (Score):</span>
-                            <span id="txtScore" class="font-orbitron font-black text-lg text-green-400">0000</span>
+                            <span class="text-xs text-gray-400">Banco de Dados (Score):</span>
+                            <span id="txtScore" class="font-orbitron font-black text-lg text-cyan-400">0000</span>
                         </div>
 
                         <div id="hudComboRow" class="flex justify-between items-center">
-                            <span class="text-xs text-gray-400">Estabilização Quântica:</span>
+                            <span class="text-xs text-gray-400">Estabilizador de Sinal:</span>
                             <span id="txtCombo" class="bg-cyan-950 text-cyan-400 text-xs px-2 py-0.5 rounded font-bold">x1.0</span>
                         </div>
 
                         <div class="space-y-1">
                             <div class="flex justify-between text-[11px]">
-                                <span class="text-gray-400">Distância da Singularidade:</span>
+                                <span class="text-gray-400">Barreira de Sincronia:</span>
                                 <span id="txtDistance" class="font-mono text-cyan-300 font-bold">120.000 KM</span>
                             </div>
                             <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-cyan-500/10">
-                                <div id="barDistance" class="h-full bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500" style="width: 100%"></div>
+                                <div id="barDistance" class="h-full bg-cyan-500 transition-all duration-500" style="width: 100%"></div>
                             </div>
                         </div>
 
                         <div id="hudShieldRow" class="space-y-1">
                             <div class="flex justify-between text-[11px]">
-                                <span class="text-red-400 font-bold">Integridade Gravitacional da Terra:</span>
-                                <span id="txtShield" class="font-mono text-red-400 font-bold">100%</span>
+                                <span class="text-cyan-400 font-bold">Integridade da Matriz:</span>
+                                <span id="txtShield" class="font-mono text-cyan-400 font-bold">100%</span>
                             </div>
-                            <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-red-500/10">
-                                <div id="barShield" class="h-full bg-red-500 transition-all duration-300" style="width: 100%"></div>
+                            <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-cyan-500/20">
+                                <div id="barShield" class="h-full bg-cyan-500 transition-all duration-300" style="width: 100%"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-black/80 border border-red-500/20 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-48 lg:h-full">
-                        <div class="absolute top-2 left-3 text-[10px] text-red-500/60 font-mono tracking-widest">RADAR DE HORIZONTE DE EVENTOS</div>
+                    <div class="bg-black/60 border border-cyan-500/20 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-48 lg:h-full">
+                        <div class="absolute top-2 left-3 text-[10px] text-cyan-500/40 font-mono tracking-widest">MAPA GRÁFICO DE FREQUÊNCIA</div>
                         <canvas id="blackholeCanvas" width="160" height="160" class="z-10"></canvas>
-                        <div id="gameEarth" class="absolute w-8 h-8 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6] z-20 pointer-events-none transition-all duration-300" style="top:25%; left:25%"></div>
+                        <div id="gameEarth" class="absolute w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] z-20 pointer-events-none transition-all duration-300" style="top:50%; left:50%; transform: translate(-50%, -50%);"></div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2 flex flex-col justify-between space-y-4">
-                    <div class="bg-zinc-950/60 border border-cyan-500/20 rounded-2xl p-6 backdrop-blur-md flex-grow flex flex-col justify-center relative min-h-[160px]">
+                    <div class="bg-zinc-950/80 border border-cyan-500/20 rounded-2xl p-6 backdrop-blur-md flex-grow flex flex-col justify-center relative min-h-[160px]">
                         <div class="absolute top-2 right-4 flex items-center space-x-2">
-                            <i data-lucide="timer" class="w-4 h-4 text-yellow-500"></i>
-                            <span id="txtTimer" class="font-orbitron font-bold text-lg text-yellow-500">25s</span>
+                            <i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i>
+                            <span id="txtTimer" class="font-orbitron font-bold text-lg text-cyan-400">25s</span>
                         </div>
-                        <p id="lblQuestion" class="font-orbitron font-bold text-lg md:text-xl text-white leading-relaxed mt-4">Carregando telemetria quântica da missão...</p>
-                        <p id="lblComboCrit" class="text-xs text-yellow-400 font-bold mt-2 tracking-widest opacity-0 transition-opacity uppercase animate-pulse">▲ MULTIPLICADOR CRÍTICO ATIVADO! ▲</p>
+                        <p id="lblQuestion" class="font-orbitron font-bold text-lg md:text-xl text-white leading-relaxed mt-4">Carregando dados da transmissão...</p>
+                        <p id="lblComboCrit" class="text-xs text-cyan-300 font-bold mt-2 tracking-widest opacity-0 transition-opacity uppercase animate-pulse">▲ COMPILAÇÃO ESTÁVEL ENCONTRADA ▲</p>
                     </div>
 
-                    <div class="bg-cyan-950/20 border border-cyan-500/10 rounded-xl p-3 text-xs text-cyan-400/80 italic flex items-start space-x-2">
+                    <div class="bg-cyan-950/10 border border-cyan-500/10 rounded-xl p-3 text-xs text-cyan-400/60 italic flex items-start space-x-2">
                         <i data-lucide="info" class="w-4 h-4 flex-shrink-0 text-cyan-400 mt-0.5"></i>
-                        <span id="lblCuriosity">A gravidade de um buraco negro é tão extrema que distorce a passagem do próprio tempo.</span>
+                        <span id="lblCuriosity">Aguardando decodificação de dados complementares...</span>
                     </div>
 
                     <div id="answersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -228,83 +225,78 @@
         </section>
 
         <section id="screenPlayerClient" class="w-full max-w-md mx-auto hidden transition duration-300">
-            <div class="bg-zinc-950/60 border border-purple-500/30 rounded-3xl p-4 backdrop-blur-lg space-y-4">
+            <div class="bg-zinc-950/80 border border-cyan-500/20 rounded-3xl p-4 backdrop-blur-lg space-y-4">
                 
-                <div class="flex justify-between items-center border-b border-purple-500/10 pb-2 text-xs font-mono">
-                    <span id="cliName" class="text-purple-400 font-bold">PILOTO</span>
-                    <span class="text-gray-400">Carga: <span id="cliScore" class="text-green-400 font-bold">0</span> pts</span>
+                <div class="flex justify-between items-center border-b border-cyan-500/10 pb-2 text-xs font-mono">
+                    <span id="cliName" class="text-cyan-400 font-bold">PILOTO</span>
+                    <span class="text-gray-400">Score: <span id="cliScore" class="text-cyan-400 font-bold">0</span> pts</span>
                 </div>
 
                 <div id="cliActionState" class="space-y-3">
-                    <div class="text-center py-2">
-                        <p class="text-xs text-purple-300/80 tracking-widest uppercase font-orbitron">Escolha no Painel Móvel:</p>
+                    <div class="text-center py-1">
+                        <p class="text-xs text-cyan-400/70 tracking-widest uppercase font-orbitron">Escolha no Comando Remoto:</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 h-64">
-                        <button data-ans="0" class="cli-ans-btn btn-red rounded-2xl flex items-center justify-center text-3xl text-white font-black shadow-lg">▲</button>
-                        <button data-ans="1" class="cli-ans-btn btn-blue rounded-2xl flex items-center justify-center text-3xl text-white font-black shadow-lg">⬢</button>
-                        <button data-ans="2" class="cli-ans-btn btn-yellow rounded-2xl flex items-center justify-center text-3xl text-white font-black shadow-lg">■</button>
-                        <button data-ans="3" class="cli-ans-btn btn-green rounded-2xl flex items-center justify-center text-3xl text-white font-black shadow-lg">●</button>
+                    <div class="grid grid-cols-2 gap-3 h-56">
+                        <button data-ans="0" class="cli-ans-btn bg-slate-900 border border-cyan-500/40 rounded-xl flex items-center justify-center text-xl text-cyan-400 font-black hover:bg-slate-800 transition">OPÇÃO A</button>
+                        <button data-ans="1" class="cli-ans-btn bg-slate-900 border border-cyan-500/40 rounded-xl flex items-center justify-center text-xl text-cyan-400 font-black hover:bg-slate-800 transition">OPÇÃO B</button>
+                        <button data-ans="2" class="cli-ans-btn bg-slate-900 border border-cyan-500/40 rounded-xl flex items-center justify-center text-xl text-cyan-400 font-black hover:bg-slate-800 transition">OPÇÃO C</button>
+                        <button data-ans="3" class="cli-ans-btn bg-slate-900 border border-cyan-500/40 rounded-xl flex items-center justify-center text-xl text-cyan-400 font-black hover:bg-slate-800 transition">OPÇÃO D</button>
                     </div>
                 </div>
 
                 <div id="cliWaitState" class="hidden text-center py-12 space-y-4">
-                    <div class="w-10 h-10 border-4 border-purple-500/20 border-t-purple-400 rounded-full animate-spin mx-auto"></div>
-                    <p class="text-sm font-orbitron text-purple-300 font-bold tracking-wider">RESPOSTA ENVIADA COM SUCESSO</p>
-                    <p class="text-xs text-gray-400 max-w-xs mx-auto">Sua telemetria foi transmitida via WebSocket para a nave mãe. Aguardando os demais pilotos...</p>
+                    <div class="w-8 h-8 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin mx-auto"></div>
+                    <p class="text-xs font-orbitron text-cyan-400 tracking-wider">RESPOSTA ENVIADA À MATRIZ</p>
                 </div>
 
-                <div id="cliFeedbackState" class="hidden text-center py-8 space-y-4">
-                    <div id="cliFeedbackIcon">✓</div>
-                    <h3 id="cliFeedbackTitle" class="font-orbitron font-bold text-xl">DADO COMPUTADO</h3>
+                <div id="cliFeedbackState" class="hidden text-center py-8 space-y-3">
+                    <div id="cliFeedbackIcon" class="mx-auto flex justify-center items-center w-10 h-10 rounded-full border">✓</div>
+                    <h3 id="cliFeedbackTitle" class="font-orbitron font-bold text-lg">DADO PROCESSADO</h3>
                     <p id="cliFeedbackPoints" class="text-xs text-gray-400"></p>
                 </div>
 
             </div>
         </section>
 
-        <section id="screenLeaderboard" class="w-full max-w-xl mx-auto bg-zinc-950/80 border border-purple-500/40 rounded-3xl p-6 backdrop-blur-xl hidden transition duration-300">
+        <section id="screenLeaderboard" class="w-full max-w-xl mx-auto bg-zinc-950/90 border border-cyan-500/30 rounded-3xl p-6 backdrop-blur-xl hidden transition duration-300">
             <div class="text-center mb-6">
-                <h2 class="font-orbitron font-black text-2xl text-purple-400 tracking-wider">PLACAR DE TELEMETRIA DA FROTA</h2>
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Classificação de Desempenho em Tempo Real</p>
+                <h2 class="font-orbitron font-black text-2xl text-cyan-400 tracking-wider">DIAGNÓSTICO DE DESEMPENHO</h2>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Sincronia de Resposta dos Cadetes</p>
             </div>
 
             <div id="leaderboardContainer" class="space-y-2 mb-6 max-h-64 overflow-y-auto pr-1">
                 </div>
 
-            <button id="btnNextQuestion" class="w-full py-4 bg-purple-600 hover:bg-purple-500 text-white font-orbitron font-black rounded-xl tracking-widest shadow-lg text-sm transition">
-                AVANÇAR PARA A PRÓXIMA ETAPA
+            <button id="btnNextQuestion" class="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-black font-orbitron font-black rounded-xl tracking-widest shadow-lg text-xs transition">
+                SEGUIR PARA O PRÓXIMO BLOCO DE DADOS
             </button>
         </section>
 
     </main>
 
     <script>
-        // CONFIGURAÇÕES SUPABASE JÁ INTEGRADAS COM SUAS CREDENCIAIS
+        // CONFIGURAÇÃO REAL DO SEU BANCO DE DADOS SUPABASE
         const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq"; 
 
-        // Inicialização Segura do Cliente Supabase com Otimização de Tráfego de Alta Frequência
-        let supabase = null;
-        if (SUPABASE_URL !== "https://SEU-PROJETO.supabase.co") {
-            supabase = createSupabaseClient();
-        }
-
-        function createSupabaseClient() {
-            return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-                realtime: { params: { eventsPerSecond: 50 } } // Suporta rajadas de respostas de 45 jogadores simultâneos
+        // Instanciação corrigida da biblioteca global do Supabase
+        let _supabaseClient = null;
+        if (typeof supabase !== 'undefined' && supabase && supabase.createClient) {
+            _supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                realtime: { params: { eventsPerSecond: 40 } }
             });
         }
 
-        // BANCO DE DADOS DE PERGUNTAS (ASTRONOMIA E ASTROFÍSICA)
+        // BANCO DE QUESTÕES (ASTRONOMIA E ASTROFÍSICA)
         const QUESTIONS = [
-            { q: "Qual é a velocidade aproximada da luz no vácuo, limite universal para propagação de dados cósmicos?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 seconds para viajar do Sol até a Terra." },
+            { q: "Qual é a velocidade aproximada da luz no vácuo, limite universal para propagação de dados cósmicos?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
             { q: "O que define a fronteira teórica ao redor de um buraco negro da qual nada, nem mesmo a luz, pode escapar?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade Gravitacional", "Ergosfera"], correct: 1, curiosity: "Uma vez cruzado o Horizonte de Eventos, a velocidade de escape excede a velocidade da luz." },
             { q: "Qual cientista propôs a Teoria da Relatividade Geral, prevendo a curvatura do espaço-tempo pela massa?", options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Stephen Hawking"], correct: 2, curiosity: "A relatividade geral foi comprovada empiricamente em 1919 durante um eclipse solar em Sobral, no Brasil." },
             { q: "Qual o nome do efeito de dilatação e compressão de ondas emitidas por corpos celestes em movimento relativo?", options: ["Efeito Doppler", "Efeito Fotoelétrico", "Efeito Estufa Cósmico", "Efeito Joule"], correct: 0, curiosity: "O desvio para o vermelho (redshift) Doppler ajuda a descobrir que o universo está em expansão acelerada." },
             { q: "Que radiação residual e uniforme preenche todo o cosmos, considerada o 'eco' térmico do Big Bang?", options: ["Radiação Hawking", "Radiação Cósmica de Fundo", "Raios Gama de Magnetar", "Pulso de Vento Solar"], correct: 1, curiosity: "Esta radiação foi descoberta acidentalmente em 1964 por engenheiros que captavam um ruído constante de rádio." },
             { q: "Qual o nome do raio crítico que determina o tamanho do horizonte de eventos de um buraco negro esférico?", options: ["Raio de Hubble", "Raio de Hawking", "Raio de Bohr", "Raio de Schwarzschild"], correct: 3, curiosity: "Se comprimíssemos a massa da Terra ao tamanho de uma bola de gude (9mm), ela viraria um buraco negro." },
             { q: "Qual componente invisível compõe cerca de 27% do universo e não interage com a força eletromagnética?", options: ["Matéria Escura", "Energia Escura", "Antimatéria Quântica", "Plasma Interestelar"], correct: 0, curiosity: "A matéria escura é detectada puramente através dos seus efeitos gravitacionais na rotação de galáxias." },
-            { q: "O processo físico que alimenta a energia das estrelas fundindo núcleos leves em pesados chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão Fotônica", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um nucleus de hélio a milhões de graus." },
+            { q: "O processo físico que alimenta a energia das estrelas fundindo núcleos leves em pesados chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão Fotônica", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um núcleo de hélio a milhões de graus." },
             { q: "Que estrelas colapsadas e hiperdensas giram rapidamente emitindo feixes de radiação eletromagnética?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares possuem campos magnéticos bilhões de vezes mais fortes que o campo magnético terrestre." },
             { q: "Qual força fundamental da física atua como motor expansivo do universo, superando a gravidade a longas distâncias?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade de energia do universo atual." },
             { q: "A perda teórica de massa e energia de um buraco negro por efeitos térmicos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Quântico Planck", "Evaporação de Schwarzschild", "Ejeção de Massa Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria em 1974, provando que buracos negros emitem radiação térmica." },
@@ -314,12 +306,12 @@
             { q: "Como se chama o fenômeno óptico em que a gravidade de um objeto massivo dobra a luz de uma galáxia ao fundo?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Lentes gravitacionais agem como telescópios naturais, permitindo ver os objetos mais distantes do universo." }
         ];
 
-        // MÁQUINA DE ESTADOS GLOBAL DO JOGO
+        // MÁQUINA DE ESTADOS DO COMPILADOR
         let state = {
             isSoundOn: true,
             highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
             wins: parseInt(localStorage.getItem('eo_wins')) || 0,
-            mode: null, // 'solo', 'host', 'player'
+            mode: null,
             currentQuestionIdx: 0,
             score: 0,
             shields: 100,
@@ -348,7 +340,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             lucide.init();
             initSpaceCanvas();
-            initBlackholeCanvas();
+            initRadarCanvas();
             loadStats();
             setupEventHandlers();
         });
@@ -357,8 +349,8 @@
             document.getElementById('lblHighscore').innerText = state.highScore;
             document.getElementById('startWins').innerText = state.wins;
             let rank = "Cadete Espacial";
-            if (state.highScore >= 12000) rank = "Almirante das Galáxias";
-            else if (state.highScore >= 8000) rank = "Comandante de Frota";
+            if (state.highScore >= 12000) rank = "Almirante da Matriz";
+            else if (state.highScore >= 8000) rank = "Comandante Operacional";
             else if (state.highScore >= 4000) rank = "Tenente de Órbita";
             document.getElementById('startRank').innerText = rank;
         }
@@ -381,7 +373,7 @@
             document.getElementById('btnSelectSolo').addEventListener('click', () => {
                 playBeep(600, 0.1);
                 state.mode = 'solo';
-                document.getElementById('systemStatus').innerText = "Modo de Conexão: VOO INDIVIDUAL";
+                document.getElementById('systemStatus').innerText = "CONEXÃO: MATRIZ INDIVIDUAL";
                 document.getElementById('hudScoreRow').classList.remove('hidden');
                 document.getElementById('hudComboRow').classList.remove('hidden');
                 document.getElementById('hudShieldRow').classList.remove('hidden');
@@ -390,8 +382,8 @@
 
             document.getElementById('btnSelectMulti').addEventListener('click', () => {
                 playBeep(600, 0.1);
-                if (!supabase) {
-                    alert("Atenção: Configure corretamente suas credenciais Supabase no topo do script.");
+                if (!_supabaseClient) {
+                    alert("Erro técnico: O script do Supabase não inicializou de forma segura.");
                     return;
                 }
                 switchScreen(screens.multiMenu);
@@ -402,15 +394,477 @@
                 switchScreen(screens.modeSelect);
             });
 
-            // HOST: Abrir sala na rede via Broadcast
             document.getElementById('btnHostRoom').addEventListener('click', () => {
                 playBeep(700, 0.1);
                 state.mode = 'host';
-                document.getElementById('systemStatus').innerText = "Modo de Conexão: CONSOLE HOST PRINCIPAL";
+                document.getElementById('systemStatus').innerText = "CONEXÃO: CONSOLE HOST MATRIZ";
                 
                 document.getElementById('hudScoreRow').classList.add('hidden');
                 document.getElementById('hudComboRow').classList.add('hidden');
                 document.getElementById('hudShieldRow').classList.add('hidden');
 
                 state.roomPin = Math.floor(1000 + Math.random() * 9000).toString();
-                document.getElementById('lobbyPin').
+                document.getElementById('lobbyPin').innerText = state.roomPin;
+                
+                initHostChannel();
+                switchScreen(screens.lobby);
+            });
+
+            document.getElementById('btnJoinRoom').addEventListener('click', () => {
+                const pin = document.getElementById('inputPin').value.trim();
+                const nick = document.getElementById('inputNickname').value.trim().toUpperCase();
+
+                if (pin.length !== 4 || !nick) {
+                    alert("Aviso: Digite o PIN de 4 dígitos e um Nickname válido.");
+                    return;
+                }
+
+                playBeep(700, 0.1);
+                state.mode = 'player';
+                state.roomPin = pin;
+                state.nickname = nick;
+                document.getElementById('systemStatus').innerText = `CADETE: ${nick} | CANAL: ${pin}`;
+
+                document.getElementById('waitNickname').innerText = nick;
+                document.getElementById('waitPin').innerText = pin;
+                document.getElementById('cliName').innerText = nick;
+
+                initPlayerChannel();
+            });
+
+            document.getElementById('btnCancelLobby').addEventListener('click', () => {
+                playBeep(300, 0.1);
+                if(state.channelInstance) state.channelInstance.unsubscribe();
+                switchScreen(screens.modeSelect);
+            });
+
+            document.getElementById('btnLaunchLobby').addEventListener('click', () => {
+                if (state.players.length === 0) {
+                    alert("Operação negada: Nenhum piloto acoplou no terminal móvel ainda.");
+                    return;
+                }
+                playBeep(880, 0.2);
+                
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'start_game',
+                    payload: {}
+                });
+
+                state.currentQuestionIdx = 0;
+                switchScreen(screens.game);
+                loadQuestion();
+            });
+
+            document.querySelectorAll('.cli-ans-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!state.canAnswer) return;
+                    state.canAnswer = false;
+                    const ansIdx = parseInt(btn.getAttribute('data-ans'));
+                    
+                    const qData = QUESTIONS[state.currentQuestionIdx];
+                    const isCorrect = (ansIdx === qData.correct);
+                    
+                    let pointsEarned = 0;
+                    if (isCorrect) {
+                        pointsEarned = Math.round(500 + (state.timer / 25) * 500);
+                        state.score += pointsEarned;
+                    }
+
+                    state.myLastAnswerCorrect = isCorrect;
+                    state.myLastEarned = pointsEarned;
+
+                    state.channelInstance.send({
+                        type: 'broadcast',
+                        event: 'submit_answer',
+                        payload: {
+                            nickname: state.nickname,
+                            isCorrect: isCorrect,
+                            points: pointsEarned,
+                            ansIdx: ansIdx
+                        }
+                    });
+
+                    document.getElementById('cliActionState').classList.add('hidden');
+                    document.getElementById('cliWaitState').classList.remove('hidden');
+                    playBeep(523, 0.08);
+                });
+            });
+        }
+
+        // COMUNICAÇÃO DE REDE: COMANDOS DO CANAL HOST (SALA)
+        function initHostChannel() {
+            state.players = [];
+            state.channelInstance = _supabaseClient.channel(`room_${state.roomPin}`);
+
+            state.channelInstance
+                .on('broadcast', { event: 'join_lobby' }, (payload) => {
+                    const { nickname } = payload.payload;
+                    if (!state.players.find(p => p.name === nickname) && state.players.length < 45) {
+                        state.players.push({ name: nickname, score: 0, answered: false });
+                        
+                        const container = document.getElementById('lobbyPlayers');
+                        document.getElementById('lobbyCount').innerText = state.players.length;
+                        
+                        container.innerHTML = state.players.map(p => `
+                            <div class="p-2 bg-slate-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex items-center justify-center">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> ${p.name}
+                            </div>
+                        `).join('');
+                        playBeep(587, 0.05);
+                    }
+                })
+                .on('broadcast', { event: 'submit_answer' }, (payload) => {
+                    const { nickname, points } = payload.payload;
+                    let p = state.players.find(pl => pl.name === nickname);
+                    if (p && !p.answered) {
+                        p.answered = true;
+                        p.score += points;
+                        
+                        const totalAnswered = state.players.filter(pl => pl.answered).length;
+                        if (totalAnswered >= state.players.length) {
+                            evaluateQuestionTimeout();
+                        }
+                    }
+                })
+                .subscribe();
+        }
+
+        // COMUNICAÇÃO DE REDE: COMANDOS DO CANAL AUXILIAR (JOGADOR)
+        function initPlayerChannel() {
+            state.channelInstance = _supabaseClient.channel(`room_${state.roomPin}`);
+
+            state.channelInstance
+                .on('broadcast', { event: 'start_game' }, () => {
+                    switchScreen(screens.playerClient);
+                    document.getElementById('cliActionState').classList.add('hidden');
+                    document.getElementById('cliWaitState').classList.remove('hidden');
+                    document.getElementById('cliFeedbackState').classList.add('hidden');
+                })
+                .on('broadcast', { event: 'next_question' }, (payload) => {
+                    state.currentQuestionIdx = payload.payload.questionIdx;
+                    state.canAnswer = true;
+                    
+                    document.getElementById('cliScore').innerText = state.score;
+                    document.getElementById('cliWaitState').classList.add('hidden');
+                    document.getElementById('cliFeedbackState').classList.add('hidden');
+                    document.getElementById('cliActionState').classList.remove('hidden');
+                })
+                .on('broadcast', { event: 'show_leaderboard' }, () => {
+                    document.getElementById('cliWaitState').classList.add('hidden');
+                    document.getElementById('cliActionState').classList.add('hidden');
+                    
+                    const fBox = document.getElementById('cliFeedbackState');
+                    const icon = document.getElementById('cliFeedbackIcon');
+                    const title = document.getElementById('cliFeedbackTitle');
+                    const pts = document.getElementById('cliFeedbackPoints');
+
+                    fBox.classList.remove('hidden');
+
+                    if (state.myLastAnswerCorrect) {
+                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-cyan-400 text-cyan-400 font-bold text-lg";
+                        icon.innerHTML = "✓";
+                        title.className = "text-base font-orbitron font-bold text-cyan-400";
+                        title.innerText = "ALVO ALINHADO";
+                        pts.innerText = `+${state.myLastEarned} Pontos computados.`;
+                    } else {
+                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-red-500 text-red-400 font-bold text-lg";
+                        icon.innerHTML = "✕";
+                        title.className = "text-base font-orbitron font-bold text-red-400";
+                        title.innerText = "DADO INCORRETO";
+                        pts.innerText = "0 pontos computados.";
+                    }
+                })
+                .on('broadcast', { event: 'game_over' }, () => {
+                    alert("Simulação Concluída! Verifique o console central para fechar os dados.");
+                    location.reload();
+                })
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        state.channelInstance.send({
+                            type: 'broadcast',
+                            event: 'join_lobby',
+                            payload: { nickname: state.nickname }
+                        });
+                        switchScreen(screens.wait);
+                    } else {
+                        alert("Erro de conexão com o Supabase. Tente novamente.");
+                        switchScreen(screens.modeSelect);
+                    }
+                });
+        }
+
+        // ENGINE COMPLETA DO FLUXO INTERNO DO SIMULADOR
+        function startSoloGame() {
+            state.currentQuestionIdx = 0;
+            state.score = 0;
+            state.shields = 100;
+            state.combo = 1.0;
+            
+            document.getElementById('txtScore').innerText = "0000";
+            document.getElementById('txtCombo').innerText = "x1.0";
+            document.getElementById('txtShield').innerText = "100%";
+            document.getElementById('barShield').style.width = "100%";
+
+            switchScreen(screens.game);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (state.currentQuestionIdx >= QUESTIONS.length) {
+                endGame();
+                return;
+            }
+
+            const qData = QUESTIONS[state.currentQuestionIdx];
+            document.getElementById('lblQuestion').innerText = qData.q;
+            document.getElementById('lblCuriosity').innerText = qData.curiosity;
+            
+            const remainingRatio = (QUESTIONS.length - state.currentQuestionIdx) / QUESTIONS.length;
+            const distanceKM = Math.round(remainingRatio * 120000);
+            document.getElementById('txtDistance').innerText = distanceKM.toLocaleString('pt-BR') + " KM";
+            document.getElementById('barDistance').style.width = (remainingRatio * 100) + "%";
+
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-ans w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white`;
+                btn.innerHTML = `<span class="font-orbitron font-black text-cyan-400/50 mr-2">[${prefixes[idx]}]</span> <span>${opt}</span>`;
+                
+                btn.addEventListener('click', () => {
+                    if (state.mode === 'solo' && state.canAnswer) {
+                        state.canAnswer = false;
+                        evaluateSoloAnswer(idx);
+                    }
+                });
+                container.appendChild(btn);
+            });
+
+            state.timer = 25;
+            document.getElementById('txtTimer').innerText = state.timer + "s";
+            document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400";
+            
+            state.canAnswer = true;
+
+            if (state.mode === 'host') {
+                state.players.forEach(p => p.answered = false);
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'next_question',
+                    payload: { questionIdx: state.currentQuestionIdx }
+                });
+            }
+
+            if (state.timerId) clearInterval(state.timerId);
+            state.timerId = setInterval(() => {
+                state.timer--;
+                document.getElementById('txtTimer').innerText = state.timer + "s";
+                
+                if (state.timer <= 5) {
+                    document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-red-500 animate-pulse";
+                    playBeep(350, 0.05);
+                }
+
+                if (state.timer <= 0) {
+                    evaluateQuestionTimeout();
+                }
+            }, 1000);
+        }
+
+        function evaluateSoloAnswer(idx) {
+            clearInterval(state.timerId);
+            const qData = QUESTIONS[state.currentQuestionIdx];
+            
+            if (idx === qData.correct) {
+                const points = Math.round((100 + state.timer * 10) * state.combo);
+                state.score += points;
+                state.combo = Math.min(3.0, state.combo + 0.2);
+                playBeep(880, 0.1);
+                
+                const lbl = document.getElementById('lblComboCrit');
+                lbl.style.opacity = '1';
+                setTimeout(() => { lbl.style.opacity = '0'; }, 500);
+            } else {
+                state.combo = 1.0;
+                applyDamage(20);
+            }
+
+            document.getElementById('txtScore').innerText = String(state.score).padStart(4, '0');
+            document.getElementById('txtCombo').innerText = `x${state.combo.toFixed(1)}`;
+            
+            state.currentQuestionIdx++;
+            setTimeout(() => { loadQuestion(); }, 1000);
+        }
+
+        function evaluateQuestionTimeout() {
+            clearInterval(state.timerId);
+            state.canAnswer = false;
+
+            if (state.mode === 'solo') {
+                state.combo = 1.0;
+                document.getElementById('txtCombo').innerText = "x1.0";
+                applyDamage(20);
+                state.currentQuestionIdx++;
+                setTimeout(() => { loadQuestion(); }, 1000);
+            } else if (state.mode === 'host') {
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'show_leaderboard',
+                    payload: {}
+                });
+                showLeaderboardScreen();
+            }
+        }
+
+        function applyDamage(amount) {
+            state.shields = Math.max(0, state.shields - amount);
+            document.getElementById('txtShield').innerText = state.shields + "%";
+            document.getElementById('barShield').style.width = state.shields + "%";
+            
+            const win = document.getElementById('gameWindow');
+            win.classList.add('shake-active');
+            setTimeout(() => { win.classList.remove('shake-active'); }, 300);
+            playBeep(140, 0.3);
+
+            if (state.shields <= 0) {
+                clearInterval(state.timerId);
+                setTimeout(() => { endGame(); }, 1000);
+            }
+        }
+
+        function showLeaderboardScreen() {
+            switchScreen(screens.leaderboard);
+            state.players.sort((a, b) => b.score - a.score);
+
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = state.players.slice(0, 5).map((p, idx) => `
+                <div class="flex justify-between items-center bg-black/60 p-3 border border-cyan-500/10 rounded-xl font-mono text-sm">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-orbitron font-bold text-cyan-500/50">#0${idx+1}</span>
+                        <span class="font-bold text-white">${p.name}</span>
+                    </div>
+                    <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
+                </div>
+            `).join('');
+
+            const btnNext = document.getElementById('btnNextQuestion');
+            if (state.currentQuestionIdx + 1 >= QUESTIONS.length) {
+                btnNext.innerText = "COMPILAR DIAGNÓSTICO FINAL";
+            } else {
+                btnNext.innerText = `SEGUIR PARA QUESTÃO 0${state.currentQuestionIdx + 2}`;
+            }
+
+            btnNext.onclick = () => {
+                playBeep(600, 0.1);
+                state.currentQuestionIdx++;
+                if (state.currentQuestionIdx >= QUESTIONS.length) {
+                    state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} });
+                    alert("Exército Concluído! Retornando ao menu principal.");
+                    location.reload();
+                } else {
+                    switchScreen(screens.game);
+                    loadQuestion();
+                }
+            };
+        }
+
+        function endGame() {
+            if (state.mode === 'solo') {
+                if (state.shields <= 0) {
+                    alert(`SISTEMA INSTÁVEL: Diagnóstico de falha gerado. Score: ${state.score}`);
+                } else {
+                    alert(`EXERCÍCIO CONCLUÍDO COM SUCESSO! Score Geral: ${state.score}`);
+                    state.wins++;
+                    localStorage.setItem('eo_wins', state.wins);
+                }
+                if (state.score > state.highScore) {
+                    localStorage.setItem('eo_highscore', state.score);
+                }
+            }
+            location.reload();
+        }
+
+        function playBeep(frequency, duration) {
+            if (!state.isSoundOn) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function initSpaceCanvas() {
+            const canvas = document.getElementById('spaceCanvas');
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const stars = Array.from({ length: 80 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.2 + 0.4,
+                alpha: Math.random(),
+                speed: Math.random() * 0.01 + 0.003
+            }));
+
+            function animate() {
+                ctx.fillStyle = '#020205';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(s => {
+                    s.alpha += s.speed;
+                    if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
+                    ctx.fillStyle = `rgba(34, 211, 238, ${Math.max(0, s.alpha * 0.4)})`;
+                    ctx.fillRect(s.x, s.y, s.size, s.size);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function initRadarCanvas() {
+            const canvas = document.getElementById('blackholeCanvas');
+            const ctx = canvas.getContext('2d');
+            let radius = 10;
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                // Anéis digitais estilo radar do tema antigo
+                ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
+                ctx.lineWidth = 1;
+                
+                ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx, cy, 55, 0, Math.PI * 2); ctx.stroke();
+
+                radius += 0.4;
+                if (radius > 75) radius = 10;
+                
+                ctx.strokeStyle = `rgba(34, 211, 238, ${1 - (radius/75)})`;
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
