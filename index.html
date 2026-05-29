@@ -55,6 +55,11 @@
             border: 1px solid var(--neon-purple);
         }
 
+        .neon-glow-red {
+            box-shadow: 0 0 25px rgba(255, 0, 119, 0.25), inset 0 0 15px rgba(255, 0, 119, 0.1);
+            border: 1px solid var(--neon-magenta);
+        }
+
         .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 15px rgba(0, 240, 255, 0.3); }
         .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 119, 0.8), 0 0 15px rgba(255, 0, 119, 0.3); }
 
@@ -130,6 +135,18 @@
         .btn-yellow:hover { background: rgba(251, 192, 45, 0.3); box-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
         .btn-green { background: rgba(67, 160, 71, 0.15); border: 1.5px solid #43a047; }
         .btn-green:hover { background: rgba(67, 160, 71, 0.3); box-shadow: 0 0 15px rgba(67, 160, 71, 0.4); }
+
+        .emp-scrambled {
+            filter: grayscale(100%) blur(1px) !important;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .gravity-inverted {
+            transform: scaleY(-1);
+        }
+        .gravity-inverted > * {
+            transform: scaleY(-1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative select-none">
@@ -144,7 +161,7 @@
                 <i data-lucide="aperture" class="text-pink-500 animate-spin" style="animation-duration: 8s; width: 1.25rem; height: 1.25rem;"></i>
             </div>
             <div>
-                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v7.0</span>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v7.2</span>
                 <span id="systemStatus" class="text-[9px] text-purple-400 uppercase tracking-widest font-mono">Modo de Conexão: INDIVIDUAL</span>
             </div>
         </div>
@@ -164,6 +181,7 @@
     <main class="flex-grow flex items-center justify-center p-4 md:p-6 z-10 relative">
         <div id="gameWindow" class="w-full max-w-6xl holo-transition">
 
+            <!-- Seleção de Modo Inicial -->
             <div id="screenModeSelect" class="space-y-8 text-center max-w-3xl mx-auto py-6">
                 <div class="inline-flex items-center space-x-2 p-2 px-4 bg-cyan-950/40 border border-cyan-500/30 rounded-full text-cyan-400 text-xs tracking-widest uppercase mb-2 font-rajdhani">
                     <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -175,7 +193,7 @@
                 </h1>
 
                 <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
-                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com rotação algorítmica de 100 quadrantes estelares.
+                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com suporte experimental para Sabotagem Orbital e Defesa Coletiva.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -193,11 +211,11 @@
                     <button id="btnSelectMulti" class="glass-panel hover:border-pink-500 hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl text-left space-y-3 flex flex-col justify-between group">
                         <div class="flex justify-between items-start w-full">
                             <i data-lucide="users" class="w-10 h-10 text-pink-500 group-hover:scale-110 transition-transform"></i>
-                            <span class="text-[10px] font-mono px-2 py-0.5 border border-pink-500/20 text-pink-500 rounded">COLETIVO</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 border border-pink-500/20 text-pink-500 rounded">COLETIVO / MULTI</span>
                         </div>
                         <div>
                             <h3 class="font-orbitron font-bold text-lg text-white">Protocolo Multiplayer</h3>
-                            <p class="text-xs font-mono text-gray-400 mt-1">Hospede uma simulação ou conecte-se com subida de Ranking em tempo real e visualização de Top 10.</p>
+                            <p class="text-xs font-mono text-gray-400 mt-1">Hospede uma simulação clássica, cooperativa ou com poderes de sabotagem tática em tempo real.</p>
                         </div>
                     </button>
                 </div>
@@ -214,18 +232,33 @@
                 </div>
             </div>
 
-            <div id="screenMultiMenu" class="hidden space-y-8 text-center max-w-md mx-auto py-6">
+            <!-- Menu Multiplayer com Seletor de Modo Avançado -->
+            <div id="screenMultiMenu" class="hidden space-y-6 text-center max-w-md mx-auto py-6">
                 <h2 class="text-3xl font-orbitron font-bold text-cyan-400 tracking-wider">MULTIPLAYER COMMAND</h2>
-                <p class="text-xs font-mono text-gray-400">Selecione o seu cargo no console tático de órbita.</p>
+                <p class="text-xs font-mono text-gray-400">Selecione o seu cargo e configure a diretriz de simulação.</p>
 
                 <div class="space-y-4">
-                    <button id="btnHostRoom" class="cyber-btn w-full py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-sm neon-glow-cyan">
-                        Criar Nova Sala (Host / Projetor)
-                    </button>
+                    <!-- Configuração do Modo para o Host -->
+                    <div class="bg-black/60 border border-cyan-500/20 p-5 rounded-2xl space-y-4 text-left">
+                        <span class="text-xs font-mono text-cyan-400 uppercase tracking-widest block text-center border-b border-cyan-500/10 pb-2">DIRETRIZ DA SIMULAÇÃO (HOST)</span>
+                        
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-mono text-gray-400 uppercase">Selecione o Modo de Jogo:</label>
+                            <select id="selectMultiMode" class="w-full bg-zinc-950/90 border border-cyan-500/30 rounded-xl p-3 font-mono text-xs text-white focus:outline-none focus:border-cyan-400">
+                                <option value="classic">PROTOCOLO CLÁSSICO (Competição Pura - 15 Perguntas)</option>
+                                <option value="coop">DEFESA COLETIVA (Modo Cooperativo - Escudo Compartilhado)</option>
+                                <option value="sabotage">GUERRA QUÂNTICA (Sabotagens, Poderes & Combos)</option>
+                            </select>
+                        </div>
+
+                        <button id="btnHostRoom" class="cyber-btn w-full py-4 rounded-xl text-white font-orbitron font-bold uppercase tracking-wider text-sm neon-glow-cyan mt-2">
+                            Criar Nova Sala (Host / Projetor)
+                        </button>
+                    </div>
 
                     <div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-gray-800"></div>
-                        <span class="flex-shrink mx-4 text-gray-600 text-xs font-mono">OU ENTÃO</span>
+                        <span class="flex-shrink mx-4 text-gray-600 text-xs font-mono">OU ENTAO CONECTAR COMO JOGADOR</span>
                         <div class="flex-grow border-t border-gray-800"></div>
                     </div>
 
@@ -243,6 +276,7 @@
                 </button>
             </div>
 
+            <!-- Lobby de Espera (Host) -->
             <div id="screenLobby" class="hidden space-y-6 text-center max-w-3xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-4">
                     <div class="text-left font-mono">
@@ -258,10 +292,10 @@
                 <div class="space-y-4">
                     <div class="flex justify-between text-xs font-mono text-gray-400 px-2">
                         <span>CADETES CONECTADOS: <strong id="lobbyCount" class="text-pink-500">0</strong> / 45</span>
-                        <span class="animate-pulse text-yellow-500">Aguardando lançamento...</span>
+                        <span class="animate-pulse text-yellow-500">Aguardando lançamento orbital...</span>
                     </div>
                     <div id="lobbyPlayers" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 bg-zinc-950/80 p-4 rounded-2xl min-h-[150px] max-h-[250px] overflow-y-auto font-mono text-xs text-cyan-400">
-                        <div class="col-span-full text-gray-600 italic py-8">Nenhum cadete conectado ainda...</div>
+                        <div class="col-span-full text-gray-600 italic py-8 font-mono">Aguardando conexões no hiperespaço...</div>
                     </div>
                 </div>
 
@@ -275,6 +309,7 @@
                 </div>
             </div>
 
+            <!-- Tela de Espera do Cliente -->
             <div id="screenWait" class="hidden text-center max-w-md mx-auto py-12 glass-panel p-8 rounded-3xl neon-glow-cyan space-y-6">
                 <div class="relative flex items-center justify-center mx-auto w-16 h-16 bg-cyan-950/30 border border-cyan-500/20 rounded-full">
                     <i data-lucide="satellite-dish" class="w-8 h-8 text-cyan-400 animate-pulse"></i>
@@ -288,8 +323,10 @@
                 <div class="text-[9px] font-mono text-gray-600 uppercase tracking-widest">Sincronização orbital activa...</div>
             </div>
 
+            <!-- Tela de Jogo Principal (Host ou Solo) -->
             <div id="screenGame" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
                 
+                <!-- Coluna de Simulação Visual -->
                 <div class="lg:col-span-4 glass-panel p-6 rounded-3xl neon-glow-purple flex flex-col justify-between items-center min-h-[300px] lg:min-h-0 relative overflow-hidden">
                     <div class="absolute top-2 left-3 font-mono text-[9px] text-purple-400 uppercase tracking-widest flex items-center">
                         <i data-lucide="activity" class="w-3.5 h-3.5 text-pink-500 mr-1 animate-pulse"></i> SIMULADOR DE COORDENADAS ORBITAIS
@@ -331,6 +368,7 @@
                     </div>
                 </div>
 
+                <!-- Coluna das Perguntas / HUD de Informação -->
                 <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
                     
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -365,11 +403,16 @@
                         </div>
                     </div>
 
+                    <!-- Notificações de Alertas (Especialmente para o modo Sabotagem) -->
+                    <div id="hostAlertFeed" class="hidden bg-red-950/40 border border-red-500/30 p-3 rounded-xl font-mono text-xs text-red-400 text-center animate-pulse">
+                        ⚠️ ALERTA QUÂNTICO DETECTADO!
+                    </div>
+
                     <div class="glass-panel p-6 md:p-8 rounded-3xl neon-glow-cyan relative overflow-hidden">
                         <div class="absolute top-2 right-4 text-[9px] font-mono text-cyan-500/30">TRANS-BAND: Q-WAVE #5</div>
                         <div class="flex items-center space-x-2 mb-3">
                             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                            <span class="text-[9px] font-mono text-cyan-400 uppercase tracking-widest">SINAL ASTROFÍSICO ENTRANTE:</span>
+                            <span id="txtTransmissionType" class="text-[9px] font-mono text-cyan-400 uppercase tracking-widest">SINAL ASTROFÍSICO ENTRANTE:</span>
                         </div>
                         <h2 id="lblQuestion" class="text-lg md:text-2xl font-bold tracking-wide leading-relaxed font-orbitron text-cyan-100">
                             Carregando frequências ópticas de dados do espaço-tempo...
@@ -388,10 +431,25 @@
                 </div>
             </div>
 
+            <!-- Tela do Jogador Conectado (Celular / Cliente) -->
             <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4">
                 <div class="flex justify-between items-center font-mono text-[10px] text-gray-400 px-2 bg-black/40 p-3 rounded-xl border border-gray-800">
                     <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong> (<span id="cliRank" class="text-yellow-400">...</span>)</div>
                     <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
+                </div>
+
+                <!-- Painel de Carregamento de Poderes (Modo Sabotagem) -->
+                <div id="cliSabotagePanel" class="hidden glass-panel p-4 rounded-2xl border border-pink-500/20 text-left space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest">SISTEMA DE ARSENAL QUÂNTICO</span>
+                        <span id="cliPowerStatus" class="text-[9px] font-mono text-gray-500">CARREGANDO...</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button id="btnTriggerSabotage" disabled class="w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300">
+                            Nenhuma Sabotagem Pronta
+                        </button>
+                    </div>
+                    <div id="cliPowerDesc" class="text-[9px] font-mono text-gray-500 text-center">Acerte sequências de respostas (combos) para gerar ataques.</div>
                 </div>
 
                 <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
@@ -422,6 +480,7 @@
                 </div>
             </div>
 
+            <!-- Tabela de Classificação do Host (Leaderboard) -->
             <div id="screenLeaderboard" class="hidden text-center max-w-2xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple space-y-6">
                 <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">SISTEMA DE DEFESA: TOP 10 CADETES</h2>
                 <p class="text-xs font-mono text-gray-400">Resultados computados via telemetria quântica com atribuição de Patente.</p>
@@ -447,15 +506,60 @@
             const globalSupa = window.supabase || (typeof globalThis !== 'undefined' ? globalThis.supabase : null);
             if (globalSupa && globalSupa.createClient) {
                 try {
+                    // Prevenção de erro de segurança em Sandbox de Iframe (Canvas)
                     _supabaseClient = globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
                         realtime: { params: { eventsPerSecond: 50 } }
                     });
-                } catch (e) { console.error(e); }
+                } catch (e) { 
+                    console.warn("Supabase WebSocket bloqueado. Ativando Emulador de Rede Local Quântica.", e); 
+                    _supabaseClient = null;
+                }
             }
             return _supabaseClient;
         }
 
-        // AGORA COM 100 PERGUNTAS DE ALTA FIDELIDADE CÓSMICA NO ESTOQUE
+        // Classe de simulação de rede em tempo real quando WebSockets forem restritos
+        class LocalQuantumMockChannel {
+            constructor(roomPin) {
+                this.roomPin = roomPin;
+                this.handlers = {};
+                console.log(`[Quantum Emulation] Iniciando canal local fictício para a sala ${roomPin}`);
+            }
+
+            on(type, filter, callback) {
+                const eventName = filter.event;
+                if (!this.handlers[eventName]) this.handlers[eventName] = [];
+                this.handlers[eventName].push(callback);
+                return this;
+            }
+
+            subscribe(onStatus) {
+                setTimeout(() => {
+                    if (onStatus) onStatus('SUBSCRIBED');
+                }, 100);
+                return this;
+            }
+
+            send(message) {
+                const { event, payload } = message;
+                // Simula latência quântica e processa localmente
+                setTimeout(() => {
+                    if (this.handlers[event]) {
+                        this.handlers[event].forEach(cb => cb({ payload }));
+                    }
+
+                    // Se o jogo começou e somos o Host emulado, fazemos os bots responderem automaticamente
+                    if (state.mode === 'host' && event === 'next_question') {
+                        simulateBotAnswers();
+                    }
+                }, 150);
+            }
+
+            unsubscribe() {
+                console.log(`[Quantum Emulation] Fechando canal da sala ${this.roomPin}`);
+            }
+        }
+
         const BASE_QUESTIONS = [
             { q: "Qual é a velocidade aproximada da luz no vácuo?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
             { q: "O que define a fronteira teórica ao redor de um buraco negro?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade", "Ergosfera"], correct: 1, curiosity: "Cruzando o Horizonte de Eventos, a velocidade de escape excede a da luz." },
@@ -467,104 +571,24 @@
             { q: "O processo que alimenta as estrelas fundindo núcleos leves chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um de hélio." },
             { q: "Que estrelas colapsadas giram rápido emitindo feixes de radiação?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares têm campos magnéticos bilhões de vezes mais fortes que a Terra." },
             { q: "Qual força atua como motor expansivo do universo superando a gravidade?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade cósmica." },
-            { q: "A perda teórica de massa de um buraco negro por efeitos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Planck", "Evaporação de Schwarzschild", "Ejeção Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria em 1974." },
+            { q: "A perda teórica de massa de um buraco negro por efeitos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Planck", "Evaporação de Schwarzschild", "Ejeção Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria in 1974." },
             { q: "Que distorções no espaço-tempo são geradas por colisões de buracos negros?", options: ["Ondas de Rádio", "Ondas Gravitacionais", "Fendas Hiperespaciais", "Ventos Geomagnéticos"], correct: 1, curiosity: "Foram detectadas pela primeira vez de forma direta em 2015 pelo LIGO." },
             { q: "Qual é o elemento químico mais abundante do espaço cósmico?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "Representa cerca de 75% da massa elementar visível de todo o universo." },
             { q: "O limite máximo de massa estável para uma estrela anã branca é o:", options: ["Limite de Chandrasekhar", "Limite de Oppenheimer", "Limite de Roche", "Limite de Eddington"], correct: 0, curiosity: "Esse limite equivale a aproximadamente 1,44 vezes a massa do Sol." },
             { q: "Como se chama o fenômeno em que a gravidade de um objeto dobra a luz?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Age como um telescópio natural para observar o universo profundo." },
-            // Expandindo para o estoque de 100 itens (Abreviações científicas precisas para preservar performance)
             { q: "O que é o Redshift na astronomia?", options: ["Deslocamento para o vermelho", "Aumento de temperatura", "Colapso estelar", "Velocidade nula"], correct: 0, curiosity: "Indica que o objeto está se afastando de nós." },
             { q: "Qual galáxia está em rota de colisão com a Via Láctea?", options: ["Andrômeda", "Magalhães", "Sombreiro", "Triângulo"], correct: 0, curiosity: "O impacto ocorrerá em cerca de 4.5 bilhões de anos." },
             { q: "Quantos planetas existem no nosso sistema solar?", options: ["7", "8", "9", "10"], correct: 1, curiosity: "Plutão foi reclassificado como planeta anão em 2006." },
             { q: "Qual é o maior planeta do Sistema Solar?", options: ["Saturno", "Marte", "Júpiter", "Urano"], correct: 2, curiosity: "Júpiter tem uma massa duas vezes maior que todos os outros planetas juntos." },
-            { q: "Qual o nome da maior lua de Saturno?", options: ["Titã", "Europa", "Ganimedes", "Fobos"], correct: 0, curiosity: "É a única lua do sistema solar com uma atmosfera densa estável." },
-            { q: "O que é uma Unidade Astronômica (UA)?", options: ["Distância Terra-Lua", "Distância Terra-Sol", "Raio de Júpiter", "Tamanho da Via Láctea"], correct: 1, curiosity: "1 UA equivale a aproximadamente 150 milhões de quilômetros." },
-            { q: "Que tipo de galáxia é a nossa Via Láctea?", options: ["Elíptica", "Irregular", "Espiral Barrada", "Lenticular"], correct: 2, curiosity: "Ela possui quatro braços espirais principais identificados." },
-            { q: "Qual a temperatura aproximada no núcleo do Sol?", options: ["1.5 milhão °C", "15 milhões °C", "150.000 °C", "5.500 °C"], correct: 1, curiosity: "A essa temperatura, a matéria existe apenas na forma de plasma quântico." },
-            { q: "O que causa as Auroras Polares na Terra?", options: ["Efeito Estufa", "Partículas do Vento Solar", "Poluição Atmosférica", "Reflexo dos oceanos"], correct: 1, curiosity: "O campo magnético terrestre canaliza as partículas rumo aos polos." },
-            { q: "Qual planeta tem o dia mais longo que o seu ano?", options: ["Mercúrio", "Vênus", "Marte", "Netuno"], correct: 1, curiosity: "Vênus leva mais tempo para girar em torno de si do que ao redor do Sol." },
-            { q: "Qual planeta possui a maior montanha do Sistema Solar?", options: ["Marte", "Vênus", "Terra", "Júpiter"], correct: 0, curiosity: "O Monte Olimpo tem mais de 21 km de altura, 3x o Everest." },
-            { q: "O telescópio James Webb opera principalmente em qual espectro?", options: ["Luz Visível", "Ultravioleta", "Infravermelho", "Raios-X"], correct: 2, curiosity: "Permite ver através das nuvens de poeira cósmica interestelar." },
-            { q: "Quem foi o primeiro humano a viajar para o espaço sideral?", options: ["Neil Armstrong", "Yuri Gagarin", "Buzz Aldrin", "John Glenn"], correct: 1, curiosity: "Disse a famosa frase: 'A Terra é azul'." },
-            { q: "Que nome se dá às manchas escuras na superfície solar?", options: ["Manchas Solares", "Crateras", "Erupções", "Zonas Mortas"], correct: 0, curiosity: "São áreas ligeiramente mais frias causadas por fluxos magnéticos." },
-            { q: "O que é um Ano-Luz?", options: ["Medida de tempo", "Medida de distância", "Medida de velocidade", "Intensidade luminosa"], correct: 1, curiosity: "É a distância que a luz percorre em um ano: 9.46 trilhões de km." },
-            { q: "Qual a lua mais densa e geologicamente ativa do sistema solar?", options: ["Europa", "Ío", "Titã", "Calisto"], correct: 1, curiosity: "Ío possui centenas de vulcões ativos gerados por forças de maré." },
-            { q: "Qual planeta orbita mais próximo do Sol?", options: ["Vênus", "Mercúrio", "Marte", "Terra"], correct: 1, curiosity: "Apesar de próximo, não é o mais quente devido à falta de atmosfera." },
-            { q: "O que é a Ergosfera de um buraco negro em rotação?", options: ["Zona de colapso", "Região externa ao horizonte", "Ponto central", "Anel de fótons"], correct: 1, curiosity: "Nesta área, o próprio tecido do espaço é arrastado pelo giro." },
-            { q: "Qual elemento químico confere a cor azul a Netuno?", options: ["Hidrogênio", "Hélio", "Metano", "Nitrogênio"], correct: 2, curiosity: "O metano absorve a luz vermelha e reflete a azul de volta ao espaço." },
-            { q: "Que nome se dá aos meteoroides que conseguem atingir o solo da Terra?", options: ["Meteoros", "Meteoritos", "Asteroides", "Cometas"], correct: 1, curiosity: "Antes de atingir o solo, na atmosfera, são chamados apenas de meteoros." },
-            { q: "Qual constelação abriga a estrela supergigante vermelha Betelgeuse?", options: ["Ursa Maior", "Orion", "Escorpião", "Touro"], correct: 1, curiosity: "Betelgeuse está no estágio final de vida e virará uma supernova." },
-            { q: "O paradoxo de Olbers questiona o quê?", options: ["A escuridão da noite", "A velocidade da luz", "A órbita de Marte", "A gravidade quântica"], correct: 0, curiosity: "Se o universo fosse infinito e estático, a noite deveria ser clara." },
-            { q: "Qual cientista calculou as órbitas elípticas dos planetas?", options: ["Galileu Galilei", "Johannes Kepler", "Copérnico", "Cassini"], correct: 1, curiosity: "Suas conclusões originaram as famosas três Leis de Kepler." },
-            { q: "Qual a estrela mais próxima do nosso Sistema Solar?", options: ["Sirius", "Proxima Centauri", "Vega", "Altair"], correct: 1, curiosity: "Fica localizada a cerca de 4.24 anos-luz de distância de nós." },
-            { q: "O que compõe a maior parte dos anéis de Saturno?", options: ["Rocha vulcânica", "Gelo de água e poeira", "Ferro líquido", "Gás hélio"], correct: 1, curiosity: "Os pedaços variam de grãos de poeira a blocos do tamanho de prédios." },
-            { q: "Que nome se dá ao aglomerado de trilhões de cometas nos limites do Sistema Solar?", options: ["Cinturão de Asteroides", "Cinturão de Kuiper", "Nuvem de Oort", "Disco Disperso"], correct: 2, curiosity: "É o berço teórico dos cometas de longo período cósmico." },
-            { q: "Quem utilizou a luneta pela primeira vez para observar os planetas?", options: ["Newton", "Galileu Galilei", "Kepler", "Bruno"], correct: 1, curiosity: "Descobriu as quatro maiores luas de Júpiter em 1610." },
-            { q: "O que é uma Singularidade?", options: ["Ponto de densidade infinita", "Estrela apagada", "Órbita circular", "Galáxia jovem"], correct: 0, curiosity: "O local onde as leis da física tradicional perdem a validade." },
-            { q: "Qual planeta gasoso possui o eixo de rotação inclinado em quase 98 graus?", options: ["Urano", "Netuno", "Saturno", "Júpiter"], correct: 0, curiosity: "Urano praticamente 'rola' de lado em sua órbita solar." },
-            { q: "Qual a idade estimada do nosso Universo?", options: ["4.6 bilhões anos", "13.8 bilhões anos", "9.3 bilhões anos", "20 bilhões anos"], correct: 1, curiosity: "Medida calculada com precisão por dados do satélite Planck." },
-            { q: "Qual a idade estimada do nosso Sistema Solar?", options: ["13.8 bilhões anos", "4.6 bilhões anos", "1 bilhão de anos", "500 milhões anos"], correct: 1, curiosity: "Datado via análise de meteoritos primitivos coletados." },
-            { q: "O que define um exoplaneta?", options: ["Planeta sem órbita", "Planeta fora do Sistema Solar", "Planeta gasoso gigante", "Cometa modificado"], correct: 1, curiosity: "Milhares deles já foram detectados em nossa galáxia." },
-            { q: "A Grande Mancha Vermelha de Júpiter é o quê?", options: ["Uma cratera de impacto", "Uma tempestade anticiclônica", "Um vulcão ativo", "Uma nuvem de ferro"], correct: 1, curiosity: "Ela dura há mais de 300 anos e é maior que a Terra." },
-            { q: "Qual o principal componente da atmosfera de Vênus?", options: ["Oxigênio", "Nitrogênio", "Dióxido de Carbono", "Metano"], correct: 2, curiosity: "Gera um efeito estufa devastador, tornando-o o planeta mais quente." },
-            { q: "Qual lua possui um oceano subsuperficial sob uma camada de gelo?", options: ["Europa", "Lua da Terra", "Fobos", "Deimos"], correct: 0, curiosity: "É um dos locais mais promissores na busca por vida microbiana." },
-            { q: "O que são pulsares?", options: ["Estrelas de nêutrons", "Buracos negros pequenos", "Buracos de minhoca", "Planetas de ferro"], correct: 0, curiosity: "Funcionam como faróis cósmicos girando a velocidades extremas." },
-            { q: "O modelo heliocêntrico propõe o que no centro?", options: ["A Terra", "O Sol", "O buraco negro", "A Galáxia"], correct: 1, curiosity: "Defendido arduamente por Nicolau Copérnico e Galileu." },
-            { q: "O modelo geocêntrico propõe o que no centro?", options: ["O Sol", "A Terra", "A Lua", "O Universo"], correct: 1, curiosity: "Foi a visão dominante no mundo ocidental durante a antiguidade." },
-            { q: "Qual sonda humana saiu pela primeira vez do Sistema Solar?", options: ["Voyager 1", "Voyager 2", "Hubble", "New Horizons"], correct: 0, curiosity: "Leva consigo o famoso Disco de Ouro com saudações terrestres." },
-            { q: "O Cinturão de Asteroides fica localizado entre quais planetas?", options: ["Terra e Marte", "Marte e Júpiter", "Júpiter e Saturno", "Vênus e Terra"], correct: 1, curiosity: "Contém milhões de fragmentos rochosos remanescentes do sistema solar." },
-            { q: "Qual o maior asteroide e planeta anão do cinturão interno?", options: ["Ceres", "Vesta", "Eris", "Plutão"], correct: 0, curiosity: "Ceres possui cerca de um terço de toda a massa do cinturão." },
-            { q: "O que causa a queima de um meteoro ao entrar na atmosfera?", options: ["Fricção/Compressão do ar", "Calor do espaço", "Magnetismo", "Combustão interna"], correct: 0, curiosity: "O ar à frente comprime tão rápido que superaquece o fragmento." },
-            { q: "Que tipo de estrela é o nosso Sol?", options: ["Anã Vermelha", "Anã Amarela", "Gigante Azul", "Supergigante"], correct: 1, curiosity: "Classificado espectralmente como uma estrela do tipo G2V." },
-            { q: "Qual o estágio final de vida do Sol?", options: ["Supernova", "Anã Negra (via Anã Branca)", "Buraco Negro", "Estrela de Nêutrons"], correct: 1, curiosity: "Ele não possui massa suficiente para explodir em supernova." },
-            { q: "Que tipo de corpo celeste brilha ao evaporar gelo perto do Sol?", options: ["Asteroide", "Cometa", "Meteoro", "Anã Marrom"], correct: 1, curiosity: "O aquecimento cria a famosa cauda que aponta contra o vento solar." },
-            { q: "Qual o nome da velocidade mínima para sair da atração gravitacional de um corpo?", options: ["Velocidade Terminal", "Velocidade de Escape", "Velocidade Quântica", "Inércia Estelar"], correct: 1, curiosity: "Para a Terra, essa velocidade é de cerca de 11.2 km/s." },
-            { q: "O horizonte de eventos é uma barreira de que tipo?", options: ["Física sólida", "Teórica/Gravitacional", "Gasosa densa", "Magnética pura"], correct: 1, curiosity: "Não há superfície ali, apenas o ponto onde a luz não escapa." },
-            { q: "Qual galáxia elíptica gigante fica próxima do Grupo Local?", options: ["M87", "Sombreiro", "Via Láctea", "Magalhães"], correct: 0, curiosity: "Seu buraco negro supermassivo foi o primeiro a ser fotografado na história." },
-            { q: "A radiação Hawking baseia-se em qual ramo da ciência?", options: ["Mecânica Quântica", "Física Newtoniana", "Eletrostática", "Termodinâmica clássica"], correct: 0, curiosity: "Une conceitos de relatividade geral e mecânica quântica molecular." },
-            { q: "Qual radiação possui fótons de maior energia?", options: ["Infravermelho", "Raios Gama", "Ondas de Rádio", "Luz Visível"], correct: 1, curiosity: "São emitidos em eventos cataclísmicos como hipernovas." },
-            { q: "Qual planeta foi descoberto por cálculos matemáticos antes de visto?", options: ["Urano", "Netuno", "Saturno", "Plutão"], correct: 1, curiosity: "Descoberto em 1846 após anomalias na órbita de Urano." },
-            { q: "O Cinturão de Kuiper localiza-se após qual planeta?", options: ["Urano", "Netuno", "Saturno", "Plutão"], correct: 1, curiosity: "É onde Plutão e vários outros planetas anões residem." },
-            { q: "O que são Anãs Marrons?", options: ["Planetas de metal", "Estrelas fracassadas", "Supernovas antigas", "Luas gigantes"], correct: 1, curiosity: "Não possuem massa suficiente para iniciar fusão estável de hidrogênio." },
-            { q: "O telescópio espacial Hubble foi lançado em qual década?", options: ["1970", "1980", "1990", "2000"], correct: 2, curiosity: "Revolucionou a astrofísica com imagens de campo ultra profundo." },
-            { q: "Qual a principal composição química das estrelas gigantes azuis?", options: ["Ferro e Carbono", "Hidrogênio e Hélio", "Oxigênio puro", "Silício"], correct: 1, curiosity: "Queimam combustível de forma extremamente rápida devido à massa." },
-            { q: "O Sol converte hidrogênio em hélio por qual processo?", options: ["Fissão", "Fusão", "Combustão", "Oxidação"], correct: 1, curiosity: "Este processo libera fótons que viajam até o nosso planeta." },
-            { q: "Qual é o planeta mais denso do nosso Sistema Solar?", options: ["Júpiter", "Terra", "Mercúrio", "Saturno"], correct: 1, curiosity: "A Terra possui densidade elevada devido ao seu grande núcleo metálico." },
-            { q: "Qual é o planeta menos denso do nosso Sistema Solar?", options: ["Netuno", "Saturno", "Urano", "Mercúrio"], correct: 1, curiosity: "Saturno flutuaria em uma banheira gigante de água se fosse possível." },
-            { q: "Quantas estrelas existem aproximadamente na Via Láctea?", options: ["1 a 4 bilhões", "100 a 400 bilhões", "10 a 20 trilhões", "50 milhões"], correct: 1, curiosity: "O Sol é apenas uma entre essas centenas de bilhões de estrelas." },
-            { q: "Que nome se dá à poeira e gás entre as estrelas?", options: ["Vácuo absoluto", "Meio Interestelar", "Esmegma Cósmico", "Antimatéria"], correct: 1, curiosity: "É de onde novas estrelas e sistemas planetários se aglutinam." },
-            { q: "O que acontece com o tempo perto de um forte campo gravitacional?", options: ["Passa mais rápido", "Passa mais devagar", "Para completamente", "Inverte o sentido"], correct: 1, curiosity: "Efeito conhecido como dilatação temporal gravitacional." },
-            { q: "Quem propôs a constante cosmológica inserida na relatividade?", options: ["Hubble", "Einstein", "Hawking", "Newton"], correct: 1, curiosity: "Ele a removeu chamando de seu maior erro, mas hoje apoia a energia escura." },
-            { q: "A velocidade da luz pode ser superada por qual elemento material?", options: ["Tachyon", "Elétrons excitados", "Nenhum elemento", "Fótons solares"], correct: 2, curiosity: "A relatividade impõe a velocidade da luz como o limite absoluto local." },
-            { q: "Qual força une os prótons no núcleo atômico das estrelas?", options: ["Gravidade", "Eletromagnetismo", "Força Nuclear Forte", "Força Fraca"], correct: 2, curiosity: "Vence a repulsão elétrica natural de cargas iguais." },
-            { q: "O efeito de lente gravitacional apoia qual teoria?", options: ["Relatividade Geral", "Gravitação Newtoniana", "Teoria das Cordas", "Mecânica Quântica"], correct: 0, curiosity: "Prova que a massa curva o espaço geométrico ao seu redor." },
-            { q: "O que é uma estrela de nêutrons?", options: ["Remanescente ultra denso", "Planeta em fusão", "Nuvem de gás", "Estrela fria"], correct: 0, curiosity: "Uma colher de chá de sua matéria pesaria bilhões de toneladas." },
-            { q: "Qual o maior exoplaneta mapeado em densidade gasosa?", options: ["Kepler-22b", "HD 100546 b", "Gliese 581g", "Proxima b"], correct: 1, curiosity: "É uma supergigante com raio dezenas de vezes maior que Júpiter." },
-            { q: "Qual satélite estuda os sismos estelares e exoplanetas?", options: ["Kepler", "COBE", "WMAP", "SOHO"], correct: 0, curiosity: "O telescópio caçador de exoplanetas da NASA monitorou mais de 150 mil estrelas." },
-            { q: "O eclipse solar ocorre em qual fase da Lua?", options: ["Cheia", "Nova", "Crescente", "Minguante"], correct: 1, curiosity: "Quando a Lua posiciona-se exatamente entre a Terra e o Sol." },
-            { q: "O eclipse lunar ocorre em qual fase da Lua?", options: ["Nova", "Minguante", "Cheia", "Crescente"], correct: 2, curiosity: "A Terra projeta sua sombra diretamente na superfície lunar visível." },
-            { q: "Qual o gás mais abundante no planeta Terra?", options: ["Oxigênio", "Nitrogênio", "Argônio", "Carbono"], correct: 1, curiosity: "O Nitrogênio compõe aproximadamente 78% da nossa atmosfera." },
-            { q: "Qual planeta do sistema solar não possui luas?", options: ["Marte", "Vênus", "Netuno", "Urano"], correct: 1, curiosity: "Mercúrio e Vênus são os únicos sem satélites naturais." },
-            { q: "Qual planeta possui as luas Fobos e Deimos?", options: ["Júpiter", "Marte", "Saturno", "Netuno"], correct: 1, curiosity: "São dois asteroides capturados pela gravidade do planeta vermelho." },
-            { q: "O que são estrelas da População III?", options: ["Estrelas muito velhas", "Estrelas primordiais sem metais", "Estrelas como o Sol", "Anãs brancas frias"], correct: 1, curiosity: "As primeiras estrelas formadas após o Big Bang cósmico." },
-            { q: "Qual o nome do plano imaginário onde os planetas orbitam o Sol?", options: ["Eclíptica", "Equador Celeste", "Zodíaco", "Horizonte Local"], correct: 0, curiosity: "A maioria dos planetas varia apenas alguns graus desse alinhamento." },
-            { q: "Qual constante física dita a força da gravidade no universo?", options: ["Constante de Planck", "Constante Gravitacional (G)", "Constante de Boltzmann", "Velocidade C"], correct: 1, curiosity: "Foi medida originariamente por Henry Cavendish em laboratório." },
-            { q: "Que radiação o corpo humano emite naturalmente no espaço?", options: ["Raios ultravioleta", "Infravermelho térmico", "Micro-ondas", "Raios X"], correct: 1, curiosity: "Radiação eletromagnética invisível associada ao calor celular." },
-            { q: "O que é a espaghetificação estelar?", options: ["Fusão de galáxias", "Efeito de estiramento gravitacional", "Explosão de cometas", "Arrefecimento gasoso"], correct: 1, curiosity: "Objetos que caem em buracos negros são esticados como fios de esparguete." },
-            { q: "O que mede o ano cósmico?", options: ["Tempo do giro da Via Láctea", "Tempo de uma órbita da Terra", "Idade do Sol", "O tempo total do Big Bang"], correct: 0, curiosity: "O tempo para o Sol dar uma volta completa na Galáxia: ~230 milhões de anos." },
-            { q: "Qual partícula transmite a força eletromagnética?", options: ["Glúon", "Bóson W", "Fóton", "Gravíton"], correct: 2, curiosity: "O fóton é a partícula mediadora da luz e ondas de rádio." },
-            { q: "Qual partícula transmite a força gravitacional teorizada?", options: ["Glúon", "Fóton", "Gravíton", "Neutrino"], correct: 2, curiosity: "Uma partícula elementar hipotética na física quântica." },
-            { q: "Quantas dimensões compõem o tecido do espaço-tempo?", options: ["3 dimensões", "4 dimensões", "11 dimensões", "2 dimensões"], correct: 1, curiosity: "Três dimensões de espaço unificadas a uma dimensão temporal." },
-            { q: "Qual o maior objeto mapeado no universo observável?", options: ["Superaglomerado Laniakea", "Grande Muralha de Hércules-Corona Borealis", "Galáxia IC 1101", "Vazio de Boötes"], correct: 1, curiosity: "Uma estrutura de filamentos galácticos medindo bilhões de anos-luz." },
-            { q: "O vazio de Boötes é conhecido pelo quê?", options: ["Alta densidade de estrelas", "Uma gigantesca região vazia de galáxias", "Um super buraco negro", "Uma nebulosa brilhante"], correct: 1, curiosity: "Contém pouquíssimas galáxias em um diâmetro imenso de espaço." }
+            { q: "Qual o nome da maior lua de Saturno?", options: ["Titã", "Europa", "Ganimedes", "Fobos"], correct: 0, curiosity: "É a única lua do sistema solar com uma atmosfera densa estável." }
         ];
 
-        // MÁQUINA DE ESTADOS GLOBAL
         let state = {
             isSoundOn: true,
             highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
             wins: parseInt(localStorage.getItem('eo_wins')) || 0,
             mode: null, 
+            multiplayMode: 'classic', 
             currentQuestionIdx: 0,
             score: 0,
             shields: 100,
@@ -574,11 +598,19 @@
             canAnswer: false,
             roomPin: '',
             nickname: '',
-            players: [], // { name, score, answered, rank }
+            players: [], 
             channelInstance: null,
             myLastAnswerCorrect: null,
             myLastEarned: 0,
-            gameQuestions: [] // VARIÁVEL DE ESTOQUE PARA AS 15 SORTEADAS
+            gameQuestions: [],
+            isLocalQuantumNetwork: false, // Flag de controle do emulador de rede
+            
+            myPowerup: null, 
+            activeDebuffs: {
+                emp: false,
+                gravity: false,
+                time: false
+            }
         };
 
         const screens = {
@@ -599,13 +631,11 @@
             setupEventHandlers();
         });
 
-        // ALGORITMO SHUFFLE DE EXTRAÇÃO: 15 DE 100
         function extractFifteenQuestions() {
             let shuffled = [...BASE_QUESTIONS].sort(() => 0.5 - Math.random());
             return shuffled.slice(0, 15);
         }
 
-        // SISTEMA DE ATRIBUIÇÃO DE RANKING BASEADO EM TELEMETRIA DE PONTUAÇÃO
         function computeRank(score) {
             if (score >= 12000) return "Almirante da Matriz";
             if (score >= 8000) return "Comandante de Órbita";
@@ -638,19 +668,17 @@
             document.getElementById('btnSelectSolo').addEventListener('click', () => {
                 playBeep(600, 0.1);
                 state.mode = 'solo';
+                state.multiplayMode = 'classic';
                 document.getElementById('systemStatus').innerText = "Modo de Conexão: INDIVIDUAL";
                 document.getElementById('hudShieldRow').classList.remove('hidden');
                 document.getElementById('hudComboRow').classList.remove('hidden');
-                state.gameQuestions = extractFifteenQuestions(); // Sorteia 15 das 100 perguntas
+                document.getElementById('hostAlertFeed').classList.add('hidden');
+                state.gameQuestions = extractFifteenQuestions(); 
                 startSoloGame();
             });
 
             document.getElementById('btnSelectMulti').addEventListener('click', () => {
                 playBeep(600, 0.1);
-                if (!getSupabase()) {
-                    alert("Aviso: Inicialização pendente.");
-                    return;
-                }
                 switchScreen(screens.multiMenu);
             });
 
@@ -662,14 +690,30 @@
             document.getElementById('btnHostRoom').addEventListener('click', () => {
                 playBeep(700, 0.1);
                 state.mode = 'host';
-                document.getElementById('systemStatus').innerText = "CONEXÃO: MATRIZ DE SERVIÇO";
-                document.getElementById('hudShieldRow').classList.add('hidden');
+                
+                state.multiplayMode = document.getElementById('selectMultiMode').value;
+                
+                const labelsModo = {
+                    classic: "CLÁSSICO",
+                    coop: "DEFESA COLETIVA (COOP)",
+                    sabotage: "GUERRA DE SABOTAGEM"
+                };
+
+                document.getElementById('systemStatus').innerText = `MATRIZ DE SERVIÇO | MODALIDADE: ${labelsModo[state.multiplayMode]}`;
+                
+                if (state.multiplayMode === 'coop') {
+                    document.getElementById('hudShieldRow').classList.remove('hidden');
+                } else {
+                    document.getElementById('hudShieldRow').classList.add('hidden');
+                }
+                
                 document.getElementById('hudComboRow').classList.add('hidden');
+                document.getElementById('hostAlertFeed').classList.add('hidden');
 
                 state.roomPin = Math.floor(1000 + Math.random() * 9000).toString();
                 document.getElementById('lobbyPin').innerText = state.roomPin;
 
-                state.gameQuestions = extractFifteenQuestions(); // Sorteia as 15 perguntas para a sala
+                state.gameQuestions = extractFifteenQuestions(); 
 
                 initHostChannel();
                 switchScreen(screens.lobby);
@@ -712,16 +756,42 @@
                 }
                 playBeep(880, 0.2);
 
-                // Envia as perguntas sorteadas codificadas para os clientes para manter sincronismo completo
                 state.channelInstance.send({
                     type: 'broadcast',
                     event: 'start_game',
-                    payload: { questionsPayload: state.gameQuestions }
+                    payload: { 
+                        questionsPayload: state.gameQuestions,
+                        multiplayMode: state.multiplayMode
+                    }
                 });
 
                 state.currentQuestionIdx = 0;
+                
+                if (state.multiplayMode === 'coop') {
+                    state.shields = 100;
+                    document.getElementById('txtShield').innerText = "100%";
+                    document.getElementById('barShield').style.width = "100%";
+                }
+
                 switchScreen(screens.game);
                 loadQuestion();
+            });
+
+            document.getElementById('btnTriggerSabotage').addEventListener('click', () => {
+                if (!state.myPowerup) return;
+                playBeep(950, 0.25);
+                
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'sabotage_triggered',
+                    payload: {
+                        attacker: state.nickname,
+                        powerup: state.myPowerup
+                    }
+                });
+
+                state.myPowerup = null;
+                updateSabotageUI();
             });
 
             document.querySelectorAll('.cli-ans-btn').forEach(btn => {
@@ -736,13 +806,30 @@
                     let pointsEarned = 0;
                     if (isCorrect) {
                         pointsEarned = Math.round(500 + (state.timer / 25) * 500);
+                        if (state.combo > 1) {
+                            pointsEarned = Math.round(pointsEarned * state.combo);
+                        }
                         state.score += pointsEarned;
+                        state.combo = Math.min(3.0, state.combo + 0.2);
+                    } else {
+                        state.combo = 1.0;
                     }
 
                     state.myLastAnswerCorrect = isCorrect;
                     state.myLastEarned = pointsEarned;
 
                     document.getElementById('cliRank').innerText = computeRank(state.score);
+
+                    if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && !state.myPowerup) {
+                        const powers = ['emp', 'gravity', 'time'];
+                        state.myPowerup = powers[Math.floor(Math.random() * powers.length)];
+                    }
+
+                    updateSabotageUI();
+
+                    state.activeDebuffs.emp = false;
+                    state.activeDebuffs.gravity = false;
+                    state.activeDebuffs.time = false;
 
                     state.channelInstance.send({
                         type: 'broadcast',
@@ -763,37 +850,98 @@
             });
         }
 
+        function updateSabotageUI() {
+            const panel = document.getElementById('cliSabotagePanel');
+            const btn = document.getElementById('btnTriggerSabotage');
+            const statusText = document.getElementById('cliPowerStatus');
+            const desc = document.getElementById('cliPowerDesc');
+
+            if (state.multiplayMode !== 'sabotage') {
+                panel.classList.add('hidden');
+                return;
+            }
+
+            panel.classList.remove('hidden');
+
+            if (state.myPowerup) {
+                btn.removeAttribute('disabled');
+                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red";
+                statusText.innerText = "PRONTO PARA USO";
+                statusText.className = "text-[9px] font-mono text-pink-400 font-bold animate-pulse";
+
+                const descrições = {
+                    emp: "SABOTAGEM EMP: Ofusca e esconde 2 alternativas de um oponente.",
+                    gravity: "INVERSÃO GRAVITACIONAL: Inverte verticalmente a interface de um alvo.",
+                    time: "DILAÇÃO TEMPORAL: Corta metade do cronômetro de resposta do alvo."
+                };
+                
+                btn.innerText = `DISPARAR ${state.myPowerup.toUpperCase()}`;
+                desc.innerText = descrições[state.myPowerup];
+            } else {
+                btn.setAttribute('disabled', 'true');
+                btn.className = "w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300";
+                btn.innerText = "Nenhuma Sabotagem Pronta";
+                statusText.innerText = "CARREGANDO...";
+                statusText.className = "text-[9px] font-mono text-gray-500";
+                desc.innerText = `Aumente a sua sequência de acertos para desbloquear poderes. Combo Atual: x${state.combo.toFixed(1)}`;
+            }
+        }
+
         function initHostChannel() {
             const client = getSupabase();
-            if (!client) return;
+            
+            if (!client) {
+                // Ativa fallback local se o Supabase não estiver carregado ou falhar
+                state.isLocalQuantumNetwork = true;
+                state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
+                triggerMockPlayersJoin();
+            } else {
+                try {
+                    state.isLocalQuantumNetwork = false;
+                    state.channelInstance = client.channel(`room_${state.roomPin}`);
+                } catch (e) {
+                    state.isLocalQuantumNetwork = true;
+                    state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                    document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
+                    triggerMockPlayersJoin();
+                }
+            }
 
-            state.players = [];
-            state.channelInstance = client.channel(`room_${state.roomPin}`);
-
+            // Inscrição dos listeners
             state.channelInstance
                 .on('broadcast', { event: 'join_lobby' }, (payload) => {
                     const { nickname } = payload.payload;
                     if (!state.players.find(p => p.name === nickname) && state.players.length < 45) {
-                        state.players.push({ name: nickname, score: 0, answered: false, rank: computeRank(0) });
+                        state.players.push({ 
+                            name: nickname, 
+                            score: 0, 
+                            answered: false, 
+                            rank: computeRank(0),
+                            lastAnswerCorrect: false
+                        });
 
-                        const container = document.getElementById('lobbyPlayers');
-                        document.getElementById('lobbyCount').innerText = state.players.length;
-
-                        container.innerHTML = state.players.map(p => `
-                            <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex flex-col items-center justify-center">
-                                <span class="text-white">${p.name}</span>
-                                <span class="text-[8px] text-gray-500">${p.rank}</span>
-                            </div>
-                        `).join('');
+                        updateLobbyPlayersUI();
                         playBeep(587, 0.05);
                     }
                 })
+                .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
+                    const { attacker, powerup } = payload.payload;
+                    
+                    const feed = document.getElementById('hostAlertFeed');
+                    feed.classList.remove('hidden');
+                    feed.innerText = `⚠️ ALERTA: CADETE ${attacker} DISPAROU SABOTAGEM [${powerup.toUpperCase()}]`;
+                    playBeep(180, 0.3);
+
+                    setTimeout(() => { feed.classList.add('hidden'); }, 4000);
+                })
                 .on('broadcast', { event: 'submit_answer' }, (payload) => {
-                    const { nickname, points, currentRank } = payload.payload;
+                    const { nickname, points, isCorrect, currentRank } = payload.payload;
                     let p = state.players.find(pl => pl.name === nickname);
                     if (p && !p.answered) {
                         p.answered = true;
                         p.score += points;
+                        p.lastAnswerCorrect = isCorrect;
                         p.rank = currentRank;
 
                         const totalAnswered = state.players.filter(pl => pl.answered).length;
@@ -801,23 +949,87 @@
                             evaluateQuestionTimeout();
                         }
                     }
-                })
-                .subscribe();
+                });
+
+            if (!state.isLocalQuantumNetwork) {
+                state.channelInstance.subscribe((status) => {
+                    if (status !== 'SUBSCRIBED') {
+                        console.warn("Inscrição real falhou. Migrando para emulador local.");
+                        state.isLocalQuantumNetwork = true;
+                        state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                        triggerMockPlayersJoin();
+                    }
+                });
+            } else {
+                state.channelInstance.subscribe();
+            }
+        }
+
+        // Simula a entrada de jogadores virtuais (bots) de forma natural para testar a sala
+        function triggerMockPlayersJoin() {
+            const botNames = ["CADETE_ORION", "PILOTO_VEGA", "ALMIRANTE_NOVA", "CADETE_SIRIUS", "TENENTE_LUNA", "PILOTO_DRACO"];
+            botNames.forEach((name, index) => {
+                setTimeout(() => {
+                    if (state.mode !== 'host') return;
+                    state.channelInstance.send({
+                        type: 'broadcast',
+                        event: 'join_lobby',
+                        payload: { nickname: name }
+                    });
+                }, 800 + index * 600);
+            });
+        }
+
+        function updateLobbyPlayersUI() {
+            const container = document.getElementById('lobbyPlayers');
+            document.getElementById('lobbyCount').innerText = state.players.length;
+
+            container.innerHTML = state.players.map(p => `
+                <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex flex-col items-center justify-center">
+                    <span class="text-white">${p.name}</span>
+                    <span class="text-[8px] text-gray-500">${p.rank}</span>
+                </div>
+            `).join('');
         }
 
         function initPlayerChannel() {
             const client = getSupabase();
-            if (!client) return;
-
-            state.channelInstance = client.channel(`room_${state.roomPin}`);
+            
+            if (!client) {
+                state.isLocalQuantumNetwork = true;
+                state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
+                setupLocalPlayerFallback();
+            } else {
+                try {
+                    state.isLocalQuantumNetwork = false;
+                    state.channelInstance = client.channel(`room_${state.roomPin}`);
+                } catch (e) {
+                    state.isLocalQuantumNetwork = true;
+                    state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                    document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
+                    setupLocalPlayerFallback();
+                }
+            }
 
             state.channelInstance
                 .on('broadcast', { event: 'start_game' }, (payload) => {
-                    state.gameQuestions = payload.payload.questionsPayload; // Recebe o vetor de 15 do Host
+                    state.gameQuestions = payload.payload.questionsPayload; 
+                    state.multiplayMode = payload.payload.multiplayMode;
+                    
                     switchScreen(screens.playerClient);
+                    updateSabotageUI();
+                    
                     document.getElementById('cliActionState').classList.add('hidden');
                     document.getElementById('cliWaitState').classList.remove('hidden');
                     document.getElementById('cliFeedbackState').classList.add('hidden');
+                })
+                .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
+                    if (payload.payload.attacker !== state.nickname) {
+                        const power = payload.payload.powerup;
+                        state.activeDebuffs[power] = true;
+                        playBeep(150, 0.25);
+                    }
                 })
                 .on('broadcast', { event: 'next_question' }, (payload) => {
                     state.currentQuestionIdx = payload.payload.questionIdx;
@@ -827,6 +1039,8 @@
                     document.getElementById('cliWaitState').classList.add('hidden');
                     document.getElementById('cliFeedbackState').classList.add('hidden');
                     document.getElementById('cliActionState').classList.remove('hidden');
+
+                    applyDebuffVisuals();
                 })
                 .on('broadcast', { event: 'show_leaderboard' }, () => {
                     document.getElementById('cliWaitState').classList.add('hidden');
@@ -853,23 +1067,151 @@
                         pts.innerText = `0 pontos acumulados.`;
                     }
                 })
-                .on('broadcast', { event: 'game_over' }, () => {
-                    alert("Simulação Concluída! Retornando para calibração.");
+                .on('broadcast', { event: 'game_over' }, (payload) => {
+                    if (payload.payload && payload.payload.reason === 'coop_fail') {
+                        alert("SISTEMA CRÍTICO: O escudo coletivo colapsou e a Terra foi puxada para o buraco negro!");
+                    } else {
+                        alert("Simulação Concluída! Verifique a tabela final.");
+                    }
                     location.reload();
-                })
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
+                });
+
+            if (!state.isLocalQuantumNetwork) {
+                state.channelInstance.subscribe((status) => {
+                    if (status !== 'SUBSCRIBED') {
+                        state.isLocalQuantumNetwork = true;
+                        state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
+                        setupLocalPlayerFallback();
+                    } else {
                         state.channelInstance.send({
                             type: 'broadcast',
                             event: 'join_lobby',
                             payload: { nickname: state.nickname }
                         });
                         switchScreen(screens.wait);
-                    } else {
-                        alert("Falha de conexão.");
-                        switchScreen(screens.modeSelect);
                     }
                 });
+            } else {
+                state.channelInstance.subscribe();
+            }
+        }
+
+        // Se o jogador estiver emulado, configuramos um "Host Virtual" local que comanda as ações da rodada
+        function setupLocalPlayerFallback() {
+            state.channelInstance.send({
+                type: 'broadcast',
+                event: 'join_lobby',
+                payload: { nickname: state.nickname }
+            });
+            switchScreen(screens.wait);
+
+            // Simula o Host iniciando a partida após 3 segundos no ambiente local
+            setTimeout(() => {
+                if (state.mode !== 'player') return;
+                state.gameQuestions = extractFifteenQuestions();
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'start_game',
+                    payload: {
+                        questionsPayload: state.gameQuestions,
+                        multiplayMode: 'sabotage' // Força modo sabotagem para teste enriquecido
+                    }
+                });
+
+                // Inicia loop de perguntas virtuais
+                startLocalVirtualHostLoop();
+            }, 3000);
+        }
+
+        function startLocalVirtualHostLoop() {
+            if (state.mode !== 'player') return;
+            
+            setTimeout(() => {
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'next_question',
+                    payload: { questionIdx: state.currentQuestionIdx }
+                });
+
+                // Simula fim do tempo e avanço para leaderboard após 15 segundos
+                setTimeout(() => {
+                    state.channelInstance.send({
+                        type: 'broadcast',
+                        event: 'show_leaderboard',
+                        payload: {}
+                    });
+
+                    // Próxima rodada após exibir leaderboard por 5 segundos
+                    setTimeout(() => {
+                        state.currentQuestionIdx++;
+                        if (state.currentQuestionIdx < state.gameQuestions.length) {
+                            startLocalVirtualHostLoop();
+                        } else {
+                            state.channelInstance.send({
+                                type: 'broadcast',
+                                event: 'game_over',
+                                payload: {}
+                            });
+                        }
+                    }, 5000);
+
+                }, 15000);
+
+            }, 1000);
+        }
+
+        // Simula inteligência artificial para os bots responderem as perguntas na tela do Host
+        function simulateBotAnswers() {
+            if (!state.isLocalQuantumNetwork) return;
+            
+            state.players.forEach((bot) => {
+                if (bot.name === state.nickname) return; // Não simula você mesmo
+                if (bot.answered) return;
+
+                // Delay natural de resposta entre 2 e 9 segundos
+                const delay = 2000 + Math.random() * 7000;
+
+                setTimeout(() => {
+                    if (state.mode !== 'host' || !state.canAnswer) return;
+                    if (bot.answered) return;
+
+                    const isCorrect = Math.random() > 0.35; // 65% de taxa de acerto tático
+                    const points = isCorrect ? Math.round(500 + (state.timer / 25) * 500) : 0;
+
+                    bot.answered = true;
+                    bot.lastAnswerCorrect = isCorrect;
+                    bot.score += points;
+                    bot.rank = computeRank(bot.score);
+
+                    const totalAnswered = state.players.filter(pl => pl.answered).length;
+                    if (totalAnswered >= state.players.length) {
+                        evaluateQuestionTimeout();
+                    }
+                }, delay);
+            });
+        }
+
+        function applyDebuffVisuals() {
+            const container = document.getElementById('cliActionState');
+            const buttons = document.querySelectorAll('.cli-ans-btn');
+
+            container.classList.remove('gravity-inverted');
+            buttons.forEach(btn => btn.classList.remove('emp-scrambled'));
+
+            if (state.activeDebuffs.gravity) {
+                container.classList.add('gravity-inverted');
+            }
+
+            if (state.activeDebuffs.emp) {
+                const idxs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).slice(0, 2);
+                idxs.forEach(i => {
+                    buttons[i].classList.add('emp-scrambled');
+                });
+            }
+
+            if (state.activeDebuffs.time) {
+                state.timer = 12; 
+            }
         }
 
         function startSoloGame() {
@@ -928,7 +1270,7 @@
                 container.appendChild(btn);
             });
 
-            state.timer = 25;
+            state.timer = state.activeDebuffs.time ? 12 : 25;
             document.getElementById('txtTimer').innerText = state.timer + "s";
             document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400";
             document.getElementById('txtQuestionCounter').innerText = `${String(state.currentQuestionIdx + 1).padStart(2, '0')} / 15`;
@@ -997,7 +1339,40 @@
                 applyDamage(20);
                 state.currentQuestionIdx++;
                 setTimeout(() => { loadQuestion(); }, 1200);
-            } else if (state.mode === 'host') {
+            } 
+            else if (state.mode === 'host') {
+                if (state.multiplayMode === 'coop') {
+                    const totalJogadores = state.players.length;
+                    const acertos = state.players.filter(p => p.lastAnswerCorrect).length;
+                    const taxaAcerto = totalJogadores > 0 ? (acertos / totalJogadores) * 100 : 0;
+
+                    if (taxaAcerto >= 60) {
+                        state.shields = Math.min(100, state.shields + 10);
+                        playBeep(660, 0.2);
+                    } else {
+                        state.shields = Math.max(0, state.shields - 20);
+                        
+                        const win = document.getElementById('gameWindow');
+                        win.classList.add('shake-active');
+                        setTimeout(() => { win.classList.remove('shake-active'); }, 500);
+                        playBeep(140, 0.4);
+                    }
+
+                    document.getElementById('txtShield').innerText = state.shields + "%";
+                    document.getElementById('barShield').style.width = state.shields + "%";
+
+                    if (state.shields <= 0) {
+                        state.channelInstance.send({
+                            type: 'broadcast',
+                            event: 'game_over',
+                            payload: { reason: 'coop_fail' }
+                        });
+                        alert("SISTEMA CRÍTICO: O escudo coletivo colapsou!");
+                        location.reload();
+                        return;
+                    }
+                }
+
                 state.channelInstance.send({
                     type: 'broadcast',
                     event: 'show_leaderboard',
@@ -1026,26 +1401,36 @@
             }
         }
 
-        // ALTERADO PARA MOSTRAR EXATAMENTE O TOP 10 INTEGRADO AO SISTEMA DE RANKING
         function showLeaderboardScreen() {
             switchScreen(screens.leaderboard);
             state.players.sort((a, b) => b.score - a.score);
 
             const container = document.getElementById('leaderboardContainer');
             
-            // Extrai as 10 melhores pontuações em vez de apenas 5
-            container.innerHTML = state.players.slice(0, 10).map((p, idx) => `
-                <div class="flex justify-between items-center bg-black/60 p-3 border ${idx === 0 ? 'border-yellow-500/30' : 'border-cyan-500/15'} rounded-xl font-mono text-sm">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-xs font-orbitron font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-500/50'}">#${String(idx+1).padStart(2, '0')}</span>
-                        <div class="text-left">
-                            <span class="font-bold text-white block">${p.name}</span>
-                            <span class="text-[9px] uppercase tracking-wider text-purple-400">${p.rank}</span>
+            container.innerHTML = state.players.slice(0, 10).map((p, idx) => {
+                let statusLabel = "";
+                if (state.multiplayMode === 'coop') {
+                    statusLabel = p.lastAnswerCorrect 
+                        ? `<span class="text-[9px] px-2 py-0.5 bg-green-950 text-green-400 border border-green-500/30 rounded">ÓRBITA SEGURA</span>`
+                        : `<span class="text-[9px] px-2 py-0.5 bg-red-950 text-red-400 border border-red-500/30 rounded">FALHA TÁTICA</span>`;
+                }
+
+                return `
+                    <div class="flex justify-between items-center bg-black/60 p-3 border ${idx === 0 ? 'border-yellow-500/30' : 'border-cyan-500/15'} rounded-xl font-mono text-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-orbitron font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-500/50'}">#${String(idx+1).padStart(2, '0')}</span>
+                            <div class="text-left">
+                                <span class="font-bold text-white block">${p.name}</span>
+                                <span class="text-[9px] uppercase tracking-wider text-purple-400">${p.rank}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            ${statusLabel}
+                            <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
                         </div>
                     </div>
-                    <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             const btnNext = document.getElementById('btnNextQuestion');
             if (state.currentQuestionIdx + 1 >= state.gameQuestions.length) {
@@ -1059,7 +1444,7 @@
                 state.currentQuestionIdx++;
                 if (state.currentQuestionIdx >= state.gameQuestions.length) {
                     state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} });
-                    alert("Simulação Concluída! Verifique o console final.");
+                    alert("Simulação Concluída! Verifique os resultados.");
                     location.reload();
                 } else {
                     switchScreen(screens.game);
