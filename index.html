@@ -441,15 +441,28 @@
                 <!-- Painel de Carregamento de Poderes (Modo Sabotagem) -->
                 <div id="cliSabotagePanel" class="hidden glass-panel p-4 rounded-2xl border border-pink-500/20 text-left space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest">SISTEMA DE ARSENAL QUÂNTICO</span>
+                        <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest">SISTEMA DE MIRA QUÂNTICA</span>
                         <span id="cliPowerStatus" class="text-[9px] font-mono text-gray-500">CARREGANDO...</span>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    
+                    <!-- Novo bloco de Mira e Seleção -->
+                    <div id="sabotageControls" class="hidden space-y-2">
+                        <select id="selectSabotageTarget" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-lg p-2 font-mono text-xs text-cyan-300 focus:outline-none focus:border-cyan-400">
+                            <option value="">Selecione o Alvo...</option>
+                        </select>
+                        <select id="selectSabotagePower" class="w-full bg-zinc-950/80 border border-pink-500/30 rounded-lg p-2 font-mono text-xs text-pink-300 focus:outline-none focus:border-pink-400">
+                            <option value="emp">SABOTAGEM EMP (Ofuscar botões)</option>
+                            <option value="gravity">INVERSÃO GRAVITACIONAL (Virar tela)</option>
+                            <option value="time">DILAÇÃO TEMPORAL (Cortar tempo)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-2 mt-2">
                         <button id="btnTriggerSabotage" disabled class="w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300">
                             Nenhuma Sabotagem Pronta
                         </button>
                     </div>
-                    <div id="cliPowerDesc" class="text-[9px] font-mono text-gray-500 text-center">Acerte sequências de respostas (combos) para gerar ataques.</div>
+                    <div id="cliPowerDesc" class="text-[9px] font-mono text-gray-500 text-center">Alcance Combo x1.4 para liberar a seleção de alvos e efeitos.</div>
                 </div>
 
                 <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
@@ -506,7 +519,6 @@
             const globalSupa = window.supabase || (typeof globalThis !== 'undefined' ? globalThis.supabase : null);
             if (globalSupa && globalSupa.createClient) {
                 try {
-                    // Prevenção de erro de segurança em Sandbox de Iframe (Canvas)
                     _supabaseClient = globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
                         realtime: { params: { eventsPerSecond: 50 } }
                     });
@@ -518,7 +530,6 @@
             return _supabaseClient;
         }
 
-        // Classe de simulação de rede em tempo real quando WebSockets forem restritos
         class LocalQuantumMockChannel {
             constructor(roomPin) {
                 this.roomPin = roomPin;
@@ -542,13 +553,11 @@
 
             send(message) {
                 const { event, payload } = message;
-                // Simula latência quântica e processa localmente
                 setTimeout(() => {
                     if (this.handlers[event]) {
                         this.handlers[event].forEach(cb => cb({ payload }));
                     }
 
-                    // Se o jogo começou e somos o Host emulado, fazemos os bots responderem automaticamente
                     if (state.mode === 'host' && event === 'next_question') {
                         simulateBotAnswers();
                     }
@@ -599,13 +608,14 @@
             roomPin: '',
             nickname: '',
             players: [], 
+            roomPlayers: [], // Lista sincronizada de jogadores para a mira
             channelInstance: null,
             myLastAnswerCorrect: null,
             myLastEarned: 0,
             gameQuestions: [],
-            isLocalQuantumNetwork: false, // Flag de controle do emulador de rede
+            isLocalQuantumNetwork: false,
             
-            myPowerup: null, 
+            sabotageCharges: 0, // Cargas de Sabotagem (0 ou 1)
             activeDebuffs: {
                 emp: false,
                 gravity: false,
@@ -761,7 +771,8 @@
                     event: 'start_game',
                     payload: { 
                         questionsPayload: state.gameQuestions,
-                        multiplayMode: state.multiplayMode
+                        multiplayMode: state.multiplayMode,
+                        players: state.players.map(p => p.name) // Sincroniza a lista de alvos
                     }
                 });
 
@@ -778,7 +789,16 @@
             });
 
             document.getElementById('btnTriggerSabotage').addEventListener('click', () => {
-                if (!state.myPowerup) return;
+                if (state.sabotageCharges <= 0) return;
+                
+                const target = document.getElementById('selectSabotageTarget').value;
+                const powerup = document.getElementById('selectSabotagePower').value;
+
+                if (!target) {
+                    alert("SISTEMA DE MIRA: Selecione um cadete alvo primeiro!");
+                    return;
+                }
+
                 playBeep(950, 0.25);
                 
                 state.channelInstance.send({
@@ -786,11 +806,13 @@
                     event: 'sabotage_triggered',
                     payload: {
                         attacker: state.nickname,
-                        powerup: state.myPowerup
+                        target: target,
+                        powerup: powerup
                     }
                 });
 
-                state.myPowerup = null;
+                state.sabotageCharges = 0; // Consome a carga após o uso
+                document.getElementById('selectSabotageTarget').value = ""; // Reseta a mira
                 updateSabotageUI();
             });
 
@@ -820,9 +842,9 @@
 
                     document.getElementById('cliRank').innerText = computeRank(state.score);
 
-                    if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && !state.myPowerup) {
-                        const powers = ['emp', 'gravity', 'time'];
-                        state.myPowerup = powers[Math.floor(Math.random() * powers.length)];
+                    // Desbloqueia a Seleção de Sabotagem ao atingir combo
+                    if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && state.sabotageCharges < 1) {
+                        state.sabotageCharges = 1; 
                     }
 
                     updateSabotageUI();
@@ -855,6 +877,7 @@
             const btn = document.getElementById('btnTriggerSabotage');
             const statusText = document.getElementById('cliPowerStatus');
             const desc = document.getElementById('cliPowerDesc');
+            const controls = document.getElementById('sabotageControls');
 
             if (state.multiplayMode !== 'sabotage') {
                 panel.classList.add('hidden');
@@ -863,21 +886,16 @@
 
             panel.classList.remove('hidden');
 
-            if (state.myPowerup) {
+            if (state.sabotageCharges > 0) {
+                controls.classList.remove('hidden');
                 btn.removeAttribute('disabled');
-                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red";
-                statusText.innerText = "PRONTO PARA USO";
+                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red mt-2";
+                statusText.innerText = "SISTEMA ARMADO";
                 statusText.className = "text-[9px] font-mono text-pink-400 font-bold animate-pulse";
-
-                const descrições = {
-                    emp: "SABOTAGEM EMP: Ofusca e esconde 2 alternativas de um oponente.",
-                    gravity: "INVERSÃO GRAVITACIONAL: Inverte verticalmente a interface de um alvo.",
-                    time: "DILAÇÃO TEMPORAL: Corta metade do cronômetro de resposta do alvo."
-                };
-                
-                btn.innerText = `DISPARAR ${state.myPowerup.toUpperCase()}`;
-                desc.innerText = descrições[state.myPowerup];
+                btn.innerText = "DISPARAR SABOTAGEM SELECIONADA";
+                desc.innerText = "Selecione o alvo e o efeito, então dispare para sabotar o adversário escolhido!";
             } else {
+                controls.classList.add('hidden');
                 btn.setAttribute('disabled', 'true');
                 btn.className = "w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300";
                 btn.innerText = "Nenhuma Sabotagem Pronta";
@@ -891,7 +909,6 @@
             const client = getSupabase();
             
             if (!client) {
-                // Ativa fallback local se o Supabase não estiver carregado ou falhar
                 state.isLocalQuantumNetwork = true;
                 state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
                 document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
@@ -908,7 +925,6 @@
                 }
             }
 
-            // Inscrição dos listeners
             state.channelInstance
                 .on('broadcast', { event: 'join_lobby' }, (payload) => {
                     const { nickname } = payload.payload;
@@ -926,11 +942,11 @@
                     }
                 })
                 .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
-                    const { attacker, powerup } = payload.payload;
+                    const { attacker, target, powerup } = payload.payload;
                     
                     const feed = document.getElementById('hostAlertFeed');
                     feed.classList.remove('hidden');
-                    feed.innerText = `⚠️ ALERTA: CADETE ${attacker} DISPAROU SABOTAGEM [${powerup.toUpperCase()}]`;
+                    feed.innerText = `⚠️ ALERTA: ${attacker} DISPAROU [${powerup.toUpperCase()}] CONTRA ${target}!`;
                     playBeep(180, 0.3);
 
                     setTimeout(() => { feed.classList.add('hidden'); }, 4000);
@@ -954,7 +970,6 @@
             if (!state.isLocalQuantumNetwork) {
                 state.channelInstance.subscribe((status) => {
                     if (status !== 'SUBSCRIBED') {
-                        console.warn("Inscrição real falhou. Migrando para emulador local.");
                         state.isLocalQuantumNetwork = true;
                         state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
                         triggerMockPlayersJoin();
@@ -965,7 +980,6 @@
             }
         }
 
-        // Simula a entrada de jogadores virtuais (bots) de forma natural para testar a sala
         function triggerMockPlayersJoin() {
             const botNames = ["CADETE_ORION", "PILOTO_VEGA", "ALMIRANTE_NOVA", "CADETE_SIRIUS", "TENENTE_LUNA", "PILOTO_DRACO"];
             botNames.forEach((name, index) => {
@@ -1016,7 +1030,20 @@
                 .on('broadcast', { event: 'start_game' }, (payload) => {
                     state.gameQuestions = payload.payload.questionsPayload; 
                     state.multiplayMode = payload.payload.multiplayMode;
+                    state.roomPlayers = payload.payload.players || []; // Salva jogadores recebidos
                     
+                    // Preenche o campo de alvos
+                    const targetSelect = document.getElementById('selectSabotageTarget');
+                    targetSelect.innerHTML = '<option value="">Selecione o Alvo...</option>';
+                    state.roomPlayers.forEach(pName => {
+                        if (pName !== state.nickname) {
+                            const opt = document.createElement('option');
+                            opt.value = pName;
+                            opt.innerText = pName;
+                            targetSelect.appendChild(opt);
+                        }
+                    });
+
                     switchScreen(screens.playerClient);
                     updateSabotageUI();
                     
@@ -1025,10 +1052,11 @@
                     document.getElementById('cliFeedbackState').classList.add('hidden');
                 })
                 .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
-                    if (payload.payload.attacker !== state.nickname) {
+                    // Verifica se o alvo desta sabotagem sou EU
+                    if (payload.payload.target === state.nickname) {
                         const power = payload.payload.powerup;
                         state.activeDebuffs[power] = true;
-                        playBeep(150, 0.25);
+                        playBeep(150, 0.5);
                     }
                 })
                 .on('broadcast', { event: 'next_question' }, (payload) => {
@@ -1096,7 +1124,6 @@
             }
         }
 
-        // Se o jogador estiver emulado, configuramos um "Host Virtual" local que comanda as ações da rodada
         function setupLocalPlayerFallback() {
             state.channelInstance.send({
                 type: 'broadcast',
@@ -1105,7 +1132,6 @@
             });
             switchScreen(screens.wait);
 
-            // Simula o Host iniciando a partida após 3 segundos no ambiente local
             setTimeout(() => {
                 if (state.mode !== 'player') return;
                 state.gameQuestions = extractFifteenQuestions();
@@ -1114,11 +1140,11 @@
                     event: 'start_game',
                     payload: {
                         questionsPayload: state.gameQuestions,
-                        multiplayMode: 'sabotage' // Força modo sabotagem para teste enriquecido
+                        multiplayMode: 'sabotage', 
+                        players: [state.nickname, 'CADETE_ORION', 'PILOTO_VEGA', 'ALMIRANTE_NOVA'] // Simula outros jogadores
                     }
                 });
 
-                // Inicia loop de perguntas virtuais
                 startLocalVirtualHostLoop();
             }, 3000);
         }
@@ -1133,7 +1159,6 @@
                     payload: { questionIdx: state.currentQuestionIdx }
                 });
 
-                // Simula fim do tempo e avanço para leaderboard após 15 segundos
                 setTimeout(() => {
                     state.channelInstance.send({
                         type: 'broadcast',
@@ -1141,7 +1166,6 @@
                         payload: {}
                     });
 
-                    // Próxima rodada após exibir leaderboard por 5 segundos
                     setTimeout(() => {
                         state.currentQuestionIdx++;
                         if (state.currentQuestionIdx < state.gameQuestions.length) {
@@ -1160,22 +1184,20 @@
             }, 1000);
         }
 
-        // Simula inteligência artificial para os bots responderem as perguntas na tela do Host
         function simulateBotAnswers() {
             if (!state.isLocalQuantumNetwork) return;
             
             state.players.forEach((bot) => {
-                if (bot.name === state.nickname) return; // Não simula você mesmo
+                if (bot.name === state.nickname) return; 
                 if (bot.answered) return;
 
-                // Delay natural de resposta entre 2 e 9 segundos
                 const delay = 2000 + Math.random() * 7000;
 
                 setTimeout(() => {
                     if (state.mode !== 'host' || !state.canAnswer) return;
                     if (bot.answered) return;
 
-                    const isCorrect = Math.random() > 0.35; // 65% de taxa de acerto tático
+                    const isCorrect = Math.random() > 0.35; 
                     const points = isCorrect ? Math.round(500 + (state.timer / 25) * 500) : 0;
 
                     bot.answered = true;
@@ -1219,6 +1241,7 @@
             state.score = 0;
             state.shields = 100;
             state.combo = 1.0;
+            state.sabotageCharges = 0; // Prevenção de sobras de sessão anterior
 
             document.getElementById('txtScore').innerText = "0000";
             document.getElementById('txtCombo').innerText = "x1.0";
