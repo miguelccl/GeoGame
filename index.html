@@ -137,15 +137,53 @@
         .btn-green:hover { background: rgba(67, 160, 71, 0.3); box-shadow: 0 0 15px rgba(67, 160, 71, 0.4); }
 
         .emp-scrambled {
-            filter: grayscale(100%) blur(1px) !important;
-            opacity: 0.3;
+            filter: grayscale(100%) blur(5px) !important;
+            opacity: 0.15;
             pointer-events: none;
         }
+        
         .gravity-inverted {
             transform: scaleY(-1);
         }
         .gravity-inverted > * {
             transform: scaleY(-1);
+        }
+
+        /* Efeitos visuais especiais do Canvas/CRT das Sabotagens */
+        .cegueira-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0.85) 10%, rgba(3,1,10,1) 90%);
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+            border-radius: inherit;
+        }
+
+        .cegueira-active .cegueira-overlay {
+            display: block;
+            animation: blinkCrt 0.15s infinite;
+        }
+
+        @keyframes blinkCrt {
+            0% { opacity: 0.96; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        /* Efeito de Dilatação Temporal (Desfoque Radial/Motion Blur) */
+        .dilatacao-active {
+            filter: blur(4px) contrast(1.2);
+            transition: filter 0.1s ease;
+        }
+
+        .glitch-flash {
+            animation: flashRed 0.3s ease-out;
+        }
+
+        @keyframes flashRed {
+            0% { background-color: rgba(255, 0, 119, 0.4); }
+            100% { background-color: transparent; }
         }
     </style>
 </head>
@@ -161,7 +199,7 @@
                 <i data-lucide="aperture" class="text-pink-500 animate-spin" style="animation-duration: 8s; width: 1.25rem; height: 1.25rem;"></i>
             </div>
             <div>
-                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v7.2</span>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold font-orbitron block">HUD DE NAVEGAÇÃO TÁTICA v8.0 SUPREMO</span>
                 <span id="systemStatus" class="text-[9px] text-purple-400 uppercase tracking-widest font-mono">Modo de Conexão: INDIVIDUAL</span>
             </div>
         </div>
@@ -179,7 +217,7 @@
     </header>
 
     <main class="flex-grow flex items-center justify-center p-4 md:p-6 z-10 relative">
-        <div id="gameWindow" class="w-full max-w-6xl holo-transition">
+        <div id="gameWindow" class="w-full max-w-6xl holo-transition relative">
 
             <!-- Seleção de Modo Inicial -->
             <div id="screenModeSelect" class="space-y-8 text-center max-w-3xl mx-auto py-6">
@@ -193,7 +231,7 @@
                 </h1>
 
                 <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
-                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com suporte experimental para Sabotagem Orbital e Defesa Coletiva.
+                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com suporte experimental para Sabotagem Orbital e Defesa Coletiva em Tempo Real.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -328,6 +366,7 @@
                 
                 <!-- Coluna de Simulação Visual -->
                 <div class="lg:col-span-4 glass-panel p-6 rounded-3xl neon-glow-purple flex flex-col justify-between items-center min-h-[300px] lg:min-h-0 relative overflow-hidden">
+                    <div class="cegueira-overlay"></div>
                     <div class="absolute top-2 left-3 font-mono text-[9px] text-purple-400 uppercase tracking-widest flex items-center">
                         <i data-lucide="activity" class="w-3.5 h-3.5 text-pink-500 mr-1 animate-pulse"></i> SIMULADOR DE COORDENADAS ORBITAIS
                     </div>
@@ -408,7 +447,8 @@
                         ⚠️ ALERTA QUÂNTICO DETECTADO!
                     </div>
 
-                    <div class="glass-panel p-6 md:p-8 rounded-3xl neon-glow-cyan relative overflow-hidden">
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl neon-glow-cyan relative overflow-hidden" id="questionPanel">
+                        <div class="cegueira-overlay"></div>
                         <div class="absolute top-2 right-4 text-[9px] font-mono text-cyan-500/30">TRANS-BAND: Q-WAVE #5</div>
                         <div class="flex items-center space-x-2 mb-3">
                             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
@@ -419,7 +459,9 @@
                         </h2>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="answersContainer"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 relative" id="answersContainer">
+                        <div class="cegueira-overlay"></div>
+                    </div>
 
                     <div id="curiosityBox" class="bg-gradient-to-r from-purple-950/30 via-indigo-950/20 to-cyan-950/30 border border-purple-500/15 rounded-2xl p-4 flex items-start space-x-3 text-xs font-mono text-purple-200">
                         <i data-lucide="database" class="text-cyan-400 shrink-0 mt-0.5 w-4.5 h-4.5"></i>
@@ -432,37 +474,43 @@
             </div>
 
             <!-- Tela do Jogador Conectado (Celular / Cliente) -->
-            <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4">
+            <div id="screenPlayerClient" class="hidden space-y-6 text-center max-w-lg mx-auto py-4 relative">
+                
                 <div class="flex justify-between items-center font-mono text-[10px] text-gray-400 px-2 bg-black/40 p-3 rounded-xl border border-gray-800">
                     <div>JOGADOR: <strong id="cliName" class="text-cyan-400">---</strong> (<span id="cliRank" class="text-yellow-400">...</span>)</div>
                     <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
                 </div>
 
-                <!-- Painel de Carregamento de Poderes (Modo Sabotagem) -->
-                <div id="cliSabotagePanel" class="hidden glass-panel p-4 rounded-2xl border border-pink-500/20 text-left space-y-3">
+                <!-- Painel de Seleção e Lançamento de Sabotagem Completo -->
+                <div id="cliSabotagePanel" class="hidden glass-panel p-4 rounded-2xl border border-pink-500/20 text-left space-y-3 relative overflow-hidden">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest">SISTEMA DE MIRA QUÂNTICA</span>
+                        <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest flex items-center">
+                            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-pink-500 mr-1.5 animate-pulse"></i> ARSENAL DE SABOTAGEM ORBITAL
+                        </span>
                         <span id="cliPowerStatus" class="text-[9px] font-mono text-gray-500">CARREGANDO...</span>
                     </div>
-                    
-                    <!-- Novo bloco de Mira e Seleção -->
-                    <div id="sabotageControls" class="hidden space-y-2">
-                        <select id="selectSabotageTarget" class="w-full bg-zinc-950/80 border border-cyan-500/30 rounded-lg p-2 font-mono text-xs text-cyan-300 focus:outline-none focus:border-cyan-400">
-                            <option value="">Selecione o Alvo...</option>
-                        </select>
-                        <select id="selectSabotagePower" class="w-full bg-zinc-950/80 border border-pink-500/30 rounded-lg p-2 font-mono text-xs text-pink-300 focus:outline-none focus:border-pink-400">
-                            <option value="emp">SABOTAGEM EMP (Ofuscar botões)</option>
-                            <option value="gravity">INVERSÃO GRAVITACIONAL (Virar tela)</option>
-                            <option value="time">DILAÇÃO TEMPORAL (Cortar tempo)</option>
-                        </select>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-mono text-gray-500 uppercase mb-1">Selecionar Cadete Alvo:</label>
+                            <select id="playerSelect" class="w-full bg-zinc-950/90 border border-pink-500/30 text-white rounded-lg p-2 font-mono text-xs focus:outline-none focus:border-pink-500">
+                                <option value="">Aguardando jogadores...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-mono text-gray-500 uppercase mb-1">Efeito Quântico:</label>
+                            <select id="effectSelect" class="w-full bg-zinc-950/90 border border-pink-500/30 text-white rounded-lg p-2 font-mono text-xs focus:outline-none focus:border-pink-500">
+                                <option value="cegueira">CEGUEIRA CRT (5s)</option>
+                                <option value="inversao">INVERSÃO DE EIXO (8s)</option>
+                                <option value="dilatacao">DILAÇÃO TEMPORAL (6s)</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="flex items-center space-x-2 mt-2">
-                        <button id="btnTriggerSabotage" disabled class="w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300">
-                            Nenhuma Sabotagem Pronta
-                        </button>
-                    </div>
-                    <div id="cliPowerDesc" class="text-[9px] font-mono text-gray-500 text-center">Alcance Combo x1.4 para liberar a seleção de alvos e efeitos.</div>
+                    <button id="btnTriggerSabotage" disabled class="w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300">
+                        Nenhuma Carga Gerada
+                    </button>
+                    <div id="cliPowerDesc" class="text-[9px] font-mono text-gray-500 text-center">Acerte sequências de respostas corretas (combo) para obter cargas.</div>
                 </div>
 
                 <div id="cliWaitState" class="glass-panel p-8 rounded-2xl flex flex-col justify-center items-center space-y-4">
@@ -471,19 +519,23 @@
                     <p class="text-xs font-mono text-gray-400">Escolha a resposta correspondente à cor ou símbolo abaixo quando a pergunta for liberada!</p>
                 </div>
 
-                <div id="cliActionState" class="hidden grid grid-cols-2 gap-4">
-                    <button class="cli-ans-btn btn-red py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="0">
-                        <span class="text-5xl">▲</span> <span class="text-xs font-mono tracking-widest text-white/70">A</span>
-                    </button>
-                    <button class="cli-ans-btn btn-blue py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="1">
-                        <span class="text-5xl">⬢</span> <span class="text-xs font-mono tracking-widest text-white/70">B</span>
-                    </button>
-                    <button class="cli-ans-btn btn-yellow py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="2">
-                        <span class="text-5xl">■</span> <span class="text-xs font-mono tracking-widest text-white/70">C</span>
-                    </button>
-                    <button class="cli-ans-btn btn-green py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="3">
-                        <span class="text-5xl">●</span> <span class="text-xs font-mono tracking-widest text-white/70">D</span>
-                    </button>
+                <!-- Painel de Resposta Ativa com Overlays de Efeito Quântico -->
+                <div id="cliActionState" class="hidden relative rounded-2xl overflow-hidden">
+                    <div class="cegueira-overlay"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="cli-ans-btn btn-red py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="0">
+                            <span class="text-5xl">▲</span> <span class="text-xs font-mono tracking-widest text-white/70">A</span>
+                        </button>
+                        <button class="cli-ans-btn btn-blue py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="1">
+                            <span class="text-5xl">⬢</span> <span class="text-xs font-mono tracking-widest text-white/70">B</span>
+                        </button>
+                        <button class="cli-ans-btn btn-yellow py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="2">
+                            <span class="text-5xl">■</span> <span class="text-xs font-mono tracking-widest text-white/70">C</span>
+                        </button>
+                        <button class="cli-ans-btn btn-green py-12 rounded-2xl flex flex-col justify-center items-center space-y-2 text-white font-orbitron font-bold text-2xl transition-all" data-ans="3">
+                            <span class="text-5xl">●</span> <span class="text-xs font-mono tracking-widest text-white/70">D</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="cliFeedbackState" class="hidden glass-panel p-10 rounded-2xl text-center space-y-4">
@@ -520,7 +572,7 @@
             if (globalSupa && globalSupa.createClient) {
                 try {
                     _supabaseClient = globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-                        realtime: { params: { eventsPerSecond: 50 } }
+                        realtime: { params: { eventsPerSecond: 80 } }
                     });
                 } catch (e) { 
                     console.warn("Supabase WebSocket bloqueado. Ativando Emulador de Rede Local Quântica.", e); 
@@ -530,6 +582,7 @@
             return _supabaseClient;
         }
 
+        // Classe de simulação de rede em tempo real quando WebSockets forem restritos
         class LocalQuantumMockChannel {
             constructor(roomPin) {
                 this.roomPin = roomPin;
@@ -557,11 +610,10 @@
                     if (this.handlers[event]) {
                         this.handlers[event].forEach(cb => cb({ payload }));
                     }
-
                     if (state.mode === 'host' && event === 'next_question') {
                         simulateBotAnswers();
                     }
-                }, 150);
+                }, 120);
             }
 
             unsubscribe() {
@@ -592,6 +644,14 @@
             { q: "Qual o nome da maior lua de Saturno?", options: ["Titã", "Europa", "Ganimedes", "Fobos"], correct: 0, curiosity: "É a única lua do sistema solar com uma atmosfera densa estável." }
         ];
 
+        // Tipos de efeitos permitidos conforme especificação do protocolo de sabotagem
+        const EFEITOS = {
+            CEGUEIRA: "cegueira",
+            INVERSAO: "inversao",
+            DILATACAO: "dilatacao"
+        };
+
+        // Estado do Jogo centralizado e sincronizado de acordo com as regras de multiplayer de segurança
         let state = {
             isSoundOn: true,
             highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
@@ -607,15 +667,16 @@
             canAnswer: false,
             roomPin: '',
             nickname: '',
-            players: [], 
-            roomPlayers: [], // Lista sincronizada de jogadores para a mira
+            players: [], // Coleção contendo { id, name, score, answered, rank, lastAnswerCorrect }
+            activeEffects: [], // Lista de sabotagens ativas no cliente local
             channelInstance: null,
             myLastAnswerCorrect: null,
             myLastEarned: 0,
             gameQuestions: [],
             isLocalQuantumNetwork: false,
             
-            sabotageCharges: 0, // Cargas de Sabotagem (0 ou 1)
+            myPowerup: null, 
+            lastPowerupUsedTime: 0,
             activeDebuffs: {
                 emp: false,
                 gravity: false,
@@ -772,7 +833,7 @@
                     payload: { 
                         questionsPayload: state.gameQuestions,
                         multiplayMode: state.multiplayMode,
-                        players: state.players.map(p => p.name) // Sincroniza a lista de alvos
+                        initialPlayers: state.players
                     }
                 });
 
@@ -788,32 +849,26 @@
                 loadQuestion();
             });
 
+            // Lógica do Clique de Disparo da Sabotagem
             document.getElementById('btnTriggerSabotage').addEventListener('click', () => {
-                if (state.sabotageCharges <= 0) return;
+                const targetSelect = document.getElementById('playerSelect');
+                const effectSelect = document.getElementById('effectSelect');
                 
-                const target = document.getElementById('selectSabotageTarget').value;
-                const powerup = document.getElementById('selectSabotagePower').value;
+                const targetPlayerVal = targetSelect.value;
+                const effectVal = effectSelect.value;
 
-                if (!target) {
-                    alert("SISTEMA DE MIRA: Selecione um cadete alvo primeiro!");
+                if (!targetPlayerVal) {
+                    alert("Aviso: É obrigatório definir um Cadete inimigo como alvo.");
                     return;
                 }
 
-                playBeep(950, 0.25);
-                
-                state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'sabotage_triggered',
-                    payload: {
-                        attacker: state.nickname,
-                        target: target,
-                        powerup: powerup
-                    }
-                });
+                if (!state.myPowerup) {
+                    alert("Aviso: Sistema de Carga Orbital sem combustível suficiente.");
+                    return;
+                }
 
-                state.sabotageCharges = 0; // Consome a carga após o uso
-                document.getElementById('selectSabotageTarget').value = ""; // Reseta a mira
-                updateSabotageUI();
+                // Disparar sabotagem autoritativa de rede
+                executarSabotagem(targetPlayerVal, effectVal);
             });
 
             document.querySelectorAll('.cli-ans-btn').forEach(btn => {
@@ -842,28 +897,21 @@
 
                     document.getElementById('cliRank').innerText = computeRank(state.score);
 
-                    // Desbloqueia a Seleção de Sabotagem ao atingir combo
-                    if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && state.sabotageCharges < 1) {
-                        state.sabotageCharges = 1; 
+                    // Sistema de obtenção de cargas de sabotagem quântica por acertos e combos
+                    if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && !state.myPowerup) {
+                        const effectChoices = [EFEITOS.CEGUEIRA, EFEITOS.INVERSAO, EFEITOS.DILATACAO];
+                        state.myPowerup = effectChoices[Math.floor(Math.random() * effectChoices.length)];
                     }
 
                     updateSabotageUI();
 
+                    // Limpa debuffs temporários após responder
                     state.activeDebuffs.emp = false;
                     state.activeDebuffs.gravity = false;
                     state.activeDebuffs.time = false;
 
-                    state.channelInstance.send({
-                        type: 'broadcast',
-                        event: 'submit_answer',
-                        payload: {
-                            nickname: state.nickname,
-                            isCorrect: isCorrect,
-                            points: pointsEarned,
-                            ansIdx: ansIdx,
-                            currentRank: computeRank(state.score)
-                        }
-                    });
+                    // Sincronização de pontuação via Supabase em tempo real
+                    atualizarScore(state.nickname, pointsEarned, isCorrect);
 
                     document.getElementById('cliActionState').classList.add('hidden');
                     document.getElementById('cliWaitState').classList.remove('hidden');
@@ -872,12 +920,219 @@
             });
         }
 
+        // --- SISTEMA DE SABOTAGEM MULTIPLAYER AUTORITATIVO ---
+
+        function executarSabotagem(alvoId, tipoDeEfeito) {
+            // Validações de segurança e regras do escopo
+            if (!alvoId || alvoId === state.nickname) {
+                console.warn("Sabotagem Inválida: Auto-sabotagem detectada ou alvo nulo.");
+                return;
+            }
+
+            // Verifica se o alvo existe e está registrado no array local
+            const targetExists = state.players.some(p => p.name === alvoId);
+            if (!targetExists && state.players.length > 0) {
+                console.warn("Sabotagem abortada: Alvo não encontrado na órbita.");
+                return;
+            }
+
+            console.log(`[Sabotagem] Emitindo efeito de ${tipoDeEfeito} para o Alvo: ${alvoId}`);
+
+            const payload = {
+                type: "sabotage",
+                sourcePlayer: state.nickname,
+                targetPlayer: alvoId,
+                effect: tipoDeEfeito,
+                timestamp: Date.now()
+            };
+
+            // Envia evento em tempo real através do canal Supabase / Emulador quântico
+            state.channelInstance.send({
+                type: 'broadcast',
+                event: 'sabotage_triggered',
+                payload: payload
+            });
+
+            // Reseta a carga quântica local do atacante após o uso
+            state.myPowerup = null;
+            updateSabotageUI();
+        }
+
+        // Listener receptor executado em cada cliente conectado
+        function onSabotageReceived(payload) {
+            const { sourcePlayer, targetPlayer, effect, timestamp } = payload;
+
+            // Segurança: Ignorar pacotes muito antigos ou de outras sessões corrompidas
+            if (Date.now() - timestamp > 15000) {
+                console.warn("Mensagem quântica rejeitada por expiração de tempo limite.");
+                return;
+            }
+
+            // Apenas o cliente do alvo aplica os efeitos lógico-visuais de perturbação
+            if (targetPlayer === state.nickname) {
+                console.warn(`[PERIGO] Você foi sabotado por ${sourcePlayer} com ${effect.toUpperCase()}!`);
+                aplicarEfeitoLocal(effect);
+                exibirFeedbackSabotagem(effect);
+            }
+        }
+
+        // Aplica modificadores de interface e controle localmente
+        function aplicarEfeitoLocal(tipo) {
+            // Evitar duplicação ou empilhamento de timers no mesmo efeito
+            if (state.activeEffects.includes(tipo)) return;
+            state.activeEffects.push(tipo);
+
+            switch(tipo) {
+                case EFEITOS.CEGUEIRA:
+                    aplicarCegueira();
+                    break;
+                case EFEITOS.INVERSAO:
+                    aplicarInversao();
+                    break;
+                case EFEITOS.DILATACAO:
+                    aplicarDilatacao();
+                    break;
+            }
+        }
+
+        // Funções modulares de ativação e remoção de efeitos de sabotagem
+
+        function aplicarCegueira() {
+            const duration = 5000;
+            state.activeDebuffs.emp = true;
+            document.getElementById('cliActionState').classList.add('cegueira-active');
+            
+            setTimeout(() => {
+                state.activeDebuffs.emp = false;
+                document.getElementById('cliActionState').classList.remove('cegueira-active');
+                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.CEGUEIRA);
+            }, duration);
+        }
+
+        function aplicarInversao() {
+            const duration = 8000;
+            state.activeDebuffs.gravity = true;
+            document.getElementById('cliActionState').classList.add('gravity-inverted');
+
+            setTimeout(() => {
+                state.activeDebuffs.gravity = false;
+                document.getElementById('cliActionState').classList.remove('gravity-inverted');
+                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.INVERSAO);
+            }, duration);
+        }
+
+        function aplicarDilatacao() {
+            const duration = 6000;
+            state.activeDebuffs.time = true;
+            document.getElementById('cliActionState').classList.add('dilatacao-active');
+
+            setTimeout(() => {
+                state.activeDebuffs.time = false;
+                document.getElementById('cliActionState').classList.remove('dilatacao-active');
+                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.DILATACAO);
+            }, duration);
+        }
+
+        // Emite alertas, flashes de erro e tremores CRT em tempo real
+        function exibirFeedbackSabotagem(tipo) {
+            const gameWin = document.getElementById('gameWindow');
+            const questionPanel = document.getElementById('questionPanel');
+            const answersContainer = document.getElementById('answersContainer');
+            
+            // Tocar som de interferência
+            playBeep(120, 0.4);
+
+            if (tipo === EFEITOS.CEGUEIRA) {
+                // Fade para preto e ruído estático na pergunta e respostas
+                questionPanel.classList.add('cegueira-active');
+                answersContainer.classList.add('cegueira-active');
+                
+                setTimeout(() => {
+                    questionPanel.classList.remove('cegueira-active');
+                    answersContainer.classList.remove('cegueira-active');
+                }, 5000);
+            } 
+            else if (tipo === EFEITOS.INVERSAO) {
+                // Tremor intenso da tela e flash vermelho
+                gameWin.classList.add('shake-active', 'glitch-flash');
+                setTimeout(() => {
+                    gameWin.classList.remove('shake-active', 'glitch-flash');
+                }, 800);
+            } 
+            else if (tipo === EFEITOS.DILATACAO) {
+                // Distorção temporal com desfoque estético
+                document.body.classList.add('dilatacao-active');
+                setTimeout(() => {
+                    document.body.classList.remove('dilatacao-active');
+                }, 600);
+            }
+        }
+
+        // --- SISTEMA DE SCORE E SYNC EM TEMPO REAL ---
+
+        function atualizarScore(nickname, pontos, isCorrect) {
+            // Incrementa score no estado local
+            if (state.mode === 'player') {
+                state.channelInstance.send({
+                    type: 'broadcast',
+                    event: 'submit_answer',
+                    payload: {
+                        nickname: nickname,
+                        isCorrect: isCorrect,
+                        points: pontos,
+                        currentRank: computeRank(state.score)
+                    }
+                });
+            }
+        }
+
+        function sincronizarRanking(playerData) {
+            // Busca o jogador na base local ou insere um novo
+            let p = state.players.find(pl => pl.name === playerData.nickname);
+            if (p) {
+                p.score += playerData.points;
+                p.answered = true;
+                p.lastAnswerCorrect = playerData.isCorrect;
+                p.rank = playerData.currentRank;
+            } else {
+                state.players.push({
+                    name: playerData.nickname,
+                    score: playerData.points,
+                    answered: true,
+                    lastAnswerCorrect: playerData.isCorrect,
+                    rank: playerData.currentRank
+                });
+            }
+            
+            // Organiza por pontuação descendente
+            state.players.sort((a, b) => b.score - a.score);
+            renderizarRankingInimigosUI();
+        }
+
+        // Renderiza lista suspensa (Select) para sabotagens dinâmicas
+        function renderizarRankingInimigosUI() {
+            const selectEl = document.getElementById('playerSelect');
+            if (!selectEl) return;
+
+            // Filtra o próprio jogador e exibe inimigos na lista suspensa
+            const inimigos = state.players.filter(p => p.name !== state.nickname);
+            
+            if (inimigos.length === 0) {
+                selectEl.innerHTML = `<option value="">Nenhum Alvo Detectado</option>`;
+                return;
+            }
+
+            selectEl.innerHTML = inimigos.map(p => 
+                `<option value="${p.name}">${p.name} (${p.score} PTS) - ${p.rank}</option>`
+            ).join('');
+        }
+
+        // Interface do Painel de Sabotagem do Jogador
         function updateSabotageUI() {
             const panel = document.getElementById('cliSabotagePanel');
             const btn = document.getElementById('btnTriggerSabotage');
             const statusText = document.getElementById('cliPowerStatus');
             const desc = document.getElementById('cliPowerDesc');
-            const controls = document.getElementById('sabotageControls');
 
             if (state.multiplayMode !== 'sabotage') {
                 panel.classList.add('hidden');
@@ -885,25 +1140,33 @@
             }
 
             panel.classList.remove('hidden');
+            renderizarRankingInimigosUI();
 
-            if (state.sabotageCharges > 0) {
-                controls.classList.remove('hidden');
+            if (state.myPowerup) {
                 btn.removeAttribute('disabled');
-                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red mt-2";
-                statusText.innerText = "SISTEMA ARMADO";
+                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red";
+                statusText.innerText = "PRONTO PARA DISPARAR";
                 statusText.className = "text-[9px] font-mono text-pink-400 font-bold animate-pulse";
-                btn.innerText = "DISPARAR SABOTAGEM SELECIONADA";
-                desc.innerText = "Selecione o alvo e o efeito, então dispare para sabotar o adversário escolhido!";
+
+                const descricoes = {
+                    cegueira: "SABOTAGEM CEGUEIRA: Ocultará dados visuais da tela do oponente por 5s.",
+                    inversao: "INVERSÃO GRAVITACIONAL: Inverte verticalmente o painel de respostas do oponente por 8s.",
+                    dilatacao: "DILAÇÃO TEMPORAL: Impõe um forte lag e motion blur que reduz o tempo de resposta por 6s."
+                };
+                
+                btn.innerText = `DISPARAR ${state.myPowerup.toUpperCase()}`;
+                desc.innerText = descricoes[state.myPowerup];
             } else {
-                controls.classList.add('hidden');
                 btn.setAttribute('disabled', 'true');
                 btn.className = "w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300";
-                btn.innerText = "Nenhuma Sabotagem Pronta";
+                btn.innerText = "Nenhuma Carga Gerada";
                 statusText.innerText = "CARREGANDO...";
                 statusText.className = "text-[9px] font-mono text-gray-500";
-                desc.innerText = `Aumente a sua sequência de acertos para desbloquear poderes. Combo Atual: x${state.combo.toFixed(1)}`;
+                desc.innerText = `Aumente sua sequência de acertos e combos. Combo Atual: x${state.combo.toFixed(1)}`;
             }
         }
+
+        // --- SISTEMAS DE LIGAÇÃO DE REDE SUPABASE REALTIME ---
 
         function initHostChannel() {
             const client = getSupabase();
@@ -942,11 +1205,18 @@
                     }
                 })
                 .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
-                    const { attacker, target, powerup } = payload.payload;
-                    
+                    // Propaga o evento de sabotagem de forma autoritativa para todos os clientes ativos
+                    state.channelInstance.send({
+                        type: 'broadcast',
+                        event: 'sabotage',
+                        payload: payload.payload
+                    });
+
+                    // Notifica no feed visual do Host principal
+                    const { attacker, powerup, targetPlayer } = payload.payload;
                     const feed = document.getElementById('hostAlertFeed');
                     feed.classList.remove('hidden');
-                    feed.innerText = `⚠️ ALERTA: ${attacker} DISPAROU [${powerup.toUpperCase()}] CONTRA ${target}!`;
+                    feed.innerText = `⚠️ ALERTA QUÂNTICO: CADETE ${payload.payload.sourcePlayer} ATACOU ${targetPlayer} COM [${effectToName(payload.payload.effect)}]!`;
                     playBeep(180, 0.3);
 
                     setTimeout(() => { feed.classList.add('hidden'); }, 4000);
@@ -959,6 +1229,9 @@
                         p.score += points;
                         p.lastAnswerCorrect = isCorrect;
                         p.rank = currentRank;
+
+                        // Ordena o ranking local de scores
+                        state.players.sort((a, b) => b.score - a.score);
 
                         const totalAnswered = state.players.filter(pl => pl.answered).length;
                         if (totalAnswered >= state.players.length) {
@@ -978,6 +1251,12 @@
             } else {
                 state.channelInstance.subscribe();
             }
+        }
+
+        function effectToName(eff) {
+            if (eff === EFEITOS.CEGUEIRA) return "CEGUEIRA CRT";
+            if (eff === EFEITOS.INVERSAO) return "INVERSÃO GRAVITACIONAL";
+            return "DILAÇÃO TEMPORAL";
         }
 
         function triggerMockPlayersJoin() {
@@ -1030,20 +1309,8 @@
                 .on('broadcast', { event: 'start_game' }, (payload) => {
                     state.gameQuestions = payload.payload.questionsPayload; 
                     state.multiplayMode = payload.payload.multiplayMode;
-                    state.roomPlayers = payload.payload.players || []; // Salva jogadores recebidos
+                    state.players = payload.payload.initialPlayers || [];
                     
-                    // Preenche o campo de alvos
-                    const targetSelect = document.getElementById('selectSabotageTarget');
-                    targetSelect.innerHTML = '<option value="">Selecione o Alvo...</option>';
-                    state.roomPlayers.forEach(pName => {
-                        if (pName !== state.nickname) {
-                            const opt = document.createElement('option');
-                            opt.value = pName;
-                            opt.innerText = pName;
-                            targetSelect.appendChild(opt);
-                        }
-                    });
-
                     switchScreen(screens.playerClient);
                     updateSabotageUI();
                     
@@ -1051,13 +1318,9 @@
                     document.getElementById('cliWaitState').classList.remove('hidden');
                     document.getElementById('cliFeedbackState').classList.add('hidden');
                 })
-                .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
-                    // Verifica se o alvo desta sabotagem sou EU
-                    if (payload.payload.target === state.nickname) {
-                        const power = payload.payload.powerup;
-                        state.activeDebuffs[power] = true;
-                        playBeep(150, 0.5);
-                    }
+                .on('broadcast', { event: 'sabotage' }, (payload) => {
+                    // Escuta global de eventos de sabotagem propagados pelo host
+                    onSabotageReceived(payload.payload);
                 })
                 .on('broadcast', { event: 'next_question' }, (payload) => {
                     state.currentQuestionIdx = payload.payload.questionIdx;
@@ -1069,6 +1332,10 @@
                     document.getElementById('cliActionState').classList.remove('hidden');
 
                     applyDebuffVisuals();
+                })
+                .on('broadcast', { event: 'submit_answer' }, (payload) => {
+                    // Sincroniza o placar e estado dos adversários localmente
+                    sincronizarRanking(payload.payload);
                 })
                 .on('broadcast', { event: 'show_leaderboard' }, () => {
                     document.getElementById('cliWaitState').classList.add('hidden');
@@ -1135,13 +1402,19 @@
             setTimeout(() => {
                 if (state.mode !== 'player') return;
                 state.gameQuestions = extractFifteenQuestions();
+                state.players = [
+                    { name: state.nickname, score: 0, rank: "Recruta", answered: false },
+                    { name: "BOT_ORION", score: 1200, rank: "Piloto", answered: false },
+                    { name: "BOT_SIRIUS", score: 800, rank: "Recruta", answered: false }
+                ];
+
                 state.channelInstance.send({
                     type: 'broadcast',
                     event: 'start_game',
                     payload: {
                         questionsPayload: state.gameQuestions,
-                        multiplayMode: 'sabotage', 
-                        players: [state.nickname, 'CADETE_ORION', 'PILOTO_VEGA', 'ALMIRANTE_NOVA'] // Simula outros jogadores
+                        multiplayMode: 'sabotage',
+                        initialPlayers: state.players
                     }
                 });
 
@@ -1241,7 +1514,6 @@
             state.score = 0;
             state.shields = 100;
             state.combo = 1.0;
-            state.sabotageCharges = 0; // Prevenção de sobras de sessão anterior
 
             document.getElementById('txtScore').innerText = "0000";
             document.getElementById('txtCombo').innerText = "x1.0";
@@ -1281,7 +1553,7 @@
 
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = `${colors[idx]} w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white`;
+                btn.className = `${colors[idx]} w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white relative`;
                 btn.innerHTML = `<span class="font-orbitron font-black text-white/50 mr-2">[${prefixes[idx]}]</span> <span>${opt}</span>`;
 
                 btn.addEventListener('click', () => {
