@@ -30,13 +30,8 @@
             justify-content: space-between;
         }
 
-        h1, h2, h3, .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .font-rajdhani {
-            font-family: 'Rajdhani', sans-serif;
-        }
+        h1, h2, h3, .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
 
         .glass-panel {
             background: rgba(6, 4, 16, 0.75);
@@ -72,9 +67,7 @@
             90% { transform: translate(-4px, 1px) rotate(-0.3deg); }
         }
 
-        .shake-active {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        .shake-active { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 
         .crt-scanlines {
             position: fixed;
@@ -86,9 +79,7 @@
             opacity: 0.2;
         }
 
-        .holo-transition {
-            transition: opacity 0.4s ease-in-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .holo-transition { transition: opacity 0.4s ease-in-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .cyber-btn {
             position: relative;
@@ -142,14 +133,9 @@
             pointer-events: none;
         }
         
-        .gravity-inverted {
-            transform: scaleY(-1);
-        }
-        .gravity-inverted > * {
-            transform: scaleY(-1);
-        }
+        .gravity-inverted { transform: scaleY(-1); }
+        .gravity-inverted > * { transform: scaleY(-1); }
 
-        /* Efeitos visuais especiais do Canvas/CRT das Sabotagens */
         .cegueira-overlay {
             position: absolute;
             inset: 0;
@@ -171,16 +157,12 @@
             100% { opacity: 0.98; }
         }
 
-        /* Efeito de Dilatação Temporal (Desfoque Radial/Motion Blur) */
         .dilatacao-active {
             filter: blur(4px) contrast(1.2);
             transition: filter 0.1s ease;
         }
 
-        .glitch-flash {
-            animation: flashRed 0.3s ease-out;
-        }
-
+        .glitch-flash { animation: flashRed 0.3s ease-out; }
         @keyframes flashRed {
             0% { background-color: rgba(255, 0, 119, 0.4); }
             100% { background-color: transparent; }
@@ -231,7 +213,7 @@
                 </h1>
 
                 <p class="text-sm md:text-base text-gray-300 font-mono leading-relaxed max-w-xl mx-auto bg-black/60 p-5 rounded-2xl border border-cyan-500/10 shadow-2xl">
-                    Defina o protocolo de comunicação e calibração de dados quânticos sob forte compressão espacial. Agora com suporte experimental para Sabotagem Orbital e Defesa Coletiva em Tempo Real.
+                    Defina o protocolo de comunicação. O banco de dados agora contém 100 perguntas avançadas! Serão sorteadas 15 para testar as suas capacidades.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -442,7 +424,7 @@
                         </div>
                     </div>
 
-                    <!-- Notificações de Alertas (Especialmente para o modo Sabotagem) -->
+                    <!-- Notificações de Alertas -->
                     <div id="hostAlertFeed" class="hidden bg-red-950/40 border border-red-500/30 p-3 rounded-xl font-mono text-xs text-red-400 text-center animate-pulse">
                         ⚠️ ALERTA QUÂNTICO DETECTADO!
                     </div>
@@ -481,7 +463,7 @@
                     <div>PLACAR: <strong id="cliScore" class="text-green-400">0</strong></div>
                 </div>
 
-                <!-- Painel de Seleção e Lançamento de Sabotagem Completo -->
+                <!-- Painel de Sabotagem -->
                 <div id="cliSabotagePanel" class="hidden glass-panel p-4 rounded-2xl border border-pink-500/20 text-left space-y-3 relative overflow-hidden">
                     <div class="flex justify-between items-center">
                         <span class="text-[10px] font-mono text-pink-400 uppercase font-bold tracking-widest flex items-center">
@@ -519,7 +501,6 @@
                     <p class="text-xs font-mono text-gray-400">Escolha a resposta correspondente à cor ou símbolo abaixo quando a pergunta for liberada!</p>
                 </div>
 
-                <!-- Painel de Resposta Ativa com Overlays de Efeito Quântico -->
                 <div id="cliActionState" class="hidden relative rounded-2xl overflow-hidden">
                     <div class="cegueira-overlay"></div>
                     <div class="grid grid-cols-2 gap-4">
@@ -545,7 +526,7 @@
                 </div>
             </div>
 
-            <!-- Tabela de Classificação do Host (Leaderboard) -->
+            <!-- Tabela de Classificação -->
             <div id="screenLeaderboard" class="hidden text-center max-w-2xl mx-auto py-6 glass-panel p-8 rounded-3xl neon-glow-purple space-y-6">
                 <h2 class="text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">SISTEMA DE DEFESA: TOP 10 CADETES</h2>
                 <p class="text-xs font-mono text-gray-400">Resultados computados via telemetria quântica com atribuição de Patente.</p>
@@ -561,6 +542,116 @@
     </main>
 
     <script>
+        // ========================================================================
+        // BASE DE DADOS INTERNA - 100 PERGUNTAS (SISTEMA SOLAR & BURACOS NEGROS)
+        // ========================================================================
+        const BASE_QUESTIONS = [
+            // --- 50 PERGUNTAS SOBRE O SISTEMA SOLAR ---
+            { q: "Qual é o planeta mais próximo do Sol?", options: ["Vênus", "Mercúrio", "Terra", "Marte"], correct: 1, curiosity: "Mercúrio é o mais próximo, mas não é o mais quente; esse título pertence a Vênus devido ao seu espesso efeito estufa." },
+            { q: "Qual planeta é conhecido por seus impressionantes e vastos anéis visíveis?", options: ["Júpiter", "Urano", "Netuno", "Saturno"], correct: 3, curiosity: "Embora Júpiter, Urano e Netuno também tenham anéis, os de Saturno são os maiores e mais brilhantes, feitos de gelo e rocha." },
+            { q: "Qual é o maior planeta do Sistema Solar?", options: ["Saturno", "Júpiter", "Netuno", "Terra"], correct: 1, curiosity: "Júpiter é tão grande que mais de 1.300 planetas Terra poderiam caber dentro dele." },
+            { q: "Qual planeta possui a cor avermelhada devido ao óxido de ferro em sua superfície?", options: ["Marte", "Vênus", "Mercúrio", "Júpiter"], correct: 0, curiosity: "Marte é chamado de Planeta Vermelho porque sua superfície está literalmente enferrujada." },
+            { q: "Em qual planeta está localizado o Monte Olimpo, o maior vulcão do Sistema Solar?", options: ["Terra", "Marte", "Vênus", "Saturno"], correct: 1, curiosity: "O Monte Olimpo em Marte é três vezes mais alto que o Monte Everest na Terra." },
+            { q: "Qual é o planeta mais quente do Sistema Solar?", options: ["Mercúrio", "Vênus", "Marte", "Júpiter"], correct: 1, curiosity: "A atmosfera de Vênus retém tanto calor que sua superfície chega a derreter chumbo (cerca de 465°C)." },
+            { q: "Qual corpo celeste foi reclassificado como planeta anão em 2006?", options: ["Ceres", "Éris", "Plutão", "Makemake"], correct: 2, curiosity: "Plutão foi rebaixado porque não conseguiu 'limpar a vizinhança' de sua órbita no Cinturão de Kuiper." },
+            { q: "Quantos planetas compõem o nosso Sistema Solar atualmente?", options: ["7", "8", "9", "10"], correct: 1, curiosity: "Desde a reclassificação de Plutão em 2006, o Sistema Solar possui oficialmente 8 planetas." },
+            { q: "Qual o nome da maior lua de Saturno, conhecida por ter uma atmosfera espessa e lagos de metano?", options: ["Europa", "Titã", "Ganimedes", "Encélado"], correct: 1, curiosity: "Titã é a única lua do Sistema Solar com uma atmosfera densa e nuvens líquidas estáveis na superfície." },
+            { q: "Qual é a maior lua do Sistema Solar, pertencente a Júpiter?", options: ["Titã", "Calisto", "Ganimedes", "Io"], correct: 2, curiosity: "Ganimedes é maior do que o próprio planeta Mercúrio." },
+            { q: "O Cinturão de Asteroides principal está localizado entre as órbitas de quais planetas?", options: ["Terra e Marte", "Marte e Júpiter", "Júpiter e Saturno", "Saturno e Urano"], correct: 1, curiosity: "Apesar de ter milhões de rochas, a massa total do cinturão de asteroides é menor que a da nossa Lua." },
+            { q: "Qual planeta gira de lado, com um eixo de inclinação de quase 98 graus?", options: ["Urano", "Netuno", "Saturno", "Vênus"], correct: 0, curiosity: "Acredita-se que Urano roda de lado devido a uma colisão colossal com um objeto do tamanho da Terra no passado." },
+            { q: "Qual planeta tem os ventos mais rápidos e violentos do Sistema Solar?", options: ["Júpiter", "Saturno", "Urano", "Netuno"], correct: 3, curiosity: "Os ventos em Netuno podem atingir impressionantes velocidades de mais de 2.100 km/h." },
+            { q: "Qual é o principal componente gasoso da atmosfera de Vênus?", options: ["Oxigênio", "Nitrogênio", "Dióxido de Carbono", "Metano"], correct: 2, curiosity: "Sua atmosfera é 96% feita de CO2, gerando um efeito estufa descontrolado." },
+            { q: "Qual lua de Júpiter é o corpo geologicamente mais ativo do Sistema Solar, repleta de vulcões?", options: ["Io", "Europa", "Ganimedes", "Calisto"], correct: 0, curiosity: "A gravidade massiva de Júpiter espreme o interior de Io, derretendo seu núcleo e gerando erupções constantes." },
+            { q: "Qual lua de Júpiter possui um oceano global de água líquida sob uma crosta de gelo?", options: ["Io", "Europa", "Titã", "Tritão"], correct: 1, curiosity: "Cientistas acreditam que o oceano de Europa tem o dobro de água de todos os oceanos da Terra combinados." },
+            { q: "A Grande Mancha Vermelha é uma tempestade colossal localizada em qual planeta?", options: ["Saturno", "Marte", "Júpiter", "Neptuno"], correct: 2, curiosity: "Esta tempestade anticiclônica ruge há pelo menos 300 anos e já foi grande o suficiente para engolir duas Terras inteiras." },
+            { q: "De onde vêm a maioria dos cometas de longo período que visitam o interior do Sistema Solar?", options: ["Cinturão de Asteroides", "Cinturão de Kuiper", "Nuvem de Oort", "Anéis de Saturno"], correct: 2, curiosity: "A Nuvem de Oort é uma esfera gigante teórica de detritos gelados na borda extrema do Sistema Solar." },
+            { q: "Qual é a estrela central do nosso sistema planetário?", options: ["Sirius", "O Sol", "Alfa Centauri", "Betelgeuse"], correct: 1, curiosity: "O Sol contém 99,86% de toda a massa combinada de todo o Sistema Solar." },
+            { q: "Qual planeta demora aproximadamente 165 anos terrestres para completar uma única órbita?", options: ["Urano", "Netuno", "Plutão", "Saturno"], correct: 1, curiosity: "Netuno completou sua primeira órbita completa desde a sua descoberta (em 1846) apenas no ano de 2011." },
+            { q: "Quais planetas do Sistema Solar não possuem nenhuma lua ou satélite natural?", options: ["Mercúrio e Vênus", "Marte e Mercúrio", "Vênus e Marte", "Urano e Netuno"], correct: 0, curiosity: "Mercúrio e Vênus são os únicos dois planetas solitários que não possuem nenhuma companhia orbital." },
+            { q: "Qual o nome das duas pequenas luas de Marte?", options: ["Io e Europa", "Fobos e Deimos", "Tritão e Nereida", "Titã e Reia"], correct: 1, curiosity: "Fobos e Deimos parecem asteroides capturados e têm formatos irregulares que lembram batatas." },
+            { q: "Aproximadamente quanto tempo a luz do Sol leva para chegar até a Terra?", options: ["8 segundos", "8 minutos", "8 horas", "1 dia"], correct: 1, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para cruzar os 150 milhões de quilômetros até nós." },
+            { q: "Qual planeta possui a menor densidade, sendo menor até que a da água?", options: ["Júpiter", "Urano", "Saturno", "Netuno"], correct: 2, curiosity: "Se houvesse uma banheira gigante o suficiente cheia de água, Saturno flutuaria nela!" },
+            { q: "Qual o nome da linha ou região além da qual os compostos voláteis de gelo conseguem se condensar?", options: ["Linha de Gelo", "Zona Habitável", "Limite de Roche", "Linha de Eventos"], correct: 0, curiosity: "A Linha de Gelo separa os planetas rochosos internos dos gigantes gasosos externos." },
+            { q: "Qual sonda espacial da NASA tirou a famosa foto 'Pálido Ponto Azul' em 1990?", options: ["Voyager 1", "Voyager 2", "Hubble", "New Horizons"], correct: 0, curiosity: "A foto foi tirada a 6 bilhões de quilômetros, mostrando a Terra como um minúsculo pixel azul suspenso." },
+            { q: "Qual planeta gira em sentido retrógrado (horário) em comparação com a maioria dos outros?", options: ["Marte", "Vênus", "Júpiter", "Neptuno"], correct: 1, curiosity: "Em Vênus, o Sol nasce no oeste e se põe no leste devido a essa rotação invertida." },
+            { q: "O que é o Cinturão de Kuiper?", options: ["Uma linha de estrelas", "Um anel de poeira ao redor do Sol", "Uma região de corpos gelados além de Netuno", "O núcleo de Júpiter"], correct: 2, curiosity: "O Cinturão de Kuiper abriga milhões de objetos remanescentes da formação do Sistema Solar, incluindo Plutão." },
+            { q: "Qual lua de Saturno expele jatos de água congelada de fissuras apelidadas de 'listras de tigre'?", options: ["Mimas", "Encélado", "Dione", "Iapetus"], correct: 1, curiosity: "Esses geiseres provam que Encélado possui um oceano líquido subterrâneo aquecido." },
+            { q: "Qual planeta tem o dia mais longo do Sistema Solar, durando mais que o seu próprio ano?", options: ["Mercúrio", "Vênus", "Marte", "Júpiter"], correct: 1, curiosity: "Vênus leva 243 dias terrestres para rodar sobre si mesmo, mas apenas 225 dias para dar uma volta ao redor do Sol." },
+            { q: "Qual o nome do vento composto de partículas carregadas liberadas pela coroa solar?", options: ["Vento Estelar", "Vento Solar", "Sopro Magnético", "Plasma Cósmico"], correct: 1, curiosity: "O vento solar interage com o campo magnético da Terra para criar as lindas auroras polares." },
+            { q: "Qual planeta possui uma lua gigante chamada Tritão que orbita em direção retrógrada?", options: ["Urano", "Netuno", "Saturno", "Júpiter"], correct: 1, curiosity: "A órbita invertida de Tritão sugere que ele era um planeta anão do Cinturão de Kuiper capturado." },
+            { q: "Qual o nome da cratera gigantesca que faz a lua Mimas parecer a 'Estrela da Morte'?", options: ["Cratera Herschel", "Cratera Copérnico", "Cratera Tycho", "Cratera Caloris"], correct: 0, curiosity: "Se o impacto que gerou a cratera Herschel tivesse sido um pouco maior, a lua teria sido despedaçada." },
+            { q: "Qual elemento químico é o mais abundante na composição do Sol?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "O Sol é feito de cerca de 73% de Hidrogênio, que passa por fusão nuclear para se transformar em Hélio." },
+            { q: "Que tipo de galáxia o nosso Sistema Solar chama de lar?", options: ["Galáxia Elíptica", "Galáxia Irregular", "Galáxia Espiral Barrada", "Galáxia Lenticular"], correct: 2, curiosity: "Nossa galáxia é a Via Láctea, e nos localizamos no Braço de Órion." },
+            { q: "Qual a distância aproximada de uma Unidade Astronômica (UA)?", options: ["1 milhão de km", "150 milhões de km", "1 bilhão de km", "1 ano-luz"], correct: 1, curiosity: "1 UA equivale à distância média entre o centro da Terra e o centro do Sol." },
+            { q: "Qual planeta gasoso tem anéis escuros verticais e foi visitado apenas pela Voyager 2?", options: ["Júpiter", "Saturno", "Urano", "Netuno"], correct: 2, curiosity: "Os anéis de Urano são escuros e o planeta orbita deitado, dando a impressão de anéis em pé." },
+            { q: "Qual planeta anão está localizado dentro do Cinturão de Asteroides?", options: ["Plutão", "Ceres", "Haumea", "Eris"], correct: 1, curiosity: "Ceres já foi considerado planeta, depois asteroide, e hoje é o menor planeta anão oficial." },
+            { q: "O que impede que a atmosfera da Terra seja arrancada pelos ventos solares?", options: ["Camada de ozônio", "Gravidade da Lua", "Campo magnético (Magnetosfera)", "Nuvens"], correct: 2, curiosity: "O dínamo de ferro líquido no núcleo cria uma barreira magnética invisível essencial para a vida." },
+            { q: "Qual planeta tem o período de translação (ano) mais curto?", options: ["Vênus", "Mercúrio", "Terra", "Marte"], correct: 1, curiosity: "Um ano em Mercúrio dura apenas 88 dias terrestres devido à sua incrível velocidade orbital." },
+            { q: "Qual cientista propôs o modelo Heliocêntrico moderno, colocando o Sol no centro?", options: ["Cláudio Ptolomeu", "Galileu Galilei", "Nicolau Copérnico", "Isaac Newton"], correct: 2, curiosity: "Copérnico publicou sua teoria revolucionária em 1543, desafiando o modelo Geocêntrico." },
+            { q: "Qual planeta possui gigantescos canais secos conhecidos como 'Valles Marineris'?", options: ["Mercúrio", "Vênus", "Marte", "Júpiter"], correct: 2, curiosity: "O Valles Marineris é dez vezes maior que o Grand Canyon." },
+            { q: "Qual planeta possui manchas tempestuosas conhecidas como a Grande Mancha Escura?", options: ["Júpiter", "Saturno", "Urano", "Netuno"], correct: 3, curiosity: "A Grande Mancha Escura foi fotografada em Netuno pela Voyager 2 em 1989." },
+            { q: "Qual planeta anão tem formato de bola de futebol americano devido à sua rotação rápida?", options: ["Plutão", "Haumea", "Makemake", "Éris"], correct: 1, curiosity: "Haumea gira tão rápido que a força centrífuga o deformou." },
+            { q: "Qual é o nome limite em que um objeto mantido pela gravidade se despedaçará ao se aproximar de um planeta?", options: ["Limite Cósmico", "Limite de Roche", "Raio de Schwarzschild", "Horizonte de Eventos"], correct: 1, curiosity: "Se uma lua cruzar o Limite de Roche, as forças de maré vão destruí-la, formando novos anéis." },
+            { q: "O Sol converte hidrogênio em hélio no seu interior através de qual processo?", options: ["Fissão Nuclear", "Combustão Química", "Fusão Nuclear", "Condensação Quântica"], correct: 2, curiosity: "A fusão esmaga átomos de hidrogênio sob pressões colossais, gerando luz e calor." },
+            { q: "Qual lua de Saturno apresenta duas cores: metade escura e outra clara?", options: ["Iapetus", "Mimas", "Tétis", "Encelado"], correct: 0, curiosity: "Iapetus é apelidado de lua yin-yang por causa dessa diferença visual." },
+            { q: "Qual é a idade aproximada do nosso Sistema Solar?", options: ["2 bilhões de anos", "4.6 bilhões de anos", "13.8 bilhões de anos", "500 milhões de anos"], correct: 1, curiosity: "A idade é calculada analisando os meteoritos mais antigos que caíram na Terra." },
+            { q: "Qual planeta tem nuvens feitas de ácido sulfúrico altamente corrosivo?", options: ["Mercúrio", "Vênus", "Marte", "Saturno"], correct: 1, curiosity: "Suas nuvens refletem tanta luz solar que o tornam o objeto mais brilhante no céu noturno depois da Lua." },
+            { q: "Qual sonda pousou na superfície congelada e misteriosa da lua Titã em 2005?", options: ["Curiosity", "Cassini", "Huygens", "New Horizons"], correct: 2, curiosity: "A sonda Huygens revelou paisagens com canais de rios feitos de metano líquido." },
+
+            // --- 50 PERGUNTAS SOBRE BURACOS NEGROS ---
+            { q: "Qual o nome da fronteira teórica ao redor de um buraco negro da qual nada pode escapar?", options: ["Ergosfera", "Singularidade", "Horizonte de Eventos", "Limite de Roche"], correct: 2, curiosity: "Uma vez cruzada essa linha, a velocidade de escape necessária supera a velocidade da luz." },
+            { q: "Como é chamado o ponto central de densidade infinita no coração de um buraco negro?", options: ["Horizonte", "Nirvana Cósmico", "Singularidade", "Núcleo Estelar"], correct: 2, curiosity: "Na singularidade, as leis conhecidas da física e do espaço-tempo quebram totalmente." },
+            { q: "Quem desenvolveu a Teoria da Relatividade Geral, que previu a existência dos buracos negros?", options: ["Isaac Newton", "Albert Einstein", "Stephen Hawking", "Niels Bohr"], correct: 1, curiosity: "O próprio Einstein inicialmente duvidava que esses objetos pudessem realmente existir." },
+            { q: "Qual o nome do primeiro buraco negro detectado e confirmado, na constelação do Cisne?", options: ["Sagitário A*", "Cygnus X-1", "M87*", "Ton 618"], correct: 1, curiosity: "Foi objeto de uma famosa aposta científica entre Stephen Hawking e Kip Thorne." },
+            { q: "Qual o nome do buraco negro supermassivo situado no centro da Via Láctea?", options: ["Andrômeda X", "Cygnus X-1", "Sagitário A*", "Quasar Central"], correct: 2, curiosity: "Sagitário A* tem uma massa equivalente a cerca de 4 milhões de vezes a massa do nosso Sol." },
+            { q: "Qual o termo informal para o processo de esticamento vertical ao cair em um buraco negro?", options: ["Atomização", "Fricção Cósmica", "Espaguetificação", "Dilatação Térmica"], correct: 2, curiosity: "A gravidade nos seus pés seria absurdamente maior do que na sua cabeça." },
+            { q: "Qual físico descobriu que buracos negros podem emitir radiação e evaporar?", options: ["Stephen Hawking", "Roger Penrose", "Carl Sagan", "Richard Feynman"], correct: 0, curiosity: "Esse fenômeno quântico ficou conhecido mundialmente como Radiação Hawking." },
+            { q: "Como se chama o disco brilhante de gás superaquecido que orbita e alimenta um buraco negro?", options: ["Disco de Ouro", "Disco de Acreção", "Anel de Fótons", "Ergosfera"], correct: 1, curiosity: "A fricção é tão extrema que ele brilha intensamente em Raios-X." },
+            { q: "Qual raio define o tamanho do horizonte de eventos de um buraco negro não rotativo?", options: ["Raio de Hawking", "Raio de Penrose", "Raio de Schwarzschild", "Raio de Einstein"], correct: 2, curiosity: "Se comprimíssemos a Terra ao tamanho de uma gude, ela viraria um buraco negro." },
+            { q: "De qual evento catastrófico surgem os buracos negros estelares?", options: ["Evolução de Planetas", "Colapso de uma Supernova", "Fusão de Nebulosas", "Big Bang"], correct: 1, curiosity: "Ocorre quando uma estrela supermassiva esgota o seu combustível nuclear." },
+            { q: "Qual projeto obteve a primeira imagem da sombra de um buraco negro (M87*) em 2019?", options: ["Telescópio James Webb", "Event Horizon Telescope", "Hubble Deep Field", "Sonda Kepler"], correct: 1, curiosity: "Eles usaram uma rede de radiotelescópios criando um telescópio do tamanho da Terra." },
+            { q: "O que acontece com o tempo para um observador vendo algo cair no horizonte de eventos?", options: ["Passa mais rápido", "Corre ao contrário", "Parece congelar", "Nada muda"], correct: 2, curiosity: "Devido à dilatação temporal gravitacional, o objeto parece desacelerar para sempre." },
+            { q: "Qual região fica fora do horizonte de eventos de um buraco negro em rotação?", options: ["Ergosfera", "Singularidade Anelar", "Esfera de Fótons", "Cinturão Quântico"], correct: 0, curiosity: "Na ergosfera, o próprio tecido do espaço-tempo é arrastado junto." },
+            { q: "Qual o nome do maior buraco negro conhecido, contendo 66 bilhões de massas solares?", options: ["Sagitário A*", "Ton 618", "Phoenix A", "M87*"], correct: 1, curiosity: "Ton 618 brilha mais que 140 trilhões de sóis combinados." },
+            { q: "Buracos negros com carga elétrica, mas sem rotação, são descritos por qual solução?", options: ["Schwarzschild", "Kerr", "Reissner-Nordström", "Kerr-Newman"], correct: 2, curiosity: "Descreve um caso puramente teórico, pois perdem a carga rapidamente." },
+            { q: "Pelo 'Teorema No-Hair', quais propriedades definem um buraco negro?", options: ["Massa, Cor, Tamanho", "Massa, Rotação, Carga Elétrica", "Densidade, Idade, Temperatura", "Gravidade, Volume, Spin"], correct: 1, curiosity: "O buraco negro apaga o histórico de tudo o que cai, retendo só esses dados." },
+            { q: "O que é um anel ou esfera de fótons?", options: ["Anel de poeira radioativa", "A órbita onde a gravidade força a luz a orbitar o buraco negro", "A explosão estelar", "O núcleo"], correct: 1, curiosity: "A luz é obrigada a dar a volta e você veria a sua própria nuca." },
+            { q: "Em 2015, o LIGO detectou colisão de buracos negros através de qual fenômeno?", options: ["Ondas de Rádio", "Fótons Quânticos", "Ondas Gravitacionais", "Erupções de Raios Gama"], correct: 2, curiosity: "Essas são ondulações literais no tecido do espaço-tempo." },
+            { q: "Qual o oposto teórico de um buraco negro, de onde nada entra, apenas sai?", options: ["Buraco de Minhoca", "Buraco Branco", "Estrela Quântica", "Singularidade Reversa"], correct: 1, curiosity: "Surgem matematicamente, mas nunca nenhum foi observado no universo." },
+            { q: "Como se detecta buracos negros isolados se eles não emitem luz visível?", options: ["Uso de radares", "Lentes gravitacionais", "Pelo som", "Procurando manchas frias"], correct: 1, curiosity: "A gravidade dobra a luz de estrelas de fundo, como uma lente." },
+            { q: "Qual físico alemão resolveu as equações para buracos negros estáticos em 1916?", options: ["Karl Schwarzschild", "Roy Kerr", "Max Planck", "Werner Heisenberg"], correct: 0, curiosity: "Ele calculou essa solução durante a Primeira Guerra Mundial." },
+            { q: "Qual o nome da área de onde jatos de plasma são disparados pelos polos de um buraco negro?", options: ["Ergosfera", "Jatos Relativísticos", "Corona de Fótons", "Vento Quântico"], correct: 1, curiosity: "Cruza galáxias e são acelerados por campos magnéticos." },
+            { q: "Quais são os minúsculos buracos negros que surgiram frações de segundo após o Big Bang?", options: ["Primordiais", "Micro-Singularidades", "Intermediários", "Quantum-Holes"], correct: 0, curiosity: "Alguns poderiam ter o tamanho de um átomo e pesar o mesmo que o Evereste." },
+            { q: "Qual prêmio Nobel de Física foi concedido a Penrose em 2020?", options: ["Nobel a Stephen Hawking", "Nobel a Roger Penrose", "Prêmio Albert Einstein", "Prêmio Hubble"], correct: 1, curiosity: "Penrose provou que a formação de buracos negros é uma previsão da Relatividade." },
+            { q: "O paradoxo da informação conflita a Relatividade com qual teoria?", options: ["Cordas", "Mecânica Quântica", "Termodinâmica Clássica", "Modelo Padrão"], correct: 1, curiosity: "A quântica dita que a informação nunca pode ser destruída." },
+            { q: "Como é chamada uma singularidade sem um horizonte de eventos para escondê-la?", options: ["Aberta", "Singularidade Nua", "Vácuo Quântico", "Cego Cósmico"], correct: 1, curiosity: "A 'Censura Cósmica' sugere que o universo proíbe singularidades nuas." },
+            { q: "Qual processo permite extrair energia rotacional da ergosfera de um buraco negro?", options: ["Processo Penrose", "Efeito Hawking", "Mecanismo Blandford", "Efeito Casimiro"], correct: 0, curiosity: "Parte do objeto sacrificado pode sair com mais energia do que entrou." },
+            { q: "Qual é o limite de massa antes de uma Estrela de Nêutrons colapsar em um buraco negro?", options: ["Chandrasekhar", "Limite TOV", "Schwarzschild", "Hubble"], correct: 1, curiosity: "Fica próximo de 2,17 massas solares." },
+            { q: "Um buraco negro em rotação perfeita é chamado de buraco negro de...?", options: ["Schwarzschild", "Kerr", "Reissner", "Hawking"], correct: 1, curiosity: "Descoberto por Roy Kerr em 1963." },
+            { q: "Se o Sol virasse um buraco negro de mesma massa, o que aconteceria com a órbita da Terra?", options: ["Seríamos engolidos", "Seríamos lançados", "A órbita não mudaria", "A Terra pararia"], correct: 2, curiosity: "A gravidade seria a mesma a 150 milhões de km; apenas congelaríamos." },
+            { q: "Qual a temperatura interna teórica de um buraco negro estelar típico?", options: ["Milhões de graus", "Zero Absoluto", "Frações de Kelvin", "Igual ao Sol"], correct: 2, curiosity: "Quanto maior o buraco negro, mais fria é a sua temperatura." },
+            { q: "Qual atalho teórico conecta um buraco negro a um branco?", options: ["Atalho Estelar", "Buraco de Minhoca", "Túnel Quântico", "Dobrador"], correct: 1, curiosity: "Eles colapsariam instantaneamente sem energia exótica." },
+            { q: "Como se chama um buraco negro entre 100 e 100.000 massas solares?", options: ["Estelar", "Massa Intermediária", "Supermassivo", "Micro"], correct: 1, curiosity: "São o elo perdido da evolução cosmológica dos buracos negros." },
+            { q: "Qual galáxia hospeda o M87*, o primeiro buraco negro fotografado?", options: ["Via Láctea", "Andrômeda", "Messier 87", "Sombrero"], correct: 2, curiosity: "É uma galáxia supergigante a 55 milhões de anos-luz." },
+            { q: "Qual efeito cria múltiplos arcos de luz ao redor de um buraco negro devido à gravidade extrema?", options: ["Anel de Einstein", "Efeito Doppler", "Refração Estelar", "Dispersão Atmosférica"], correct: 0, curiosity: "Ocorre quando fonte de luz, lente e observador estão alinhados." },
+            { q: "Qual o destino final de um buraco negro ao evaporar por Radiação Hawking?", options: ["Tornar-se estrela", "Explosão final", "Congelar", "Buraco de minhoca"], correct: 1, curiosity: "Nos milissegundos finais termina numa detonação massiva." },
+            { q: "Qual filme retratou precisamente o buraco negro Gargantua?", options: ["Star Wars", "Interestelar", "Perdido em Marte", "Gravidade"], correct: 1, curiosity: "Kip Thorne trabalhou com a equipe de efeitos." },
+            { q: "Que princípio diz que o conteúdo 3D é codificado na superfície 2D do buraco negro?", options: ["Incerteza", "Holográfico", "Exclusão", "Antrópico"], correct: 1, curiosity: "Sugere que nosso universo 3D pode ser um holograma." },
+            { q: "O que determina o diâmetro do horizonte de eventos?", options: ["Idade", "Composição", "Massa", "Velocidade"], correct: 2, curiosity: "A relação de aumento do raio de Schwarzschild é proporcional à massa adicionada." },
+            { q: "Qual o nome do brilho extremo de matéria caindo num buraco negro supermassivo?", options: ["Magnetar", "Pulsar", "Quasar", "Supernova"], correct: 2, curiosity: "Quasares ofuscam galáxias inteiras." },
+            { q: "Qual sua percepção ao cruzar o horizonte de um buraco negro supermassivo?", options: ["Incinerado", "Não sentiria nada imediatamente", "Ricochete", "Líquido"], correct: 1, curiosity: "As forças de maré em buracos supermassivos são fracas no horizonte de eventos; você cruzaria sem ser destruído fisicamente logo à primeira." },
+            { q: "Como é a singularidade de um buraco negro rotativo?", options: ["Punctiforme", "Singularidade Anelar", "Esférica", "Flutuante"], correct: 1, curiosity: "A rotação espalha o ponto central infinito em um formato de anel com diâmetro 0." },
+            { q: "Que limite impede que estrelas normais colapsem?", options: ["Eddington", "Chandrasekhar", "Roche", "Oppenheimer"], correct: 0, curiosity: "O limite equilibra radiação e gravidade." },
+            { q: "O que reside no centro de quase todas as galáxias massivas?", options: ["Estrela de nêutrons", "Buraco negro supermassivo", "Matéria escura", "Vácuo"], correct: 1, curiosity: "O crescimento da galáxia e do buraco negro estão interligados." },
+            { q: "Qual telescópio (2021) espia discos de acreção primitivos via infravermelho?", options: ["James Webb", "Hubble", "Spitzer", "Chandra"], correct: 0, curiosity: "A sua visão térmica penetra poeira e tempo." },
+            { q: "Uma estrela e um buraco negro orbitando formam o quê?", options: ["Binário de Raios-X", "Sistema Mutante", "Quasar", "Eclipse"], correct: 0, curiosity: "O gás da estrela ao espiralar emite Raios-X intensos." },
+            { q: "Qual cientista ajudou a popularizar o termo 'Buraco Negro' em 1967?", options: ["Carl Sagan", "John Wheeler", "Edwin Hubble", "Oppenheimer"], correct: 1, curiosity: "Substituiu apelidos antigos como 'Estrela Oculta'." },
+            { q: "Como se chama a alteração na luz de algo que gira ao redor do buraco negro?", options: ["Doppler Relativístico", "Estufa Cósmico", "Rayleigh", "Refração Gravitacional"], correct: 0, curiosity: "O lado que vem na nossa direção fica azulado e forte; o outro, fraco e vermelho." },
+            { q: "O que acontece se duas singularidades colidirem?", options: ["Repulsão", "Cancelamento", "Fusão em um único e maior", "Trava o espaço"], correct: 2, curiosity: "A colisão liberta ondas gravitacionais maciças em vez de luz." },
+            { q: "Dentro do buraco negro, para onde todos os caminhos apontam inevitavelmente?", options: ["Passado", "Para a Singularidade no futuro", "Outra galáxia", "Órbita"], correct: 1, curiosity: "A gravidade deforma tanto o espaço-tempo que tentar desviar da singularidade seria como tentar travar o próprio fluxo do relógio." }
+        ];
+
+        // --- SISTEMAS DE COMUNICAÇÃO DE REDE, SUPABASE E EMULAÇÃO ---
         const SUPABASE_URL = "https://itvgxmxatoaibrdehhxt.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_3x8OOU_1L1f4hbulks9TGQ_KE6JxROq"; 
 
@@ -582,12 +673,10 @@
             return _supabaseClient;
         }
 
-        // Classe de simulação de rede em tempo real quando WebSockets forem restritos
         class LocalQuantumMockChannel {
             constructor(roomPin) {
                 this.roomPin = roomPin;
                 this.handlers = {};
-                console.log(`[Quantum Emulation] Iniciando canal local fictício para a sala ${roomPin}`);
             }
 
             on(type, filter, callback) {
@@ -598,9 +687,7 @@
             }
 
             subscribe(onStatus) {
-                setTimeout(() => {
-                    if (onStatus) onStatus('SUBSCRIBED');
-                }, 100);
+                setTimeout(() => { if (onStatus) onStatus('SUBSCRIBED'); }, 100);
                 return this;
             }
 
@@ -616,42 +703,21 @@
                 }, 120);
             }
 
-            unsubscribe() {
-                console.log(`[Quantum Emulation] Fechando canal da sala ${this.roomPin}`);
-            }
+            unsubscribe() { }
         }
 
-        const BASE_QUESTIONS = [
-            { q: "Qual é a velocidade aproximada da luz no vácuo?", options: ["300.000 km/s", "150.000 km/s", "1.080.000 km/s", "30.000 km/s"], correct: 0, curiosity: "A luz leva cerca de 8 minutos e 20 segundos para viajar do Sol até a Terra." },
-            { q: "O que define a fronteira teórica ao redor de um buraco negro?", options: ["Esfera de Fótons", "Horizonte de Eventos", "Singularidade", "Ergosfera"], correct: 1, curiosity: "Cruzando o Horizonte de Eventos, a velocidade de escape excede a da luz." },
-            { q: "Qual cientista propôs a Teoria da Relatividade Geral?", options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Stephen Hawking"], correct: 2, curiosity: "A relatividade geral foi comprovada em 1919 num eclipse em Sobral, no Brasil." },
-            { q: "Qual o nome do efeito de dilatação/compressão de ondas em movimento?", options: ["Efeito Doppler", "Efeito Fotoelétrico", "Efeito Estufa", "Efeito Joule"], correct: 0, curiosity: "O redshift Doppler prova que o universo está em expansão acelerada." },
-            { q: "Que radiação residual e uniforme é considerada o 'eco' do Big Bang?", options: ["Radiação Hawking", "Radiação Cósmica de Fundo", "Raios Gama", "Vento Solar"], correct: 1, curiosity: "Foi descoberta acidentalmente em 1964 por engenheiros de rádio." },
-            { q: "Qual o raio crítico que determina o tamanho do horizonte de eventos?", options: ["Raio de Hubble", "Raio de Hawking", "Raio de Bohr", "Raio de Schwarzschild"], correct: 3, curiosity: "Se a Terra fosse comprimida ao tamanho de uma gude, viraria um buraco negro." },
-            { q: "Qual componente invisível compõe cerca de 27% do universo?", options: ["Matéria Escura", "Energia Escura", "Antiméria", "Plasma Interestelar"], correct: 0, curiosity: "É detectada puramente através dos seus efeitos gravitacionais em galáxias." },
-            { q: "O processo que alimenta as estrelas fundindo núcleos leves chama-se:", options: ["Fissão Nuclear", "Fusão Termonuclear", "Combustão", "Decaimento Alfa"], correct: 1, curiosity: "No Sol, quatro núcleos de hidrogênio são fundidos em um de hélio." },
-            { q: "Que estrelas colapsadas giram rápido emitindo feixes de radiação?", options: ["Anãs Brancas", "Gigantes Vermelhas", "Pulsares", "Supernovas"], correct: 2, curiosity: "Pulsares têm campos magnéticos bilhões de vezes mais fortes que a Terra." },
-            { q: "Qual força atua como motor expansivo do universo superando a gravidade?", options: ["Energia Escura", "Força Nuclear Forte", "Força Eletromotriz", "Gravidade Quântica"], correct: 0, curiosity: "A energia escura compõe aproximadamente 68% de toda a densidade cósmica." },
-            { q: "A perda teórica de massa de um buraco negro por efeitos quânticos chama-se:", options: ["Radiação Hawking", "Efeito Planck", "Evaporação de Schwarzschild", "Ejeção Coronal"], correct: 0, curiosity: "Stephen Hawking publicou essa teoria in 1974." },
-            { q: "Que distorções no espaço-tempo são geradas por colisões de buracos negros?", options: ["Ondas de Rádio", "Ondas Gravitacionais", "Fendas Hiperespaciais", "Ventos Geomagnéticos"], correct: 1, curiosity: "Foram detectadas pela primeira vez de forma direta em 2015 pelo LIGO." },
-            { q: "Qual é o elemento químico mais abundante do espaço cósmico?", options: ["Hélio", "Oxigênio", "Hidrogênio", "Carbono"], correct: 2, curiosity: "Representa cerca de 75% da massa elementar visível de todo o universo." },
-            { q: "O limite máximo de massa estável para uma estrela anã branca é o:", options: ["Limite de Chandrasekhar", "Limite de Oppenheimer", "Limite de Roche", "Limite de Eddington"], correct: 0, curiosity: "Esse limite equivale a aproximadamente 1,44 vezes a massa do Sol." },
-            { q: "Como se chama o fenômeno em que a gravidade de um objeto dobra a luz?", options: ["Lente Gravitacional", "Refração Atmosférica", "Dispersão Cromática", "Paradoxo de Olbers"], correct: 0, curiosity: "Age como um telescópio natural para observar o universo profundo." },
-            { q: "O que é o Redshift na astronomia?", options: ["Deslocamento para o vermelho", "Aumento de temperatura", "Colapso estelar", "Velocidade nula"], correct: 0, curiosity: "Indica que o objeto está se afastando de nós." },
-            { q: "Qual galáxia está em rota de colisão com a Via Láctea?", options: ["Andrômeda", "Magalhães", "Sombreiro", "Triângulo"], correct: 0, curiosity: "O impacto ocorrerá em cerca de 4.5 bilhões de anos." },
-            { q: "Quantos planetas existem no nosso sistema solar?", options: ["7", "8", "9", "10"], correct: 1, curiosity: "Plutão foi reclassificado como planeta anão em 2006." },
-            { q: "Qual é o maior planeta do Sistema Solar?", options: ["Saturno", "Marte", "Júpiter", "Urano"], correct: 2, curiosity: "Júpiter tem uma massa duas vezes maior que todos os outros planetas juntos." },
-            { q: "Qual o nome da maior lua de Saturno?", options: ["Titã", "Europa", "Ganimedes", "Fobos"], correct: 0, curiosity: "É a única lua do sistema solar com uma atmosfera densa estável." }
-        ];
+        // --- EXTRATOR DE PERGUNTAS ALEATÓRIAS ---
+        function extractFifteenQuestions() {
+            let shuffled = [...BASE_QUESTIONS].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 15);
+        }
 
-        // Tipos de efeitos permitidos conforme especificação do protocolo de sabotagem
         const EFEITOS = {
             CEGUEIRA: "cegueira",
             INVERSAO: "inversao",
             DILATACAO: "dilatacao"
         };
 
-        // Estado do Jogo centralizado e sincronizado de acordo com as regras de multiplayer de segurança
         let state = {
             isSoundOn: true,
             highScore: parseInt(localStorage.getItem('eo_highscore')) || 0,
@@ -667,21 +733,15 @@
             canAnswer: false,
             roomPin: '',
             nickname: '',
-            players: [], // Coleção contendo { id, name, score, answered, rank, lastAnswerCorrect }
-            activeEffects: [], // Lista de sabotagens ativas no cliente local
+            players: [], 
+            activeEffects: [], 
             channelInstance: null,
             myLastAnswerCorrect: null,
             myLastEarned: 0,
             gameQuestions: [],
             isLocalQuantumNetwork: false,
-            
             myPowerup: null, 
-            lastPowerupUsedTime: 0,
-            activeDebuffs: {
-                emp: false,
-                gravity: false,
-                time: false
-            }
+            activeDebuffs: { emp: false, gravity: false, time: false }
         };
 
         const screens = {
@@ -701,11 +761,6 @@
             loadStats();
             setupEventHandlers();
         });
-
-        function extractFifteenQuestions() {
-            let shuffled = [...BASE_QUESTIONS].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 15);
-        }
 
         function computeRank(score) {
             if (score >= 12000) return "Almirante da Matriz";
@@ -761,22 +816,12 @@
             document.getElementById('btnHostRoom').addEventListener('click', () => {
                 playBeep(700, 0.1);
                 state.mode = 'host';
-                
                 state.multiplayMode = document.getElementById('selectMultiMode').value;
-                
-                const labelsModo = {
-                    classic: "CLÁSSICO",
-                    coop: "DEFESA COLETIVA (COOP)",
-                    sabotage: "GUERRA DE SABOTAGEM"
-                };
+                const labelsModo = { classic: "CLÁSSICO", coop: "DEFESA COLETIVA", sabotage: "GUERRA DE SABOTAGEM" };
 
-                document.getElementById('systemStatus').innerText = `MATRIZ DE SERVIÇO | MODALIDADE: ${labelsModo[state.multiplayMode]}`;
-                
-                if (state.multiplayMode === 'coop') {
-                    document.getElementById('hudShieldRow').classList.remove('hidden');
-                } else {
-                    document.getElementById('hudShieldRow').classList.add('hidden');
-                }
+                document.getElementById('systemStatus').innerText = `MATRIZ: ${labelsModo[state.multiplayMode]}`;
+                if (state.multiplayMode === 'coop') document.getElementById('hudShieldRow').classList.remove('hidden');
+                else document.getElementById('hudShieldRow').classList.add('hidden');
                 
                 document.getElementById('hudComboRow').classList.add('hidden');
                 document.getElementById('hostAlertFeed').classList.add('hidden');
@@ -795,7 +840,7 @@
                 const nick = document.getElementById('inputNickname').value.trim().toUpperCase();
 
                 if (pin.length !== 4 || !nick) {
-                    alert("Aviso: Forneça PIN e Nickname válidos.");
+                    alert("Forneça um PIN de 4 dígitos e um Nickname válido.");
                     return;
                 }
 
@@ -821,24 +866,15 @@
             });
 
             document.getElementById('btnLaunchLobby').addEventListener('click', () => {
-                if (state.players.length === 0) {
-                    alert("Aviso: Aguarde conexões para liberar a ignição.");
-                    return;
-                }
+                if (state.players.length === 0) { alert("Aguarde pilotos."); return; }
                 playBeep(880, 0.2);
 
                 state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'start_game',
-                    payload: { 
-                        questionsPayload: state.gameQuestions,
-                        multiplayMode: state.multiplayMode,
-                        initialPlayers: state.players
-                    }
+                    type: 'broadcast', event: 'start_game',
+                    payload: { questionsPayload: state.gameQuestions, multiplayMode: state.multiplayMode, initialPlayers: state.players }
                 });
 
                 state.currentQuestionIdx = 0;
-                
                 if (state.multiplayMode === 'coop') {
                     state.shields = 100;
                     document.getElementById('txtShield').innerText = "100%";
@@ -849,25 +885,11 @@
                 loadQuestion();
             });
 
-            // Lógica do Clique de Disparo da Sabotagem
             document.getElementById('btnTriggerSabotage').addEventListener('click', () => {
-                const targetSelect = document.getElementById('playerSelect');
-                const effectSelect = document.getElementById('effectSelect');
-                
-                const targetPlayerVal = targetSelect.value;
-                const effectVal = effectSelect.value;
+                const targetPlayerVal = document.getElementById('playerSelect').value;
+                const effectVal = document.getElementById('effectSelect').value;
 
-                if (!targetPlayerVal) {
-                    alert("Aviso: É obrigatório definir um Cadete inimigo como alvo.");
-                    return;
-                }
-
-                if (!state.myPowerup) {
-                    alert("Aviso: Sistema de Carga Orbital sem combustível suficiente.");
-                    return;
-                }
-
-                // Disparar sabotagem autoritativa de rede
+                if (!targetPlayerVal || !state.myPowerup) return;
                 executarSabotagem(targetPlayerVal, effectVal);
             });
 
@@ -883,9 +905,7 @@
                     let pointsEarned = 0;
                     if (isCorrect) {
                         pointsEarned = Math.round(500 + (state.timer / 25) * 500);
-                        if (state.combo > 1) {
-                            pointsEarned = Math.round(pointsEarned * state.combo);
-                        }
+                        if (state.combo > 1) pointsEarned = Math.round(pointsEarned * state.combo);
                         state.score += pointsEarned;
                         state.combo = Math.min(3.0, state.combo + 0.2);
                     } else {
@@ -894,23 +914,15 @@
 
                     state.myLastAnswerCorrect = isCorrect;
                     state.myLastEarned = pointsEarned;
-
                     document.getElementById('cliRank').innerText = computeRank(state.score);
 
-                    // Sistema de obtenção de cargas de sabotagem quântica por acertos e combos
                     if (state.multiplayMode === 'sabotage' && isCorrect && state.combo >= 1.4 && !state.myPowerup) {
                         const effectChoices = [EFEITOS.CEGUEIRA, EFEITOS.INVERSAO, EFEITOS.DILATACAO];
                         state.myPowerup = effectChoices[Math.floor(Math.random() * effectChoices.length)];
                     }
 
                     updateSabotageUI();
-
-                    // Limpa debuffs temporários após responder
-                    state.activeDebuffs.emp = false;
-                    state.activeDebuffs.gravity = false;
-                    state.activeDebuffs.time = false;
-
-                    // Sincronização de pontuação via Supabase em tempo real
+                    state.activeDebuffs = { emp: false, gravity: false, time: false };
                     atualizarScore(state.nickname, pointsEarned, isCorrect);
 
                     document.getElementById('cliActionState').classList.add('hidden');
@@ -920,933 +932,360 @@
             });
         }
 
-        // --- SISTEMA DE SABOTAGEM MULTIPLAYER AUTORITATIVO ---
-
+        // --- SISTEMAS DO JOGO DE SABOTAGEM ---
         function executarSabotagem(alvoId, tipoDeEfeito) {
-            // Validações de segurança e regras do escopo
-            if (!alvoId || alvoId === state.nickname) {
-                console.warn("Sabotagem Inválida: Auto-sabotagem detectada ou alvo nulo.");
-                return;
-            }
+            if (!alvoId || alvoId === state.nickname) return;
+            const payload = { type: "sabotage", sourcePlayer: state.nickname, targetPlayer: alvoId, effect: tipoDeEfeito, timestamp: Date.now() };
 
-            // Verifica se o alvo existe e está registrado no array local
-            const targetExists = state.players.some(p => p.name === alvoId);
-            if (!targetExists && state.players.length > 0) {
-                console.warn("Sabotagem abortada: Alvo não encontrado na órbita.");
-                return;
-            }
-
-            console.log(`[Sabotagem] Emitindo efeito de ${tipoDeEfeito} para o Alvo: ${alvoId}`);
-
-            const payload = {
-                type: "sabotage",
-                sourcePlayer: state.nickname,
-                targetPlayer: alvoId,
-                effect: tipoDeEfeito,
-                timestamp: Date.now()
-            };
-
-            // Envia evento em tempo real através do canal Supabase / Emulador quântico
-            state.channelInstance.send({
-                type: 'broadcast',
-                event: 'sabotage_triggered',
-                payload: payload
-            });
-
-            // Reseta a carga quântica local do atacante após o uso
+            state.channelInstance.send({ type: 'broadcast', event: 'sabotage_triggered', payload: payload });
             state.myPowerup = null;
             updateSabotageUI();
         }
 
-        // Listener receptor executado em cada cliente conectado
         function onSabotageReceived(payload) {
             const { sourcePlayer, targetPlayer, effect, timestamp } = payload;
+            if (Date.now() - timestamp > 15000) return;
 
-            // Segurança: Ignorar pacotes muito antigos ou de outras sessões corrompidas
-            if (Date.now() - timestamp > 15000) {
-                console.warn("Mensagem quântica rejeitada por expiração de tempo limite.");
-                return;
-            }
-
-            // Apenas o cliente do alvo aplica os efeitos lógico-visuais de perturbação
             if (targetPlayer === state.nickname) {
-                console.warn(`[PERIGO] Você foi sabotado por ${sourcePlayer} com ${effect.toUpperCase()}!`);
                 aplicarEfeitoLocal(effect);
                 exibirFeedbackSabotagem(effect);
             }
         }
 
-        // Aplica modificadores de interface e controle localmente
         function aplicarEfeitoLocal(tipo) {
-            // Evitar duplicação ou empilhamento de timers no mesmo efeito
             if (state.activeEffects.includes(tipo)) return;
             state.activeEffects.push(tipo);
 
-            switch(tipo) {
-                case EFEITOS.CEGUEIRA:
-                    aplicarCegueira();
-                    break;
-                case EFEITOS.INVERSAO:
-                    aplicarInversao();
-                    break;
-                case EFEITOS.DILATACAO:
-                    aplicarDilatacao();
-                    break;
-            }
-        }
-
-        // Funções modulares de ativação e remoção de efeitos de sabotagem
-
-        function aplicarCegueira() {
-            const duration = 5000;
-            state.activeDebuffs.emp = true;
-            document.getElementById('cliActionState').classList.add('cegueira-active');
+            const duration = tipo === EFEITOS.INVERSAO ? 8000 : (tipo === EFEITOS.DILATACAO ? 6000 : 5000);
             
-            setTimeout(() => {
-                state.activeDebuffs.emp = false;
-                document.getElementById('cliActionState').classList.remove('cegueira-active');
-                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.CEGUEIRA);
-            }, duration);
-        }
-
-        function aplicarInversao() {
-            const duration = 8000;
-            state.activeDebuffs.gravity = true;
-            document.getElementById('cliActionState').classList.add('gravity-inverted');
-
-            setTimeout(() => {
-                state.activeDebuffs.gravity = false;
-                document.getElementById('cliActionState').classList.remove('gravity-inverted');
-                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.INVERSAO);
-            }, duration);
-        }
-
-        function aplicarDilatacao() {
-            const duration = 6000;
-            state.activeDebuffs.time = true;
-            document.getElementById('cliActionState').classList.add('dilatacao-active');
-
-            setTimeout(() => {
-                state.activeDebuffs.time = false;
-                document.getElementById('cliActionState').classList.remove('dilatacao-active');
-                state.activeEffects = state.activeEffects.filter(e => e !== EFEITOS.DILATACAO);
-            }, duration);
-        }
-
-        // Emite alertas, flashes de erro e tremores CRT em tempo real
-        function exibirFeedbackSabotagem(tipo) {
-            const gameWin = document.getElementById('gameWindow');
-            const questionPanel = document.getElementById('questionPanel');
-            const answersContainer = document.getElementById('answersContainer');
-            
-            // Tocar som de interferência
-            playBeep(120, 0.4);
-
             if (tipo === EFEITOS.CEGUEIRA) {
-                // Fade para preto e ruído estático na pergunta e respostas
-                questionPanel.classList.add('cegueira-active');
-                answersContainer.classList.add('cegueira-active');
-                
-                setTimeout(() => {
-                    questionPanel.classList.remove('cegueira-active');
-                    answersContainer.classList.remove('cegueira-active');
-                }, 5000);
-            } 
-            else if (tipo === EFEITOS.INVERSAO) {
-                // Tremor intenso da tela e flash vermelho
-                gameWin.classList.add('shake-active', 'glitch-flash');
-                setTimeout(() => {
-                    gameWin.classList.remove('shake-active', 'glitch-flash');
-                }, 800);
-            } 
-            else if (tipo === EFEITOS.DILATACAO) {
-                // Distorção temporal com desfoque estético
-                document.body.classList.add('dilatacao-active');
-                setTimeout(() => {
-                    document.body.classList.remove('dilatacao-active');
-                }, 600);
+                state.activeDebuffs.emp = true;
+                document.getElementById('cliActionState').classList.add('cegueira-active');
+            } else if (tipo === EFEITOS.INVERSAO) {
+                state.activeDebuffs.gravity = true;
+                document.getElementById('cliActionState').classList.add('gravity-inverted');
+            } else if (tipo === EFEITOS.DILATACAO) {
+                state.activeDebuffs.time = true;
+                document.getElementById('cliActionState').classList.add('dilatacao-active');
             }
+
+            setTimeout(() => {
+                if (tipo === EFEITOS.CEGUEIRA) {
+                    state.activeDebuffs.emp = false;
+                    document.getElementById('cliActionState').classList.remove('cegueira-active');
+                } else if (tipo === EFEITOS.INVERSAO) {
+                    state.activeDebuffs.gravity = false;
+                    document.getElementById('cliActionState').classList.remove('gravity-inverted');
+                } else if (tipo === EFEITOS.DILATACAO) {
+                    state.activeDebuffs.time = false;
+                    document.getElementById('cliActionState').classList.remove('dilatacao-active');
+                }
+                state.activeEffects = state.activeEffects.filter(e => e !== tipo);
+            }, duration);
         }
 
-        // --- SISTEMA DE SCORE E SYNC EM TEMPO REAL ---
+        function exibirFeedbackSabotagem(tipo) {
+            playBeep(120, 0.4);
+            const gameWin = document.getElementById('gameWindow');
+            if (tipo === EFEITOS.CEGUEIRA) {
+                document.getElementById('questionPanel').classList.add('cegueira-active');
+                setTimeout(() => { document.getElementById('questionPanel').classList.remove('cegueira-active'); }, 5000);
+            } else if (tipo === EFEITOS.INVERSAO) {
+                gameWin.classList.add('shake-active', 'glitch-flash');
+                setTimeout(() => { gameWin.classList.remove('shake-active', 'glitch-flash'); }, 800);
+            } else if (tipo === EFEITOS.DILATACAO) {
+                document.body.classList.add('dilatacao-active');
+                setTimeout(() => { document.body.classList.remove('dilatacao-active'); }, 600);
+            }
+        }
 
         function atualizarScore(nickname, pontos, isCorrect) {
-            // Incrementa score no estado local
             if (state.mode === 'player') {
                 state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'submit_answer',
-                    payload: {
-                        nickname: nickname,
-                        isCorrect: isCorrect,
-                        points: pontos,
-                        currentRank: computeRank(state.score)
-                    }
+                    type: 'broadcast', event: 'submit_answer',
+                    payload: { nickname: nickname, isCorrect: isCorrect, points: pontos, currentRank: computeRank(state.score) }
                 });
             }
         }
 
         function sincronizarRanking(playerData) {
-            // Busca o jogador na base local ou insere um novo
             let p = state.players.find(pl => pl.name === playerData.nickname);
             if (p) {
-                p.score += playerData.points;
-                p.answered = true;
-                p.lastAnswerCorrect = playerData.isCorrect;
-                p.rank = playerData.currentRank;
+                p.score += playerData.points; p.answered = true; p.lastAnswerCorrect = playerData.isCorrect; p.rank = playerData.currentRank;
             } else {
-                state.players.push({
-                    name: playerData.nickname,
-                    score: playerData.points,
-                    answered: true,
-                    lastAnswerCorrect: playerData.isCorrect,
-                    rank: playerData.currentRank
-                });
+                state.players.push({ name: playerData.nickname, score: playerData.points, answered: true, lastAnswerCorrect: playerData.isCorrect, rank: playerData.currentRank });
             }
-            
-            // Organiza por pontuação descendente
             state.players.sort((a, b) => b.score - a.score);
             renderizarRankingInimigosUI();
         }
 
-        // Renderiza lista suspensa (Select) para sabotagens dinâmicas
         function renderizarRankingInimigosUI() {
             const selectEl = document.getElementById('playerSelect');
             if (!selectEl) return;
-
-            // Filtra o próprio jogador e exibe inimigos na lista suspensa
             const inimigos = state.players.filter(p => p.name !== state.nickname);
-            
-            if (inimigos.length === 0) {
-                selectEl.innerHTML = `<option value="">Nenhum Alvo Detectado</option>`;
-                return;
-            }
-
-            selectEl.innerHTML = inimigos.map(p => 
-                `<option value="${p.name}">${p.name} (${p.score} PTS) - ${p.rank}</option>`
-            ).join('');
+            if (inimigos.length === 0) { selectEl.innerHTML = `<option value="">Nenhum Alvo</option>`; return; }
+            selectEl.innerHTML = inimigos.map(p => `<option value="${p.name}">${p.name} (${p.score})</option>`).join('');
         }
 
-        // Interface do Painel de Sabotagem do Jogador
         function updateSabotageUI() {
             const panel = document.getElementById('cliSabotagePanel');
             const btn = document.getElementById('btnTriggerSabotage');
             const statusText = document.getElementById('cliPowerStatus');
             const desc = document.getElementById('cliPowerDesc');
 
-            if (state.multiplayMode !== 'sabotage') {
-                panel.classList.add('hidden');
-                return;
-            }
-
+            if (state.multiplayMode !== 'sabotage') { panel.classList.add('hidden'); return; }
             panel.classList.remove('hidden');
             renderizarRankingInimigosUI();
 
             if (state.myPowerup) {
                 btn.removeAttribute('disabled');
-                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-orbitron text-[11px] font-black tracking-wider uppercase transition-all duration-300 shadow-lg neon-glow-red";
-                statusText.innerText = "PRONTO PARA DISPARAR";
-                statusText.className = "text-[9px] font-mono text-pink-400 font-bold animate-pulse";
-
-                const descricoes = {
-                    cegueira: "SABOTAGEM CEGUEIRA: Ocultará dados visuais da tela do oponente por 5s.",
-                    inversao: "INVERSÃO GRAVITACIONAL: Inverte verticalmente o painel de respostas do oponente por 8s.",
-                    dilatacao: "DILAÇÃO TEMPORAL: Impõe um forte lag e motion blur que reduz o tempo de resposta por 6s."
-                };
-                
+                btn.className = "w-full py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl font-orbitron text-[11px] font-black uppercase transition-all neon-glow-red";
+                statusText.innerText = "PRONTO";
                 btn.innerText = `DISPARAR ${state.myPowerup.toUpperCase()}`;
-                desc.innerText = descricoes[state.myPowerup];
+                desc.innerText = "Efeito quântico carregado.";
             } else {
                 btn.setAttribute('disabled', 'true');
-                btn.className = "w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-300";
-                btn.innerText = "Nenhuma Carga Gerada";
+                btn.className = "w-full py-2.5 bg-gray-800 text-gray-500 rounded-xl font-orbitron text-[11px] font-bold uppercase transition-all";
+                btn.innerText = "Nenhuma Carga";
                 statusText.innerText = "CARREGANDO...";
-                statusText.className = "text-[9px] font-mono text-gray-500";
-                desc.innerText = `Aumente sua sequência de acertos e combos. Combo Atual: x${state.combo.toFixed(1)}`;
+                desc.innerText = `Aumente sua sequência de combos. Atual: x${state.combo.toFixed(1)}`;
             }
         }
 
-        // --- SISTEMAS DE LIGAÇÃO DE REDE SUPABASE REALTIME ---
-
+        // --- SISTEMAS DE LIGAÇÃO DE REDE ---
         function initHostChannel() {
             const client = getSupabase();
-            
-            if (!client) {
-                state.isLocalQuantumNetwork = true;
-                state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
-                triggerMockPlayersJoin();
-            } else {
-                try {
-                    state.isLocalQuantumNetwork = false;
-                    state.channelInstance = client.channel(`room_${state.roomPin}`);
-                } catch (e) {
-                    state.isLocalQuantumNetwork = true;
-                    state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                    document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
-                    triggerMockPlayersJoin();
-                }
-            }
+            if (!client) { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); triggerMockPlayersJoin(); } 
+            else { try { state.isLocalQuantumNetwork = false; state.channelInstance = client.channel(`room_${state.roomPin}`); } catch (e) { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); triggerMockPlayersJoin(); } }
 
             state.channelInstance
-                .on('broadcast', { event: 'join_lobby' }, (payload) => {
-                    const { nickname } = payload.payload;
-                    if (!state.players.find(p => p.name === nickname) && state.players.length < 45) {
-                        state.players.push({ 
-                            name: nickname, 
-                            score: 0, 
-                            answered: false, 
-                            rank: computeRank(0),
-                            lastAnswerCorrect: false
-                        });
-
-                        updateLobbyPlayersUI();
-                        playBeep(587, 0.05);
+                .on('broadcast', { event: 'join_lobby' }, (p) => {
+                    if (!state.players.find(pl => pl.name === p.payload.nickname) && state.players.length < 45) {
+                        state.players.push({ name: p.payload.nickname, score: 0, answered: false, rank: computeRank(0), lastAnswerCorrect: false });
+                        updateLobbyPlayersUI(); playBeep(587, 0.05);
                     }
                 })
-                .on('broadcast', { event: 'sabotage_triggered' }, (payload) => {
-                    // Propaga o evento de sabotagem de forma autoritativa para todos os clientes ativos
-                    state.channelInstance.send({
-                        type: 'broadcast',
-                        event: 'sabotage',
-                        payload: payload.payload
-                    });
-
-                    // Notifica no feed visual do Host principal
-                    const { attacker, powerup, targetPlayer } = payload.payload;
-                    const feed = document.getElementById('hostAlertFeed');
-                    feed.classList.remove('hidden');
-                    feed.innerText = `⚠️ ALERTA QUÂNTICO: CADETE ${payload.payload.sourcePlayer} ATACOU ${targetPlayer} COM [${effectToName(payload.payload.effect)}]!`;
-                    playBeep(180, 0.3);
-
+                .on('broadcast', { event: 'sabotage_triggered' }, (p) => {
+                    state.channelInstance.send({ type: 'broadcast', event: 'sabotage', payload: p.payload });
+                    const feed = document.getElementById('hostAlertFeed'); feed.classList.remove('hidden');
+                    feed.innerText = `⚠️ ALERTA QUÂNTICO: CADETE ${p.payload.sourcePlayer} ATACOU ${p.payload.targetPlayer}!`; playBeep(180, 0.3);
                     setTimeout(() => { feed.classList.add('hidden'); }, 4000);
                 })
-                .on('broadcast', { event: 'submit_answer' }, (payload) => {
-                    const { nickname, points, isCorrect, currentRank } = payload.payload;
-                    let p = state.players.find(pl => pl.name === nickname);
-                    if (p && !p.answered) {
-                        p.answered = true;
-                        p.score += points;
-                        p.lastAnswerCorrect = isCorrect;
-                        p.rank = currentRank;
-
-                        // Ordena o ranking local de scores
+                .on('broadcast', { event: 'submit_answer' }, (p) => {
+                    let pl = state.players.find(x => x.name === p.payload.nickname);
+                    if (pl && !pl.answered) {
+                        pl.answered = true; pl.score += p.payload.points; pl.lastAnswerCorrect = p.payload.isCorrect; pl.rank = p.payload.currentRank;
                         state.players.sort((a, b) => b.score - a.score);
-
-                        const totalAnswered = state.players.filter(pl => pl.answered).length;
-                        if (totalAnswered >= state.players.length) {
-                            evaluateQuestionTimeout();
-                        }
+                        if (state.players.filter(x => x.answered).length >= state.players.length) evaluateQuestionTimeout();
                     }
                 });
 
-            if (!state.isLocalQuantumNetwork) {
-                state.channelInstance.subscribe((status) => {
-                    if (status !== 'SUBSCRIBED') {
-                        state.isLocalQuantumNetwork = true;
-                        state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                        triggerMockPlayersJoin();
-                    }
-                });
-            } else {
-                state.channelInstance.subscribe();
-            }
-        }
-
-        function effectToName(eff) {
-            if (eff === EFEITOS.CEGUEIRA) return "CEGUEIRA CRT";
-            if (eff === EFEITOS.INVERSAO) return "INVERSÃO GRAVITACIONAL";
-            return "DILAÇÃO TEMPORAL";
+            if (!state.isLocalQuantumNetwork) { state.channelInstance.subscribe((s) => { if (s !== 'SUBSCRIBED') { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); triggerMockPlayersJoin(); } }); } else state.channelInstance.subscribe();
         }
 
         function triggerMockPlayersJoin() {
-            const botNames = ["CADETE_ORION", "PILOTO_VEGA", "ALMIRANTE_NOVA", "CADETE_SIRIUS", "TENENTE_LUNA", "PILOTO_DRACO"];
-            botNames.forEach((name, index) => {
-                setTimeout(() => {
-                    if (state.mode !== 'host') return;
-                    state.channelInstance.send({
-                        type: 'broadcast',
-                        event: 'join_lobby',
-                        payload: { nickname: name }
-                    });
-                }, 800 + index * 600);
-            });
+            ["BOT_ORION", "BOT_VEGA"].forEach((name, i) => { setTimeout(() => { if (state.mode === 'host') state.channelInstance.send({ type: 'broadcast', event: 'join_lobby', payload: { nickname: name } }); }, 800 + i * 600); });
         }
 
         function updateLobbyPlayersUI() {
-            const container = document.getElementById('lobbyPlayers');
             document.getElementById('lobbyCount').innerText = state.players.length;
-
-            container.innerHTML = state.players.map(p => `
-                <div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex flex-col items-center justify-center">
-                    <span class="text-white">${p.name}</span>
-                    <span class="text-[8px] text-gray-500">${p.rank}</span>
-                </div>
-            `).join('');
+            document.getElementById('lobbyPlayers').innerHTML = state.players.map(p => `<div class="p-2 bg-zinc-900 border border-cyan-500/20 rounded-xl text-cyan-400 font-bold flex flex-col items-center justify-center"><span class="text-white">${p.name}</span><span class="text-[8px] text-gray-500">${p.rank}</span></div>`).join('');
         }
 
         function initPlayerChannel() {
             const client = getSupabase();
-            
-            if (!client) {
-                state.isLocalQuantumNetwork = true;
-                state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
-                setupLocalPlayerFallback();
-            } else {
-                try {
-                    state.isLocalQuantumNetwork = false;
-                    state.channelInstance = client.channel(`room_${state.roomPin}`);
-                } catch (e) {
-                    state.isLocalQuantumNetwork = true;
-                    state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                    document.getElementById('systemStatus').innerText += " [EMULADO LOCAL]";
-                    setupLocalPlayerFallback();
-                }
-            }
+            if (!client) { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); setupLocalPlayerFallback(); }
+            else { try { state.isLocalQuantumNetwork = false; state.channelInstance = client.channel(`room_${state.roomPin}`); } catch (e) { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); setupLocalPlayerFallback(); } }
 
             state.channelInstance
-                .on('broadcast', { event: 'start_game' }, (payload) => {
-                    state.gameQuestions = payload.payload.questionsPayload; 
-                    state.multiplayMode = payload.payload.multiplayMode;
-                    state.players = payload.payload.initialPlayers || [];
-                    
-                    switchScreen(screens.playerClient);
-                    updateSabotageUI();
-                    
-                    document.getElementById('cliActionState').classList.add('hidden');
-                    document.getElementById('cliWaitState').classList.remove('hidden');
-                    document.getElementById('cliFeedbackState').classList.add('hidden');
+                .on('broadcast', { event: 'start_game' }, (p) => {
+                    state.gameQuestions = p.payload.questionsPayload; state.multiplayMode = p.payload.multiplayMode; state.players = p.payload.initialPlayers || [];
+                    switchScreen(screens.playerClient); updateSabotageUI();
+                    document.getElementById('cliActionState').classList.add('hidden'); document.getElementById('cliWaitState').classList.remove('hidden'); document.getElementById('cliFeedbackState').classList.add('hidden');
                 })
-                .on('broadcast', { event: 'sabotage' }, (payload) => {
-                    // Escuta global de eventos de sabotagem propagados pelo host
-                    onSabotageReceived(payload.payload);
-                })
-                .on('broadcast', { event: 'next_question' }, (payload) => {
-                    state.currentQuestionIdx = payload.payload.questionIdx;
-                    state.canAnswer = true;
-
+                .on('broadcast', { event: 'sabotage' }, (p) => { onSabotageReceived(p.payload); })
+                .on('broadcast', { event: 'next_question' }, (p) => {
+                    state.currentQuestionIdx = p.payload.questionIdx; state.canAnswer = true;
                     document.getElementById('cliScore').innerText = state.score;
-                    document.getElementById('cliWaitState').classList.add('hidden');
-                    document.getElementById('cliFeedbackState').classList.add('hidden');
-                    document.getElementById('cliActionState').classList.remove('hidden');
-
+                    document.getElementById('cliWaitState').classList.add('hidden'); document.getElementById('cliFeedbackState').classList.add('hidden'); document.getElementById('cliActionState').classList.remove('hidden');
                     applyDebuffVisuals();
                 })
-                .on('broadcast', { event: 'submit_answer' }, (payload) => {
-                    // Sincroniza o placar e estado dos adversários localmente
-                    sincronizarRanking(payload.payload);
-                })
+                .on('broadcast', { event: 'submit_answer' }, (p) => { sincronizarRanking(p.payload); })
                 .on('broadcast', { event: 'show_leaderboard' }, () => {
-                    document.getElementById('cliWaitState').classList.add('hidden');
-                    document.getElementById('cliActionState').classList.add('hidden');
-
-                    const fBox = document.getElementById('cliFeedbackState');
-                    const icon = document.getElementById('cliFeedbackIcon');
-                    const title = document.getElementById('cliFeedbackTitle');
-                    const pts = document.getElementById('cliFeedbackPoints');
-
+                    document.getElementById('cliWaitState').classList.add('hidden'); document.getElementById('cliActionState').classList.add('hidden');
+                    const fBox = document.getElementById('cliFeedbackState'); const icon = document.getElementById('cliFeedbackIcon'); const title = document.getElementById('cliFeedbackTitle'); const pts = document.getElementById('cliFeedbackPoints');
                     fBox.classList.remove('hidden');
-
-                    if (state.myLastAnswerCorrect) {
-                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-green-500 text-green-400 font-bold text-lg";
-                        icon.innerHTML = "✓";
-                        title.className = "text-base font-orbitron font-bold text-green-400";
-                        title.innerText = "ALVO BLOQUEADO";
-                        pts.innerText = `+${state.myLastEarned} Pontos. Patente: ${computeRank(state.score)}`;
-                    } else {
-                        icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-red-500 text-red-400 font-bold text-lg";
-                        icon.innerHTML = "✕";
-                        title.className = "text-base font-orbitron font-bold text-red-400";
-                        title.innerText = "DESALINHADO";
-                        pts.innerText = `0 pontos acumulados.`;
-                    }
+                    if (state.myLastAnswerCorrect) { icon.innerHTML = "✓"; icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-green-500 text-green-400 text-lg"; title.className = "text-base font-orbitron text-green-400"; title.innerText = "ALVO BLOQUEADO"; pts.innerText = `+${state.myLastEarned} PTS`; }
+                    else { icon.innerHTML = "✕"; icon.className = "mx-auto flex justify-center items-center w-10 h-10 rounded-full border border-red-500 text-red-400 text-lg"; title.className = "text-base font-orbitron text-red-400"; title.innerText = "DESALINHADO"; pts.innerText = `0 PTS`; }
                 })
-                .on('broadcast', { event: 'game_over' }, (payload) => {
-                    if (payload.payload && payload.payload.reason === 'coop_fail') {
-                        alert("SISTEMA CRÍTICO: O escudo coletivo colapsou e a Terra foi puxada para o buraco negro!");
-                    } else {
-                        alert("Simulação Concluída! Verifique a tabela final.");
-                    }
+                .on('broadcast', { event: 'game_over' }, (p) => {
+                    if (p.payload && p.payload.reason === 'coop_fail') alert("Escudo colapsou! Fim de jogo.");
+                    else alert("Missão Concluída!");
                     location.reload();
                 });
 
-            if (!state.isLocalQuantumNetwork) {
-                state.channelInstance.subscribe((status) => {
-                    if (status !== 'SUBSCRIBED') {
-                        state.isLocalQuantumNetwork = true;
-                        state.channelInstance = new LocalQuantumMockChannel(state.roomPin);
-                        setupLocalPlayerFallback();
-                    } else {
-                        state.channelInstance.send({
-                            type: 'broadcast',
-                            event: 'join_lobby',
-                            payload: { nickname: state.nickname }
-                        });
-                        switchScreen(screens.wait);
-                    }
-                });
-            } else {
-                state.channelInstance.subscribe();
-            }
+            if (!state.isLocalQuantumNetwork) { state.channelInstance.subscribe((s) => { if (s !== 'SUBSCRIBED') { state.isLocalQuantumNetwork = true; state.channelInstance = new LocalQuantumMockChannel(state.roomPin); setupLocalPlayerFallback(); } else { state.channelInstance.send({ type: 'broadcast', event: 'join_lobby', payload: { nickname: state.nickname } }); switchScreen(screens.wait); } }); } else state.channelInstance.subscribe();
         }
 
         function setupLocalPlayerFallback() {
-            state.channelInstance.send({
-                type: 'broadcast',
-                event: 'join_lobby',
-                payload: { nickname: state.nickname }
-            });
-            switchScreen(screens.wait);
-
-            setTimeout(() => {
-                if (state.mode !== 'player') return;
-                state.gameQuestions = extractFifteenQuestions();
-                state.players = [
-                    { name: state.nickname, score: 0, rank: "Recruta", answered: false },
-                    { name: "BOT_ORION", score: 1200, rank: "Piloto", answered: false },
-                    { name: "BOT_SIRIUS", score: 800, rank: "Recruta", answered: false }
-                ];
-
-                state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'start_game',
-                    payload: {
-                        questionsPayload: state.gameQuestions,
-                        multiplayMode: 'sabotage',
-                        initialPlayers: state.players
-                    }
-                });
-
-                startLocalVirtualHostLoop();
-            }, 3000);
+            state.channelInstance.send({ type: 'broadcast', event: 'join_lobby', payload: { nickname: state.nickname } }); switchScreen(screens.wait);
+            setTimeout(() => { if (state.mode !== 'player') return; state.gameQuestions = extractFifteenQuestions(); state.players = [{ name: state.nickname, score: 0, rank: "Recruta", answered: false }, { name: "BOT_ORION", score: 1200, rank: "Piloto", answered: false }]; state.channelInstance.send({ type: 'broadcast', event: 'start_game', payload: { questionsPayload: state.gameQuestions, multiplayMode: 'sabotage', initialPlayers: state.players } }); startLocalVirtualHostLoop(); }, 3000);
         }
 
         function startLocalVirtualHostLoop() {
             if (state.mode !== 'player') return;
-            
             setTimeout(() => {
-                state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'next_question',
-                    payload: { questionIdx: state.currentQuestionIdx }
-                });
-
+                state.channelInstance.send({ type: 'broadcast', event: 'next_question', payload: { questionIdx: state.currentQuestionIdx } });
                 setTimeout(() => {
-                    state.channelInstance.send({
-                        type: 'broadcast',
-                        event: 'show_leaderboard',
-                        payload: {}
-                    });
-
-                    setTimeout(() => {
-                        state.currentQuestionIdx++;
-                        if (state.currentQuestionIdx < state.gameQuestions.length) {
-                            startLocalVirtualHostLoop();
-                        } else {
-                            state.channelInstance.send({
-                                type: 'broadcast',
-                                event: 'game_over',
-                                payload: {}
-                            });
-                        }
-                    }, 5000);
-
+                    state.channelInstance.send({ type: 'broadcast', event: 'show_leaderboard', payload: {} });
+                    setTimeout(() => { state.currentQuestionIdx++; if (state.currentQuestionIdx < state.gameQuestions.length) startLocalVirtualHostLoop(); else state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} }); }, 5000);
                 }, 15000);
-
             }, 1000);
         }
 
         function simulateBotAnswers() {
             if (!state.isLocalQuantumNetwork) return;
-            
-            state.players.forEach((bot) => {
-                if (bot.name === state.nickname) return; 
-                if (bot.answered) return;
-
-                const delay = 2000 + Math.random() * 7000;
-
+            state.players.forEach(bot => {
+                if (bot.name === state.nickname || bot.answered) return;
                 setTimeout(() => {
-                    if (state.mode !== 'host' || !state.canAnswer) return;
-                    if (bot.answered) return;
-
-                    const isCorrect = Math.random() > 0.35; 
-                    const points = isCorrect ? Math.round(500 + (state.timer / 25) * 500) : 0;
-
-                    bot.answered = true;
-                    bot.lastAnswerCorrect = isCorrect;
-                    bot.score += points;
-                    bot.rank = computeRank(bot.score);
-
-                    const totalAnswered = state.players.filter(pl => pl.answered).length;
-                    if (totalAnswered >= state.players.length) {
-                        evaluateQuestionTimeout();
-                    }
-                }, delay);
+                    if (state.mode !== 'host' || !state.canAnswer || bot.answered) return;
+                    const isCorrect = Math.random() > 0.35; bot.answered = true; bot.lastAnswerCorrect = isCorrect; bot.score += isCorrect ? Math.round(500 + (state.timer / 25) * 500) : 0; bot.rank = computeRank(bot.score);
+                    if (state.players.filter(pl => pl.answered).length >= state.players.length) evaluateQuestionTimeout();
+                }, 2000 + Math.random() * 7000);
             });
         }
 
         function applyDebuffVisuals() {
-            const container = document.getElementById('cliActionState');
-            const buttons = document.querySelectorAll('.cli-ans-btn');
-
-            container.classList.remove('gravity-inverted');
-            buttons.forEach(btn => btn.classList.remove('emp-scrambled'));
-
-            if (state.activeDebuffs.gravity) {
-                container.classList.add('gravity-inverted');
-            }
-
-            if (state.activeDebuffs.emp) {
-                const idxs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).slice(0, 2);
-                idxs.forEach(i => {
-                    buttons[i].classList.add('emp-scrambled');
-                });
-            }
-
-            if (state.activeDebuffs.time) {
-                state.timer = 12; 
-            }
+            const container = document.getElementById('cliActionState'); const buttons = document.querySelectorAll('.cli-ans-btn');
+            container.classList.remove('gravity-inverted'); buttons.forEach(btn => btn.classList.remove('emp-scrambled'));
+            if (state.activeDebuffs.gravity) container.classList.add('gravity-inverted');
+            if (state.activeDebuffs.emp) { [0, 1, 2, 3].sort(() => 0.5 - Math.random()).slice(0, 2).forEach(i => buttons[i].classList.add('emp-scrambled')); }
+            if (state.activeDebuffs.time) state.timer = 12; 
         }
 
+        // --- SISTEMA CORE DO JOGO (SOLO E HOST) ---
         function startSoloGame() {
-            state.currentQuestionIdx = 0;
-            state.score = 0;
-            state.shields = 100;
-            state.combo = 1.0;
-
-            document.getElementById('txtScore').innerText = "0000";
-            document.getElementById('txtCombo').innerText = "x1.0";
-            document.getElementById('txtShield').innerText = "100%";
-            document.getElementById('barShield').style.width = "100%";
-            document.getElementById('gameEarth').classList.remove('succumb-earth');
-
-            switchScreen(screens.game);
-            loadQuestion();
+            state.currentQuestionIdx = 0; state.score = 0; state.shields = 100; state.combo = 1.0;
+            document.getElementById('txtScore').innerText = "0000"; document.getElementById('txtCombo').innerText = "x1.0"; document.getElementById('txtShield').innerText = "100%"; document.getElementById('barShield').style.width = "100%"; document.getElementById('gameEarth').classList.remove('succumb-earth');
+            switchScreen(screens.game); loadQuestion();
         }
 
         function loadQuestion() {
-            if (state.currentQuestionIdx >= state.gameQuestions.length) {
-                endGame();
-                return;
-            }
+            if (state.currentQuestionIdx >= state.gameQuestions.length) { endGame(); return; }
 
             const qData = state.gameQuestions[state.currentQuestionIdx];
-            document.getElementById('lblQuestion').innerText = qData.q;
-            document.getElementById('lblCuriosity').innerText = qData.curiosity;
+            document.getElementById('lblQuestion').innerText = qData.q; document.getElementById('lblCuriosity').innerText = qData.curiosity;
 
             const remainingRatio = (state.gameQuestions.length - state.currentQuestionIdx) / state.gameQuestions.length;
-            const distanceKM = Math.round(remainingRatio * 120000);
-            document.getElementById('txtDistance').innerText = distanceKM.toLocaleString('pt-PT') + " KM";
+            document.getElementById('txtDistance').innerText = Math.round(remainingRatio * 120000).toLocaleString('pt-PT') + " KM";
             document.getElementById('barDistance').style.width = (remainingRatio * 100) + "%";
+            document.getElementById('gameEarth').style.transform = `scale(${0.4 + remainingRatio * 0.6})`;
 
-            const earthEl = document.getElementById('gameEarth');
-            if (earthEl) {
-                earthEl.style.transform = `scale(${0.4 + remainingRatio * 0.6})`;
-            }
-
-            const container = document.getElementById('answersContainer');
-            container.innerHTML = '';
-
-            const prefixes = ['A', 'B', 'C', 'D'];
-            const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
+            const container = document.getElementById('answersContainer'); container.innerHTML = '';
+            const prefixes = ['A', 'B', 'C', 'D']; const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
 
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = `${colors[idx]} w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white relative`;
+                btn.className = `${colors[idx]} w-full p-4 rounded-xl text-left font-mono text-sm flex items-center space-x-3 transition duration-150 text-white`;
                 btn.innerHTML = `<span class="font-orbitron font-black text-white/50 mr-2">[${prefixes[idx]}]</span> <span>${opt}</span>`;
-
-                btn.addEventListener('click', () => {
-                    if (state.mode === 'solo' && state.canAnswer) {
-                        state.canAnswer = false;
-                        evaluateSoloAnswer(idx);
-                    }
-                });
+                btn.onclick = () => { if (state.mode === 'solo' && state.canAnswer) { state.canAnswer = false; evaluateSoloAnswer(idx); } };
                 container.appendChild(btn);
             });
 
-            state.timer = state.activeDebuffs.time ? 12 : 25;
-            document.getElementById('txtTimer').innerText = state.timer + "s";
-            document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400";
-            document.getElementById('txtQuestionCounter').innerText = `${String(state.currentQuestionIdx + 1).padStart(2, '0')} / 15`;
-
+            state.timer = state.activeDebuffs.time ? 12 : 25; document.getElementById('txtTimer').innerText = state.timer + "s"; document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-cyan-400"; document.getElementById('txtQuestionCounter').innerText = `${String(state.currentQuestionIdx + 1).padStart(2, '0')} / 15`;
             state.canAnswer = true;
 
-            if (state.mode === 'host') {
-                state.players.forEach(p => p.answered = false);
-                state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'next_question',
-                    payload: { questionIdx: state.currentQuestionIdx }
-                });
-            }
+            if (state.mode === 'host') { state.players.forEach(p => p.answered = false); state.channelInstance.send({ type: 'broadcast', event: 'next_question', payload: { questionIdx: state.currentQuestionIdx } }); }
 
             if (state.timerId) clearInterval(state.timerId);
             state.timerId = setInterval(() => {
-                state.timer--;
-                document.getElementById('txtTimer').innerText = state.timer + "s";
-
-                if (state.timer <= 5) {
-                    document.getElementById('txtTimer').className = "text-lg font-bold font-orbitron text-red-500 animate-pulse";
-                    playBeep(350, 0.05);
-                }
-
-                if (state.timer <= 0) {
-                    evaluateQuestionTimeout();
-                }
+                state.timer--; document.getElementById('txtTimer').innerText = state.timer + "s";
+                if (state.timer <= 5) { document.getElementById('txtTimer').className = "text-lg font-bold text-red-500 animate-pulse"; playBeep(350, 0.05); }
+                if (state.timer <= 0) evaluateQuestionTimeout();
             }, 1000);
         }
 
         function evaluateSoloAnswer(idx) {
             clearInterval(state.timerId);
-            const qData = state.gameQuestions[state.currentQuestionIdx];
+            if (idx === state.gameQuestions[state.currentQuestionIdx].correct) {
+                state.score += Math.round((100 + state.timer * 10) * state.combo); state.combo = Math.min(3.0, state.combo + 0.2); playBeep(880, 0.1);
+                const lbl = document.getElementById('lblComboCrit'); if (lbl) { lbl.style.opacity = '1'; setTimeout(() => lbl.style.opacity = '0', 500); }
+            } else { state.combo = 1.0; applyDamage(20); }
 
-            if (idx === qData.correct) {
-                const points = Math.round((100 + state.timer * 10) * state.combo);
-                state.score += points;
-                state.combo = Math.min(3.0, state.combo + 0.2);
-                playBeep(880, 0.1);
-
-                const lbl = document.getElementById('lblComboCrit');
-                if (lbl) {
-                    lbl.style.opacity = '1';
-                    setTimeout(() => { lbl.style.opacity = '0'; }, 500);
-                }
-            } else {
-                state.combo = 1.0;
-                applyDamage(20);
-            }
-
-            document.getElementById('txtScore').innerText = String(state.score).padStart(4, '0');
-            document.getElementById('txtCombo').innerText = `x${state.combo.toFixed(1)}`;
-
-            state.currentQuestionIdx++;
-            setTimeout(() => { loadQuestion(); }, 1200);
+            document.getElementById('txtScore').innerText = String(state.score).padStart(4, '0'); document.getElementById('txtCombo').innerText = `x${state.combo.toFixed(1)}`;
+            state.currentQuestionIdx++; setTimeout(() => loadQuestion(), 1200);
         }
 
         function evaluateQuestionTimeout() {
-            clearInterval(state.timerId);
-            state.canAnswer = false;
-
-            if (state.mode === 'solo') {
-                state.combo = 1.0;
-                document.getElementById('txtCombo').innerText = "x1.0";
-                applyDamage(20);
-                state.currentQuestionIdx++;
-                setTimeout(() => { loadQuestion(); }, 1200);
-            } 
+            clearInterval(state.timerId); state.canAnswer = false;
+            if (state.mode === 'solo') { state.combo = 1.0; document.getElementById('txtCombo').innerText = "x1.0"; applyDamage(20); state.currentQuestionIdx++; setTimeout(() => loadQuestion(), 1200); } 
             else if (state.mode === 'host') {
                 if (state.multiplayMode === 'coop') {
-                    const totalJogadores = state.players.length;
-                    const acertos = state.players.filter(p => p.lastAnswerCorrect).length;
-                    const taxaAcerto = totalJogadores > 0 ? (acertos / totalJogadores) * 100 : 0;
-
-                    if (taxaAcerto >= 60) {
-                        state.shields = Math.min(100, state.shields + 10);
-                        playBeep(660, 0.2);
-                    } else {
-                        state.shields = Math.max(0, state.shields - 20);
-                        
-                        const win = document.getElementById('gameWindow');
-                        win.classList.add('shake-active');
-                        setTimeout(() => { win.classList.remove('shake-active'); }, 500);
-                        playBeep(140, 0.4);
-                    }
-
-                    document.getElementById('txtShield').innerText = state.shields + "%";
-                    document.getElementById('barShield').style.width = state.shields + "%";
-
-                    if (state.shields <= 0) {
-                        state.channelInstance.send({
-                            type: 'broadcast',
-                            event: 'game_over',
-                            payload: { reason: 'coop_fail' }
-                        });
-                        alert("SISTEMA CRÍTICO: O escudo coletivo colapsou!");
-                        location.reload();
-                        return;
-                    }
+                    if (state.players.length > 0 && (state.players.filter(p => p.lastAnswerCorrect).length / state.players.length) * 100 >= 60) { state.shields = Math.min(100, state.shields + 10); playBeep(660, 0.2); } 
+                    else { state.shields = Math.max(0, state.shields - 20); document.getElementById('gameWindow').classList.add('shake-active'); setTimeout(() => document.getElementById('gameWindow').classList.remove('shake-active'), 500); playBeep(140, 0.4); }
+                    document.getElementById('txtShield').innerText = state.shields + "%"; document.getElementById('barShield').style.width = state.shields + "%";
+                    if (state.shields <= 0) { state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: { reason: 'coop_fail' } }); alert("Escudo colapsou!"); location.reload(); return; }
                 }
-
-                state.channelInstance.send({
-                    type: 'broadcast',
-                    event: 'show_leaderboard',
-                    payload: {}
-                });
-                showLeaderboardScreen();
+                state.channelInstance.send({ type: 'broadcast', event: 'show_leaderboard', payload: {} }); showLeaderboardScreen();
             }
         }
 
         function applyDamage(amount) {
-            state.shields = Math.max(0, state.shields - amount);
-            document.getElementById('txtShield').innerText = state.shields + "%";
-            const bar = document.getElementById('barShield');
-            if (bar) bar.style.width = state.shields + "%";
-
-            const win = document.getElementById('gameWindow');
-            win.classList.add('shake-active');
-            setTimeout(() => { win.classList.remove('shake-active'); }, 500);
-            playBeep(140, 0.3);
-
-            if (state.shields <= 0) {
-                clearInterval(state.timerId);
-                const earth = document.getElementById('gameEarth');
-                if (earth) earth.classList.add('succumb-earth');
-                setTimeout(() => { endGame(); }, 2200);
-            }
+            state.shields = Math.max(0, state.shields - amount); document.getElementById('txtShield').innerText = state.shields + "%"; document.getElementById('barShield').style.width = state.shields + "%";
+            document.getElementById('gameWindow').classList.add('shake-active'); setTimeout(() => document.getElementById('gameWindow').classList.remove('shake-active'), 500); playBeep(140, 0.3);
+            if (state.shields <= 0) { clearInterval(state.timerId); document.getElementById('gameEarth').classList.add('succumb-earth'); setTimeout(() => endGame(), 2200); }
         }
 
         function showLeaderboardScreen() {
-            switchScreen(screens.leaderboard);
-            state.players.sort((a, b) => b.score - a.score);
-
-            const container = document.getElementById('leaderboardContainer');
-            
-            container.innerHTML = state.players.slice(0, 10).map((p, idx) => {
-                let statusLabel = "";
-                if (state.multiplayMode === 'coop') {
-                    statusLabel = p.lastAnswerCorrect 
-                        ? `<span class="text-[9px] px-2 py-0.5 bg-green-950 text-green-400 border border-green-500/30 rounded">ÓRBITA SEGURA</span>`
-                        : `<span class="text-[9px] px-2 py-0.5 bg-red-950 text-red-400 border border-red-500/30 rounded">FALHA TÁTICA</span>`;
-                }
-
-                return `
-                    <div class="flex justify-between items-center bg-black/60 p-3 border ${idx === 0 ? 'border-yellow-500/30' : 'border-cyan-500/15'} rounded-xl font-mono text-sm">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-orbitron font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-500/50'}">#${String(idx+1).padStart(2, '0')}</span>
-                            <div class="text-left">
-                                <span class="font-bold text-white block">${p.name}</span>
-                                <span class="text-[9px] uppercase tracking-wider text-purple-400">${p.rank}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            ${statusLabel}
-                            <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            switchScreen(screens.leaderboard); state.players.sort((a, b) => b.score - a.score);
+            document.getElementById('leaderboardContainer').innerHTML = state.players.slice(0, 10).map((p, idx) => `
+                <div class="flex justify-between items-center bg-black/60 p-3 border ${idx === 0 ? 'border-yellow-500/30' : 'border-cyan-500/15'} rounded-xl font-mono text-sm">
+                    <div class="flex items-center space-x-3"><span class="text-xs font-orbitron font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-500/50'}">#${String(idx+1).padStart(2, '0')}</span>
+                    <div class="text-left"><span class="font-bold text-white block">${p.name}</span><span class="text-[9px] uppercase tracking-wider text-purple-400">${p.rank}</span></div></div>
+                    <div class="flex items-center space-x-3">${state.multiplayMode === 'coop' ? (p.lastAnswerCorrect ? `<span class="text-[9px] px-2 bg-green-950 text-green-400">SEGURO</span>` : `<span class="text-[9px] px-2 bg-red-950 text-red-400">FALHA</span>`) : ""}
+                    <span class="text-cyan-400 font-orbitron font-bold">${p.score} PTS</span></div>
+                </div>`).join('');
 
             const btnNext = document.getElementById('btnNextQuestion');
-            if (state.currentQuestionIdx + 1 >= state.gameQuestions.length) {
-                btnNext.innerText = "FINALIZAR MAPA DE FLUXO";
-            } else {
-                btnNext.innerText = `AVANÇAR PARA ETAPA 0${state.currentQuestionIdx + 2}`;
-            }
-
+            btnNext.innerText = state.currentQuestionIdx + 1 >= state.gameQuestions.length ? "FINALIZAR MAPA" : `AVANÇAR PARA ETAPA 0${state.currentQuestionIdx + 2}`;
             btnNext.onclick = () => {
-                playBeep(600, 0.1);
-                state.currentQuestionIdx++;
-                if (state.currentQuestionIdx >= state.gameQuestions.length) {
-                    state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} });
-                    alert("Simulação Concluída! Verifique os resultados.");
-                    location.reload();
-                } else {
-                    switchScreen(screens.game);
-                    loadQuestion();
-                }
+                playBeep(600, 0.1); state.currentQuestionIdx++;
+                if (state.currentQuestionIdx >= state.gameQuestions.length) { state.channelInstance.send({ type: 'broadcast', event: 'game_over', payload: {} }); alert("Simulação Concluída!"); location.reload(); } 
+                else { switchScreen(screens.game); loadQuestion(); }
             };
         }
 
         function endGame() {
             if (state.mode === 'solo') {
-                if (state.shields <= 0) {
-                    alert(`SISTEMA CRÍTICO: Perda total de integridade orbital. Score: ${state.score}`);
-                } else {
-                    alert(`MISSÃO BEM-SUCEDIDA! Estabilizadores alinhados. Score final: ${state.score}`);
-                    state.wins++;
-                    localStorage.setItem('eo_wins', state.wins);
-                }
-                if (state.score > state.highScore) {
-                    localStorage.setItem('eo_highscore', state.score);
-                }
+                if (state.shields <= 0) alert(`Perda de integridade orbital. Score: ${state.score}`);
+                else { alert(`MISSÃO BEM-SUCEDIDA! Score final: ${state.score}`); state.wins++; localStorage.setItem('eo_wins', state.wins); }
+                if (state.score > state.highScore) localStorage.setItem('eo_highscore', state.score);
             }
             location.reload();
         }
 
         function playBeep(frequency, duration) {
             if (!state.isSoundOn) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-
-                oscillator.type = 'sine';
-                oscillator.frequency.value = frequency;
-                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
+            try { const aCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = aCtx.createOscillator(); const gain = aCtx.createGain(); osc.type = 'sine'; osc.frequency.value = frequency; gain.gain.setValueAtTime(0.08, aCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, aCtx.currentTime + duration); osc.connect(gain); gain.connect(aCtx.destination); osc.start(); osc.stop(aCtx.currentTime + duration); } catch(e) {}
         }
 
+        // --- SISTEMAS DE CANVAS ---
         function initSpaceCanvas() {
-            const canvas = document.getElementById('spaceCanvas');
-            const ctx = canvas.getContext('2d');
-            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-            window.addEventListener('resize', resize);
-            resize();
-
-            const stars = Array.from({ length: 80 }, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 1.5 + 0.5,
-                alpha: Math.random(),
-                speed: Math.random() * 0.01 + 0.003
-            }));
-
-            function animate() {
-                ctx.fillStyle = '#03010a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                stars.forEach(s => {
-                    s.alpha += s.speed;
-                    if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
-                    ctx.fillStyle = `rgba(34, 211, 238, ${Math.max(0, s.alpha * 0.45)})`;
-                    ctx.fillRect(s.x, s.y, s.size, s.size);
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
+            const c = document.getElementById('spaceCanvas'); const ctx = c.getContext('2d');
+            const resize = () => { c.width = window.innerWidth; c.height = window.innerHeight; }; window.addEventListener('resize', resize); resize();
+            const stars = Array.from({ length: 80 }, () => ({ x: Math.random() * c.width, y: Math.random() * c.height, size: Math.random() * 1.5 + 0.5, alpha: Math.random(), speed: Math.random() * 0.01 + 0.003 }));
+            const animate = () => { ctx.fillStyle = '#03010a'; ctx.fillRect(0, 0, c.width, c.height); stars.forEach(s => { s.alpha += s.speed; if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed; ctx.fillStyle = `rgba(34, 211, 238, ${Math.max(0, s.alpha * 0.45)})`; ctx.fillRect(s.x, s.y, s.size, s.size); }); requestAnimationFrame(animate); }; animate();
         }
 
         function initBlackholeCanvas() {
-            const canvas = document.getElementById('blackholeCanvas');
-            const ctx = canvas.getContext('2d');
-            let angle = 0;
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const cx = canvas.width / 2;
-                const cy = canvas.height / 2;
-                angle += 0.04;
-
-                ctx.save();
-                ctx.translate(cx, cy);
-                ctx.rotate(angle);
-
-                let grad = ctx.createRadialGradient(0, 0, 10, 0, 0, 45);
-                grad.addColorStop(0, 'rgba(255, 0, 119, 0.9)');
-                grad.addColorStop(0.35, 'rgba(157, 0, 255, 0.6)');
-                grad.addColorStop(0.8, 'rgba(0, 240, 255, 0.25)');
-                grad.addColorStop(1, 'rgba(0,0,0,0)');
-
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(0, 0, 50, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(cx, cy, 16, 0, Math.PI * 2);
-                ctx.fill();
-
-                requestAnimationFrame(draw);
-            }
-            draw();
+            const c = document.getElementById('blackholeCanvas'); const ctx = c.getContext('2d'); let angle = 0;
+            const draw = () => {
+                ctx.clearRect(0, 0, c.width, c.height); const cx = c.width / 2; const cy = c.height / 2; angle += 0.04;
+                ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
+                let grad = ctx.createRadialGradient(0, 0, 10, 0, 0, 45); grad.addColorStop(0, 'rgba(255, 0, 119, 0.9)'); grad.addColorStop(0.35, 'rgba(157, 0, 255, 0.6)'); grad.addColorStop(0.8, 'rgba(0, 240, 255, 0.25)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                ctx.fillStyle = '#000000'; ctx.beginPath(); ctx.arc(cx, cy, 16, 0, Math.PI * 2); ctx.fill(); requestAnimationFrame(draw);
+            }; draw();
         }
     </script>
 </body>
